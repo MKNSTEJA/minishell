@@ -1,0 +1,1 @@
+What we are basically given in the execution part is an AST, and the way we will execute it is by traversing it recursively, here is a pseudo-code that traverses the arithmetic AST built earlier in the parsing phase.
