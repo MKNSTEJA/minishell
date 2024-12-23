@@ -1,6 +1,7 @@
 #include "../include/minishell.h"
 
-
+// going anywhere for christmas? 
+// 
 void free_split(char **split)
 {
     int i = 0;
@@ -9,8 +10,28 @@ void free_split(char **split)
     free(split);
 }
 
-void execute_command(char *input)
+void execute_simple_command(command_t *cmd)
 {
+	extern char **environ; // why is it a 2darray
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+        return;
+}
+void execute_commands(command_t *cmd)
+{
+	if (!cmd)
+		return;
+
+	if (cmd->type == CMD_SIMPLE)
+	{
+		execute_simple_command(cmd);
+	}
+	else if (cmd->type == CMD_PIPE)
+	{
+		execute_pipeline(cmd);
+	}
+}
+
+	
 	char **argv = ft_split(input, ' ');
 	if (!argv || !argv[0])
 	{
@@ -30,11 +51,11 @@ void execute_command(char *input)
 	}
 	else if (pid == 0)
 	{
-		if (execve(argv[0], argv) == -1)
+		if (execve(argv[0], argv, environ) == -1)
 		{
 			perror("execvp");
+			exit(EXIT_FAILURE);
 		}
-		exit(EXIT_FAILURE);
 	}
 	else
 	{
