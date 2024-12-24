@@ -1,7 +1,6 @@
 #include "../include/minishell.h"
 
-// going anywhere for christmas? 
-// 
+
 void free_split(char **split)
 {
     int i = 0;
@@ -10,11 +9,36 @@ void free_split(char **split)
     free(split);
 }
 
+int is_builtin(command_t *cmd)
+{
+	if (cmd->argv == 'cd' || cmd->arg == )
+	{
+
+	}
+}
+char *find_executable()
+{
+	char *path = getenv("PATH");
+	if (!path)
+		
+}
+// THIS IS WHERE YOU ARE WORKING
 void execute_simple_command(command_t *cmd)
 {
-	extern char **environ; // why is it a 2darray
+	extern char **environ;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
         return;
+
+	if (is_builtin(cmd->argv)) // implement the function to know if it is built in
+	{
+		execute_builtin(cmd); // implement this too (will not use execve.. but how will it execute?)
+		return;
+	}
+
+	// handle non-built in functions
+		// search for it in the non-executable.. in the path
+	find_executable(cmd->argv)
+	
 }
 void execute_commands(command_t *cmd)
 {
@@ -31,39 +55,6 @@ void execute_commands(command_t *cmd)
 	}
 }
 
-	
-	char **argv = ft_split(input, ' ');
-	if (!argv || !argv[0])
-	{
-		free_split(argv);
-		return;
-	}
-	if (strcmp(argv[0], "exit") == 0)
-	{
-		free_split(argv);
-		exit(0);
-	}
-	//fork and execute
-	pid_t pid = fork();
-	if (pid < 0)
-	{
-		perror("fork");
-	}
-	else if (pid == 0)
-	{
-		if (execve(argv[0], argv, environ) == -1)
-		{
-			perror("execvp");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		int status;
-		waitpid(pid, &status, 0);
-	}
-
-}
 
 int main(void)
 {
@@ -83,7 +74,7 @@ int main(void)
         if (*input)
             add_history(input); // Add non-empty input to history
         
-		execute_command(input);
+		execute_commands(input);
         free(input);
     }
     return 0;
