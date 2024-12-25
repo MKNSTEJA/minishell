@@ -2,7 +2,7 @@
 NAME = minishell
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = src/main.c
+SRCS = parsing/main.c parsing/parse_info.c
 OBJS = $(SRCS:.c=.o)
 INCLUDES = -I include
 LIBFT_DIR = libft
