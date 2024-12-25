@@ -2,7 +2,7 @@
 NAME = minishell
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -I/usr/local/include
-SRCS = src/main.c src/signal.c
+SRCS = src/main.c src/signal.c src/mock_parser.c src/utils.c src/built-in.c
 OBJ_DIR = obj
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 INCLUDES = -I include

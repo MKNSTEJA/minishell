@@ -34,5 +34,12 @@ typedef struct s_command {
 void set_signals_interactive(void);
 void ignore_sigquit(void);
 void signal_reset_prompt(int signo);
+void free_split(char **split);
+void handle_exit(char **argv);
+void handle_cd(char **argv);
+void handle_unset(char **argv);
+void handle_env(char **argv);
+void handle_pwd(char **argv);
+void handle_echo(char **argv);
 
 #endif // MINISHELL_H
