@@ -59,7 +59,7 @@ void execute_pipeline(command_t *cmd)
 {
 	int pipe_fds[2];
 	pid_t pid;
-	int prev_fd = -1; // I don't get this one..
+	int prev_fd = -1;
 
 	while (cmd)
 	{
@@ -83,7 +83,7 @@ void execute_pipeline(command_t *cmd)
 		}
 		if (pid == 0)
 		{
-			if (prev_fd != -1) // i don't know how that means checking for a previous pipe...
+			if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
