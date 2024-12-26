@@ -19,7 +19,6 @@ int is_builtin(char **argv)
             strcmp(argv[0], "pwd") == 0 ||
             strcmp(argv[0], "echo") == 0);
 }
-}
 
 void execute_builtin(char **argv)
 {
@@ -37,9 +36,9 @@ void execute_builtin(char **argv)
 		handle_echo(argv);
 }
 
-
 void execute_simple_command(command_t *cmd)
 {
+	// the difference here is we don't need all the time to fork here. 
 	extern char **environ;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
         return;
@@ -52,20 +51,19 @@ void execute_simple_command(command_t *cmd)
 
 	// handle non-built in functions
 		// search for it in the non-executable.. in the path
-	find_executable(cmd->argv)
+	find_executable(cmd->argv);
 	
 }
 void execute_pipeline(command_t *cmd)
 {
 	int pipe_fds[2];
 	pid_t pid;
+	pid_t pids[PIPELINE_MAX];
+	int i = 0;
 	int prev_fd = -1;
 
 	while (cmd)
 	{
-		if (is_builtin(cmd->argv[0])) //does this check only the first command or what?? this is important. 
-			execute_builtin(cmd->argv);
-
 		if (cmd->next)
 		{
 			if (pipe(pipe_fds) == -1)
@@ -74,13 +72,12 @@ void execute_pipeline(command_t *cmd)
 				exit(1);
 			}
 		}
-
 		pid = fork();
-		if (pid == -1)
+		if (pid == -1) 
 		{
-			perror("fork");
-			exit(1);
-		}
+            perror("fork");
+            exit(1);
+        }
 		if (pid == 0)
 		{
 			if (prev_fd != -1)
@@ -88,35 +85,43 @@ void execute_pipeline(command_t *cmd)
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-
 			if (cmd->next)
 			{
 				close(pipe_fds[0]);
 				dup2(pipe_fds[1], STDOUT_FILENO);
 				close(pipe_fds[1]);
 			}
-			execvp(cmd->argv[0], cmd->argv); //execve or ends with p? check the difference...
-			perror("execvp");
-			exit(1);
+			if (is_builtin(cmd->argv[0]))
+			{
+				execute_builtin(cmd->argv);
+				_exit(0); //terminate child without cleanup for parent
+			}
+			else
+			{
+				execvp(cmd->argv[0], cmd->argv);
+				perror("execvp");
+				_exit(1);
+			}
 		}
-		else { // Parent process
-            if (prev_fd != -1) {
-                close(prev_fd); // Close the previous read-end
-            }
-            if (cmd->next) {
-                close(pipe_fds[1]); // Close write-end of the current pipe
+		else 
+		{ // Parent process
+			pids[i++] = pid;
+            if (prev_fd != -1) 
+                close(prev_fd);
+            if (cmd->next) 
+			{
+                close(pipe_fds[1]);
                 prev_fd = pipe_fds[0]; // Save read-end for the next command
             }
-
-            // Wait for the child process (optional, depending on desired behavior)
-            waitpid(pid, NULL, 0);
         }
-
         cmd = cmd->next; // Move to the next command in the pipeline
-
 	}
+	int j = 0;
+
+	while (j < i)
+		waitpid(pids[j++], NULL, 0);
 }
-}
+
 void execute_commands(command_t *cmd)
 {
 	if (!cmd)
@@ -127,11 +132,11 @@ void execute_commands(command_t *cmd)
 
 	if (cmd->type == CMD_PIPE || cmd->next != NULL)
 	{
-		execute_pipeline(cmd);
+		execute_pipeline(cmd); // afterwards: is it built in? 
 	}
 	else if (cmd->type == CMD_SIMPLE)
 	{
-		execute_simple_command(cmd);
+		execute_simple_command(cmd); // afterwards, it is builtin.. i think here it should be is it built in right away.. 
 	}
 }
 
