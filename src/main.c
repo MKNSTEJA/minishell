@@ -1,10 +1,45 @@
 #include "../include/minishell.h"
 
-char *find_executable()
+char *find_executable(char **argv) // 
 {
-	char *path = getenv("PATH");
+	if (argv[0][0] == '/' || argv[0][0] == '.')
+    {
+        if (access(argv[0], X_OK) == 0)
+            return strdup(argv[0]);
+        else
+            return NULL;
+    }
+	char *executable_path = NULL;
+	char *path = getenv("PATH"); 
 	if (!path)
-		
+	{
+		write(2, "PATH not set\n", 13);
+    	return NULL;
+	}
+	char **split_path = ft_split(path, ':');
+	if (!split_path)
+		return NULL;
+	while (*split_path)
+	{
+		char *string_slash = ft_strjoin(split_path, "/");
+		char *full_path = ft_strjoin(string_slash, argv[0]);
+		free(string_slash);
+		if (access(full_path, X_OK) == 0)
+		{
+			executable_path = full_path;
+			break;
+		}
+		free(full_path);
+		split_path++;
+	}
+	char **tmp = split_path;
+	while (*tmp)
+	{
+		free(*tmp);
+		tmp++;
+	}
+	free(split_path);
+	return executable_path;
 }
 
 int is_builtin(char **argv)
@@ -38,7 +73,6 @@ void execute_builtin(char **argv)
 
 void execute_simple_command(command_t *cmd)
 {
-	// the difference here is we don't need all the time to fork here. 
 	extern char **environ;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
         return;
@@ -58,7 +92,7 @@ void execute_pipeline(command_t *cmd)
 {
 	int pipe_fds[2];
 	pid_t pid;
-	pid_t pids[PIPELINE_MAX];
+	pid_t pids[PIPELINE_MAX]; // i don't think bash has a pipeline max
 	int i = 0;
 	int prev_fd = -1;
 
@@ -132,11 +166,11 @@ void execute_commands(command_t *cmd)
 
 	if (cmd->type == CMD_PIPE || cmd->next != NULL)
 	{
-		execute_pipeline(cmd); // afterwards: is it built in? 
+		execute_pipeline(cmd);
 	}
 	else if (cmd->type == CMD_SIMPLE)
 	{
-		execute_simple_command(cmd); // afterwards, it is builtin.. i think here it should be is it built in right away.. 
+		execute_simple_command(cmd);
 	}
 }
 

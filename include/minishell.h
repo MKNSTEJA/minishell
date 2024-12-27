@@ -24,10 +24,13 @@ typedef enum {
 
 typedef struct s_command {
     command_type_t type;
-    char **argv;                // Arguments for the command
-    char *input_redirection;    // File for input redirection
-    char *output_redirection;   // File for output redirection
-    struct s_command *next;     // Next command in a pipeline
+    char **argv;
+	int argc;
+    char *infile;    // for <
+    char *outfile; // for > or >>
+	int append; // 0 if >, 1 if >>
+	struct s_command *next;     // Next command in a pipeline
+	// possibly more fields for heredoc, etc.
 } command_t;
 
 
