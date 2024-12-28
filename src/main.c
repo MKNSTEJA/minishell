@@ -76,15 +76,25 @@ void execute_simple_command(command_t *cmd)
 	extern char **environ;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
         return;
-
 	if (is_builtin(cmd->argv)) // implement the function to know if it is built in
 	{
 		execute_builtin(cmd); // implement this too (will not use execve.. but how will it execute?)
 		return;
 	}
+	pid_t pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		exit(1);
+	}
+	if (pid == 0)
+	{
+		if (cmd->infile) //this is the part that i wanted.. if in the data structure, this thing is true.. but if we have more than one th
+		// 
+	}
 
-	// handle non-built in functions
-		// search for it in the non-executable.. in the path
+	// this has to be inside of a fork, so let's try to fork here
+	// besides, this function only returns the executable path, so i think now i could fork aftewards right? 
 	find_executable(cmd->argv);
 	
 }

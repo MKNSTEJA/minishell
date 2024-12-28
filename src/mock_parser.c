@@ -12,8 +12,8 @@ command_t *mock_simple_command(void)
     cmd->argv[0] = strdup("ls");
     cmd->argv[1] = strdup("-la");
     cmd->argv[2] = NULL;
-    cmd->input_redirection = NULL;
-    cmd->output_redirection = NULL;
+    cmd->infile = NULL;
+    cmd->outfile = NULL;
     cmd->next = NULL;
 
     return cmd;
@@ -28,8 +28,8 @@ command_t *mock_pipeline(void)
 	cmd1->argv = malloc(sizeof(char*) * 2);
 	cmd1->argv[0] = strdup("cat");
 	cmd1->argv[1] = NULL;
-	cmd1->input_redirection = NULL;
-	cmd1->output_redirection = NULL;
+	cmd1->infile = NULL;
+	cmd1->outfile = NULL;
 
 	// second command
 	command_t *cmd2 = malloc(sizeof(command_t));
@@ -37,8 +37,8 @@ command_t *mock_pipeline(void)
 	cmd2->argv = malloc(sizeof(char*) * 2);
 	cmd2->argv[0] = strdup("wc");
 	cmd2->argv[1] = NULL;
-	cmd2->input_redirection = NULL;
-	cmd2->output_redirection = NULL;
+	cmd2->infile = NULL;
+	cmd2->outfile = NULL;
 
 	// link them
 	cmd1->next = cmd2;
