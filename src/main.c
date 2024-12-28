@@ -1,5 +1,6 @@
 #include "../include/minishell.h"
 
+
 char *find_executable(char **argv) // 
 {
 	if (argv[0][0] == '/' || argv[0][0] == '.')
@@ -73,30 +74,112 @@ void execute_builtin(char **argv)
 
 void execute_simple_command(command_t *cmd)
 {
-	extern char **environ;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
         return;
-	if (is_builtin(cmd->argv)) // implement the function to know if it is built in
-	{
-		execute_builtin(cmd); // implement this too (will not use execve.. but how will it execute?)
-		return;
-	}
-	pid_t pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		exit(1);
-	}
-	if (pid == 0)
-	{
-		if (cmd->infile) //this is the part that i wanted.. if in the data structure, this thing is true.. but if we have more than one th
-		// 
-	}
 
-	// this has to be inside of a fork, so let's try to fork here
-	// besides, this function only returns the executable path, so i think now i could fork aftewards right? 
-	find_executable(cmd->argv);
-	
+	if (is_builtin(cmd->argv))
+	{
+		int saved_stdin = dup(STDIN_FILENO);
+		int saved_stdout = dup(STDOUT_FILENO);
+		if (saved_stdin < 0 || saved_stdout < 0) // important (handling errors, and knowing when to handle them)
+        {
+            perror("dup");
+            return;
+        }
+
+		if (cmd->infile)
+		{
+			int fd_in = open(cmd->infile, O_RDONLY);
+			if (fd_in < 0)
+			{	
+				perror(cmd->infile);
+                // restore FDs and return
+                dup2(saved_stdin, STDIN_FILENO);
+                dup2(saved_stdout, STDOUT_FILENO);
+                close(saved_stdin);
+                close(saved_stdout);
+                return;
+			}
+			dup2(fd_in, STDIN_FILENO);
+			close(fd_in);
+		}
+		if (cmd->outfile)
+		{
+			int flags = O_WRONLY | O_CREAT | (cmd->append ? O_APPEND : O_TRUNC);
+			int fd_out = open(cmd->outfile, flags, 0644);
+			if (fd_out < 0)
+			{
+                perror(cmd->outfile);
+                // restore FDs and return
+                dup2(saved_stdin, STDIN_FILENO);
+                dup2(saved_stdout, STDOUT_FILENO);
+                close(saved_stdin);
+                close(saved_stdout);
+                return;
+            }
+			dup2(fd_out, STDOUT_FILENO);
+			close(fd_out);
+		}
+			execute_builtin(cmd);
+			dup2(saved_stdin, STDIN_FILENO);
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdin);
+			close(saved_stdout);
+			return;
+	}
+	else
+	{
+		char *executable_path = find_executable(cmd->argv);
+		if (!executable_path)
+		{
+            fprintf(stderr, "%s: command not found\n", cmd->argv[0]);
+            return;
+        }
+
+		pid_t pid = fork();
+		if (pid < 0)
+		{
+			perror("fork");
+			free(executable_path);
+			return;
+		}
+		if (pid == 0)
+		{
+			if (cmd->infile)
+			{ 
+				int fd_in = open(cmd->infile, O_RDONLY);
+				if (fd_in < 0)
+				{	
+					perror(cmd->infile);
+					_exit(1);
+				}
+				dup2(fd_in, STDIN_FILENO);
+				close(fd_in);
+			}
+		
+		if (cmd->outfile)
+		{
+			int flags = O_WRONLY | O_CREAT | (cmd->append ? O_APPEND : O_TRUNC);
+			int fd_out = open(cmd->outfile, flags, 0644);
+			if (fd_out < 0)
+			{
+                perror(cmd->outfile);
+                _exit(1);
+            }
+			dup2(fd_out, STDOUT_FILENO);
+			close(fd_out);
+		}
+		execvp(executable_path, cmd->argv);
+		perror("execvp");
+		_exit(127);
+		}
+		else
+		{
+			//parent process
+			free(executable_path);
+			waitpid(pid, NULL, 0);
+		}
+	}
 }
 void execute_pipeline(command_t *cmd)
 {
@@ -183,28 +266,46 @@ void execute_commands(command_t *cmd)
 		execute_simple_command(cmd);
 	}
 }
-
-
 int main(void)
 {
-    char *input;
+    // Instead of real input, let's just test the execution code directly:
+    command_t *cmd = NULL;
 
-    // Set up signal handling
-    set_signals_interactive();
+    // Option 1: Test a simple command (e.g., "ls -la")
+    cmd = mock_simple_command();
+    // or Option 2: Test a pipeline (e.g., "cat | wc")
+    // cmd = mock_pipeline();
 
-    while (1)
-    {
-        input = readline("minishell> ");
-        if (!input) // Handle EOF (Ctrl+D)
-        {
-            printf("exit\n");
-            break;
-        }
-        if (*input)
-            add_history(input); // Add non-empty input to history
-        
-		execute_commands(input);
-        free(input);
-    }
+    // Now just call your execute_functions
+    execute_commands(cmd);
+
+    // Possibly free the allocated command structures
+    // e.g. free_command_list(cmd); // if you have a function for that
+    // but for a quick test, you can skip it or write it later.
+
     return 0;
 }
+
+// int main(void)
+// {
+//     char *input;
+
+//     // Set up signal handling
+//     set_signals_interactive();
+
+//     while (1)
+//     {
+//         input = readline("minishell> ");
+//         if (!input) // Handle EOF (Ctrl+D)
+//         {
+//             printf("exit\n");
+//             break;
+//         }
+//         if (*input)
+//             add_history(input); // Add non-empty input to history
+        
+// 		execute_commands(input);
+//         free(input);
+//     }
+//     return 0;
+// }
