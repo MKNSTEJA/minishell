@@ -28,6 +28,7 @@ void handle_cd(char **argv)
 
 void handle_unset(char **argv)
 {
+	(void)argv;
 	extern char **environ;
 	if (!argv[1])
 	{
@@ -54,6 +55,7 @@ void handle_unset(char **argv)
 
 void handle_env(char **argv)
 {
+	(void)argv;
 	extern char **environ;
 	char **env = environ;
 
@@ -65,6 +67,7 @@ void handle_env(char **argv)
 }
 void handle_pwd(char **argv)
 {
+	(void)argv;
 	char *pwd = getenv("PWD");
     if (pwd)
         printf("%s\n", pwd);
