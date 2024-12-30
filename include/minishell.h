@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:44:01 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/25 11:52:02 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/25 13:40:14 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,14 @@
 
 typedef enum s_type
 {
+  NONE,
   PIPES,
   IN,
   OUT,
   APPEND,
   HEREDOC,
-  WORD
+  WORD,
+  END
 }t_type;
 
 typedef struct s_input
@@ -52,8 +54,19 @@ typedef struct s_split
 	char *str;
 	t_type type;
 	struct s_split *next;
+  struct s_split *prev;
 }t_split;
 
+typedef struct s_op
+{
+	char **str;
+	int append;
+	int fd_in;
+	int fd_out;
+	struct s_op *next;
+} t_op;
+
 t_split *split_inputs(char *string);
+int split_errors(t_split *input);
 
 #endif // MINISHELL_H

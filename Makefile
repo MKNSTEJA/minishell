@@ -1,8 +1,8 @@
 # Variables
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-SRCS = parsing/main.c parsing/parse_info.c
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+SRCS = parsing/main.c parsing/parse_info.c parsing/split_errors.c
 OBJS = $(SRCS:.c=.o)
 INCLUDES = -I include
 LIBFT_DIR = libft

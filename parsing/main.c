@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/25 12:02:42 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/30 01:45:29 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,18 @@ int main(void)
 	input = NULL;
 	while (1)
 	{
-		char *str = readline("\nMinishell> ");		
+		char *str = readline("\nMinishell: ");		
 		input = split_inputs(str);
+		if(split_errors(input) == 1)
+		{
+			free_list(input);
+			input = NULL;
+			continue;
+		}
 		print_list(input);
 	}	
 	free_list(input);
+	// system("leaks minishell");
 }
 
 void	free_list(t_split *list)
@@ -41,11 +48,18 @@ void	free_list(t_split *list)
 	while (current)
 	{
 		next_node = current->next;
-		free(current->str);
-		free(current);
+		if(current->str)
+    {
+			free(current->str);
+      current->str = NULL;
+    }
+		if(current)
+    {
+			free(current);
+      current = NULL;
+    }
 		current = next_node;
 	}
-	free(list);
 }
 
 void print_list(t_split *input)
