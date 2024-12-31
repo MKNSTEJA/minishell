@@ -1,6 +1,6 @@
 # Variables
 NAME = minishell
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 SRCS = parsing/main.c parsing/parse_info.c parsing/split_errors.c
 OBJS = $(SRCS:.c=.o)
