@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/31 15:24:19 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/31 15:53:18 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	print_cmd(t_op *cmd)
 		printf("String inside %d: \n", counter);
 		while (ptr->str && ptr->str[i])
 		{
-			printf("%s ", cmd->str[i]);
+			printf("%s ", ptr->str[i]);
 			i++;
 		}
 		printf("\n");

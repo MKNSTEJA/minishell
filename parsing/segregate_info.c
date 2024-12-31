@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/31 15:24:51 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/31 15:53:50 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	append_str(t_op *cmd, char *string)
 		free(cmd->str);
 	cmd->str = new;
 	// printf("3 ");
+	// printf("Appended string: %s\n", string);
 }
 
 void	split_cmds(t_split *input, t_op *cmd)
@@ -88,14 +89,16 @@ void	split_cmds(t_split *input, t_op *cmd)
 			{
 				// printf("goes here \n");
 				ptr = ptr->next;
+				// printf("new struct\n");
 				append_cmd(c_ptr, ptr->str);
-				// printf("\ndone appending: %s", c_ptr->str[0]);
 				c_ptr = c_ptr->next;
+				// printf("done appending: %s\n", c_ptr->str[0]);
 			}
 			else
 			{
 				// printf("in\n");
 				append_str(c_ptr, ptr->str);
+				// printf("done appending: %s\n", c_ptr->str[0]);
 				// printf("out\n");
 			}
 			// printf("\ndone appending 2\n");
