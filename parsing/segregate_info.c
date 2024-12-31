@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/31 14:54:37 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/31 15:24:51 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,32 @@
 void	append_cmd(t_op *cmd, char *string);
 void	split_cmds(t_split *input, t_op *cmd);
 
-t_op *initialise_cmd(t_split *input)
+t_op	*initialise_cmd(t_split *input)
 {
-	t_op *cmd;
+	t_op	*cmd;
 
 	cmd = malloc(sizeof(t_op));
+	if (!cmd)
+		exit(-1);
 	cmd->str = NULL;
 	cmd->next = NULL;
 	cmd->append = 0;
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
 	split_cmds(input, cmd);
-	return(cmd);
+	return (cmd);
 }
 
 void	append_str(t_op *cmd, char *string)
 {
 	int		i;
 	char	**new;
-	
+
 	i = 0;
 	// if(!string)
 	// {
 	// 	cmd->str = NULL;
-	// 	return; 
+	// 	return ;
 	// }
 	while (cmd->str != NULL && cmd->str[i] != NULL)
 	{
@@ -53,10 +55,12 @@ void	append_str(t_op *cmd, char *string)
 	{
 		// printf("1 ");
 		new[i] = ft_strdup(cmd->str[i]);
+		// printf("%s \n", new[i]);
 		i++;
 	}
 	new[i] = ft_strdup(string);
 	// printf("2 ");
+	// printf("%s \n", new[i]);
 	if (!new[i])
 		exit(-1);
 	new[i + 1] = NULL;
@@ -78,21 +82,25 @@ void	split_cmds(t_split *input, t_op *cmd)
 	ptr = input;
 	while (ptr)
 	{
-		if(ptr->str)
+		if (ptr->str)
 		{
-			if(ptr->str[0] == '|')
+			if (ptr->str[0] == '|')
 			{
 				// printf("goes here \n");
 				ptr = ptr->next;
 				append_cmd(c_ptr, ptr->str);
-				printf("\ndone appending: %s", c_ptr->str[0]);
+				// printf("\ndone appending: %s", c_ptr->str[0]);
 				c_ptr = c_ptr->next;
+			}
+			else
+			{
+				// printf("in\n");
+				append_str(c_ptr, ptr->str);
+				// printf("out\n");
 			}
 			// printf("\ndone appending 2\n");
 		}
-		else
-			append_str(c_ptr, ptr->str);
-		if(ptr)
+		if (ptr)
 			ptr = ptr->next;
 	}
 }
@@ -101,7 +109,7 @@ void	append_cmd(t_op *cmd, char *string)
 {
 	t_op	*new;
 	t_op	*ptr;
-	
+
 	ptr = cmd;
 	new = malloc(sizeof(t_op));
 	if (!new)

@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/31 14:50:11 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/31 15:24:19 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void	print_cmd(t_op *cmd)
 			printf("%s ", cmd->str[i]);
 			i++;
 		}
+		printf("\n");
 		ptr = ptr->next;
 		counter++;
 	}
