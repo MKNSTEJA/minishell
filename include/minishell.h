@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:44:01 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/25 13:40:14 by mknsteja         ###   ########.fr       */
+/*   Updated: 2024/12/31 07:27:51 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,6 @@ typedef struct s_op
 
 t_split *split_inputs(char *string);
 int split_errors(t_split *input);
+t_op *initialise_cmd(t_split *input);
 
 #endif // MINISHELL_H

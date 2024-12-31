@@ -2,7 +2,7 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
-SRCS = parsing/main.c parsing/parse_info.c parsing/split_errors.c
+SRCS = parsing/main.c parsing/parse_info.c parsing/split_errors.c parsing/segregate_info.c
 OBJS = $(SRCS:.c=.o)
 INCLUDES = -I include
 LIBFT_DIR = libft
