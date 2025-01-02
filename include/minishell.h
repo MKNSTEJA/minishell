@@ -89,5 +89,62 @@ void execute_commands(command_t *cmd);
 void execute_pipeline(command_t *cmd);
 void execute_simple_command(command_t *cmd);
 void execute_builtin(char **argv);
+void	print_cmd(t_op *cmd);
+void	free_split(t_split *list);
+void	print_split(t_split *input);
+void	free_op(t_op *cmd);
+
+#ifndef MINISHELL_STRUCTS_H
+# define MINISHELL_STRUCTS_H
+
+# include <stdlib.h>     // for NULL, malloc
+# include <unistd.h>     // for STDIN_FILENO, STDOUT_FILENO
+
+/*
+ * This enum is used to mark the type of each token/string in the input.
+ * Adjust the names/values based on your usage in tokenise() and elsewhere.
+ */
+typedef enum e_type
+{
+	NONE,
+	WORD,
+	PIPES,      // Matches usage: ptr->type = PIPES; (instead of PIPE)
+	IN,         // Matches usage: ptr->type = IN;    (for "<")
+	OUT,        // Matches usage: ptr->type = OUT;   (for ">")
+	APPEND,     // Matches usage: ptr->type = APPEND;(for ">>")
+	HEREDOC     // Matches usage: ptr->type = HEREDOC;(for "<<")
+}	t_type;
+
+/*
+ * This struct (t_split) is used to store each 'split' token along with its type,
+ * forming a linked list (possibly doubly-linked if you want to navigate backward).
+ */
+typedef struct s_split
+{
+	char			*str;       // The actual token/string (e.g., "ls", ">", "file", etc.)
+	t_type			type;       // The token type (WORD, IN, OUT, etc.)
+	struct s_split	*prev;      // Pointer to previous element (if using a doubly-linked list)
+	struct s_split	*next;      // Pointer to the next element
+}	t_split;
+
+/*
+ * This struct (t_op) is used to represent an entire command in your shell.
+ *    - str:     An array of strings (the command + its arguments).
+ *    - append:  A flag to indicate if redirection is >> (append) or > (truncate).
+ *    - fd_in:   File descriptor for input redirection.
+ *    - fd_out:  File descriptor for output redirection.
+ *    - next:    Pointer to the next command in a pipeline or list.
+ */
+typedef struct s_op
+{
+	char		**str;
+	int			append;
+	int			fd_in;
+	int			fd_out;
+	struct s_op	*next;
+}	t_op;
+
+#endif
+
 
 #endif // MINISHELL_H
