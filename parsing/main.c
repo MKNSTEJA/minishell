@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/02 03:46:48 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/02 18:09:41 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@ void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
 void	print_split(t_split *input);
 void	free_op(t_op *cmd);
+t_split *split_inputs(char *string);
+int      split_errors(t_split *input);
+t_op    *initialise_cmd(t_split *input);
+
 
 int	main(void)
 {
