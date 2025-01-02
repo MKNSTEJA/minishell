@@ -1,73 +1,93 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/25 02:44:01 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/31 07:27:51 by mknsteja         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 #define MINISHELL_H
-#define MAX_ARGS 100
 
+#include <stdio.h>
+#include <signal.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <signal.h>
-#include <string.h> // For memset
-#include <unistd.h> // For write
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
+
 #include <stdlib.h>
 #include "../libft/libft.h"
 
-typedef enum s_type
-{
-  NONE,
-  PIPES,
-  IN,
-  OUT,
-  APPEND,
-  HEREDOC,
-  WORD,
-  END
-}t_type;
 
-typedef struct s_input
-{
-  char *str;
-  struct s_input *prev;
-  struct s_input *next;
-}t_input;
+// typedef enum {
+//     CMD_NONE,
+//     CMD_SIMPLE,
+//     CMD_PIPE,
+//     CMD_REDIRECT_IN,
+//     CMD_REDIRECT_OUT,
+//     // Add more as needed
+// } command_type_t;
 
-typedef struct s_ihead
-{
-	t_input *start;
-}t_ihead;
+// typedef struct s_command {
+//     command_type_t type;
+//     char **argv;
+// 	int argc;
+//     char *infile;    // for <
+//     char *outfile; // for > or >>
+// 	int append; // 0 if >, 1 if >>
+// 	struct s_command *next;     // Next command in a pipeline
+// 	// possibly more fields for heredoc, etc.
+// } command_t;
 
-typedef struct s_split
-{
-	char *str;
-	t_type type;
-	struct s_split *next;
-  struct s_split *prev;
-}t_split;
+typedef enum {
+    WORD,
+    PIPE,
+    REDIRECT_IN,
+    REDIRECT_OUT,
+    APPEND,
+    HEREDOC,
+    END,
+    UNKNOWN
+} TokenType;
 
-typedef struct s_op
-{
-	char **str;
-	int append;
-	int fd_in;
-	int fd_out;
-	struct s_op *next;
-} t_op;
+typedef struct s_token {
+    char *value;
+    TokenType type;
+    struct s_token *next;
+} Token;
 
-t_split *split_inputs(char *string);
-int split_errors(t_split *input);
-t_op *initialise_cmd(t_split *input);
+typedef enum e_command_type {
+    CMD_EXTERNAL,
+    CMD_BUILTIN,
+} command_type_t;
+
+typedef struct s_redirection {
+    TokenType type;           // e.g., REDIRECT_IN, REDIRECT_OUT, APPEND, HEREDOC
+    char *filename;           // Target file or delimiter for heredoc
+    struct s_redirection *next;
+} redirection_t;
+
+typedef struct s_command {
+    command_type_t type;
+    char *name;
+    char **args;
+    redirection_t *redirections;
+    struct s_command *next;
+} command_t;
+
+Token *tokenize(const char *input);
+Token *create_token(char *value, TokenType type);
+void set_signals_interactive(void);
+void ignore_sigquit(void);
+void signal_reset_prompt(int signo);
+void free_split(char **split);
+void handle_exit(char **argv);
+void handle_cd(char **argv);
+void handle_unset(char **argv);
+void handle_env(char **argv);
+void handle_pwd(char **argv);
+void handle_echo(char **argv);
+int count_commands(command_t *cmd);
+command_t *mock_simple_command(void);
+int is_builtin(char **argv);
+void execute_commands(command_t *cmd);
+void execute_pipeline(command_t *cmd);
+void execute_simple_command(command_t *cmd);
+void execute_builtin(char **argv);
 
 #endif // MINISHELL_H
