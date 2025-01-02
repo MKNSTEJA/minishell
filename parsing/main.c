@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/31 15:53:18 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/02 03:46:48 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
 void	print_split(t_split *input);
 void	free_op(t_op *cmd);
+
 int	main(void)
 {
 	t_split	*input;
