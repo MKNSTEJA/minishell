@@ -4,7 +4,7 @@
 
 void execute_commands(t_op *cmd)
 {
-    // If we see multiple commands, we assume pipeline
+    // if we see multiple commands, we assume pipeline
     if (cmd && cmd->next != NULL)
         execute_pipeline(cmd);
     else

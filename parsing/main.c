@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/04 06:36:12 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/04 08:01:22 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,33 @@ t_split *split_inputs(char *string);
 int      split_errors(t_split *input);
 t_op    *initialise_cmd(t_split *input);
 
+/*
+** expand_tokens
+**    Scans through the linked list 'tokens', performs variable expansion
+**    ($VAR, $?, etc.), tilde expansion (~), optional wildcard expansion.
+**   
+**    If expansions introduce new whitespace, we may need to split a single
+**    token into multiple tokens. Similarly, an empty expansion might remove
+**    the token.
+**
+**    'envp' or a custom env structure can be used to fetch environment values.
+**    For special parameters ($?, $#, etc.) we hardcode them (they're not in env).
+*/
+void expand_tokens(t_split *head, char **envp)
+{
+	t_split *curr = head;
+	while (curr)
+	{
+		if (curr->type == WORD && curr->str)
+		{
+			// expand $VAR
+			// expand $?
+			// expand ~
+			// expand wildcards
+		}
+	}
+	
+}
 
 int	main(void)
 {
@@ -36,6 +63,12 @@ int	main(void)
 			break;
 		add_history(str);
 		input = split_inputs(str);
+		// print input
+		print_split(input);
+		
+		// expand_tokens(input);
+
+		
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
@@ -43,6 +76,7 @@ int	main(void)
 			free(str);
 			continue ;
 		}
+		
 		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
 		// print_cmd(cmd);
