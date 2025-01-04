@@ -17,11 +17,11 @@ typedef enum e_type
 {
 	NONE,
 	WORD,
-	PIPES,      // Matches usage: ptr->type = PIPES; (instead of PIPE)
-	IN,         // Matches usage: ptr->type = IN;    (for "<")
-	OUT,        // Matches usage: ptr->type = OUT;   (for ">")
-	APPEND,     // Matches usage: ptr->type = APPEND;(for ">>")
-	HEREDOC     // Matches usage: ptr->type = HEREDOC;(for "<<")
+	PIPES,      
+	IN,         // (for "<")
+	OUT,        // (for ">")
+	APPEND,     // (for ">>")
+	HEREDOC     // (for "<<")
 }	t_type;
 
 /*
@@ -37,92 +37,47 @@ typedef struct s_split
 	struct s_split	*next;      // Pointer to the next element
 }	t_split;
 
+typedef struct s_redir
+{
+	t_type type; // e.g., IN, OUT, APPEND, HEREDOC
+	char *filename; // e.g., "file.txt", or the heredoc limiter
+	struct s_redir *next;
+}	t_redir;
 
 typedef struct s_op
 {
 	char		**str;
-
-	int			append;
-	int			fd_in;
-	int			fd_out;
+	t_redir		*redirections;
 	struct s_op	*next;
 }	t_op;
 
 
 // Token *tokenize(const char *input);
 // Token *create_token(char *value, TokenType type);
-void set_signals_interactive(void);
+// void set_signals_interactive(void);
 void ignore_sigquit(void);
 void signal_reset_prompt(int signo);
-// void free_split(char **split);
 void handle_exit(char **argv);
 void handle_cd(char **argv);
 void handle_unset(char **argv);
 void handle_env(char **argv);
 void handle_pwd(char **argv);
 void handle_echo(char **argv);
+int apply_redirections(t_op *cmd);
+int count_commands(t_op *cmd);
+
 // int count_commands(command_t *cmd);
 // command_t *mock_simple_command(void);
-int is_builtin(char **argv);
-// void execute_commands(command_t *cmd);
-// void execute_pipeline(command_t *cmd);
-// void execute_simple_command(command_t *cmd);
-void execute_builtin(char **argv);
+int is_builtin(t_op *cmd);
+void execute_commands(t_op *cmd);
+void execute_pipeline(t_op *cmd);
+void execute_simple_command(t_op *cmd);
+void execute_builtin(t_op *cmd);
 void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
 void	print_split(t_split *input);
 void	free_op(t_op *cmd);
+char *find_executable(char **argv);
 
-
-// typedef enum {
-//     CMD_NONE,
-//     CMD_SIMPLE,
-//     CMD_PIPE,
-//     CMD_REDIRECT_IN,
-//     CMD_REDIRECT_OUT,
-//     // Add more as needed
-// } command_type_t;
-
-// typedef struct s_command {
-//     command_type_t type;
-//     char **argv;
-// 	int argc;
-//     char *infile;    // for <
-//     char *outfile; // for > or >>
-// 	int append; // 0 if >, 1 if >>
-// 	struct s_command *next;     // Next command in a pipeline
-// 	// possibly more fields for heredoc, etc.
-// } command_t;
-
-// typedef enum {
-//     WORD,
-//     PIPE,
-//     REDIRECT_IN,
-//     REDIRECT_OUT,
-//     APPEND,
-//     HEREDOC,
-//     END,
-//     UNKNOWN
-// } TokenType;
-
-// typedef struct s_token { // linked list of tokens (should've been named token_ll)
-//     char *value;
-//     TokenType type;
-//     struct s_token *next;
-// } Token;
-
-
-// typedef struct s_redirection {
-//     TokenType type;           // e.g., REDIRECT_IN, REDIRECT_OUT, APPEND, HEREDOC
-//     char *filename;           // Target file or delimiter for heredoc
-//     struct s_redirection *next;
-// } redirection_t;
-
-// typedef struct s_command {
-//     char *name; // not there
-//     char **args;
-//     redirection_t *redirections;
-//     struct s_command *next;
-// } command_t;
 
 #endif

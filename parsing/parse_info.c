@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/30 01:42:56 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/04 06:14:56 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,16 @@ t_split	*split_inputs(char *string)
 	{
 		while (string[i] == ' ' || string[i] == '\t')
 			i++;
+		if (!string[i]) // We might be at '\0' after skipping spaces
+        break;
 		if (string[i] == '\"' || string[i] == '\'')
 			append_list(input, handle_delimiter(string, string[i], &i));
 		else if (ft_isprint(string[i]))
 			append_list(input, handle_delimiter(string, ' ', &i));
-    if(string[i])
-		  i++;
+    // Now see if we ended on a valid character or at the end
+    	if (!string[i]) // If we are at end of string, no more tokens
+        	break;
+		i++;
 	}
 	tokenise(input);
 	return (input);
@@ -80,17 +84,6 @@ char	*handle_delimiter(char *string, char c, int(*i))
 		  (*i)++;
 	}
 	result = ft_substr(string, start, (unsigned int)(*i) - start);
-	// printf("result: %s\n", result);
-	// else
-	// {
-	// 	while(string[(*i)] && string[(*i)] != c)
-	// 	{
-	// 		(*i)++;
-	// 		counter++;
-	// 	}
-	// 	result = ft_substr(string, start, counter);
-	// }
-	// (*i)--;
 	return (result);
 }
 

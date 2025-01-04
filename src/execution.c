@@ -2,6 +2,70 @@
 
 #include "../include/minishell.h"
 
+void execute_commands(t_op *cmd)
+{
+    // If we see multiple commands, we assume pipeline
+    if (cmd && cmd->next != NULL)
+        execute_pipeline(cmd);
+    else
+        execute_simple_command(cmd);
+}
+int apply_redirections(t_op *cmd)
+{
+    t_redir *redir = cmd->redirections;
+    while (redir)
+    {
+        if (redir->type == IN)  // "<"
+        {
+            int fd_in = open(redir->filename, O_RDONLY);
+            if (fd_in < 0)
+            {
+                perror(redir->filename);
+                return (-1);
+            }
+            dup2(fd_in, STDIN_FILENO);
+            close(fd_in);
+        }
+        else if (redir->type == OUT) // ">"
+        {
+            int fd_out = open(redir->filename,
+                              O_WRONLY | O_CREAT | O_TRUNC,
+                              0644);
+            if (fd_out < 0)
+            {
+                perror(redir->filename);
+                return (-1);
+            }
+            dup2(fd_out, STDOUT_FILENO);
+            close(fd_out);
+        }
+        else if (redir->type == APPEND) // ">>"
+        {
+            int fd_out = open(redir->filename,
+                              O_WRONLY | O_CREAT | O_APPEND,
+                              0644);
+            if (fd_out < 0)
+            {
+                perror(redir->filename);
+                return (-1);
+            }
+            dup2(fd_out, STDOUT_FILENO);
+            close(fd_out);
+        }
+        else if (redir->type == HEREDOC) // "<<"
+        {
+            // Handle heredoc. Usually you'd have a pipe or a temp file
+            // with the heredoc contents, then read from it.
+            // For example:
+            //   int fd_in = open("/tmp/.heredoc1234", O_RDONLY);
+            //   dup2(fd_in, STDIN_FILENO); close(fd_in);
+        }
+        redir = redir->next;
+    }
+    return (0);
+}
+
+
 char *find_executable(char **argv)
 {
 	if (argv[0][0] == '/' || argv[0][0] == '.')
@@ -47,8 +111,11 @@ char *find_executable(char **argv)
 	return executable_path;
 }
 
-void execute_builtin(char **argv)
+void execute_builtin(t_op *cmd)
 {
+	char **argv = cmd->str;
+	if (!argv || !argv[0])
+        return;
 	if (strcmp(argv[0], "exit") == 0)
 		handle_exit(argv);
 	else if (strcmp(argv[0], "cd") == 0)
@@ -63,77 +130,64 @@ void execute_builtin(char **argv)
 		handle_echo(argv);
 }
 
-void execute_simple_command(command_t *cmd) {
-    if (!cmd || !cmd->args || !cmd->args[0])
+void execute_simple_command(t_op *cmd) {
+	extern char **environ;
+    if (!cmd || !cmd->str || !cmd->str[0])
         return;
-
-    if (cmd->type == CMD_BUILTIN && is_builtin(cmd->args[0])) {
         // Save original FDs
-        int saved_stdin = dup(STDIN_FILENO);
-        int saved_stdout = dup(STDOUT_FILENO);
-        if (saved_stdin < 0 || saved_stdout < 0) {
-            perror("dup");
-            return;
+	int saved_stdin = dup(STDIN_FILENO);
+	int saved_stdout = dup(STDOUT_FILENO);
+	if (saved_stdin < 0 || saved_stdout < 0) {
+		perror("dup");
+		return;
         }
 
-        // Handle redirections
-        redirection_t *redir = cmd->redirections;
-        while (redir) {
-            if (redir->type == REDIRECT_IN) {
-                int fd_in = open(redir->filename, O_RDONLY);
-                if (fd_in < 0) {
-                    perror(redir->filename);
-                    // Restore FDs and return
-                    dup2(saved_stdin, STDIN_FILENO);
-                    dup2(saved_stdout, STDOUT_FILENO);
-                    close(saved_stdin);
-                    close(saved_stdout);
-                    return;
-                }
-                dup2(fd_in, STDIN_FILENO);
-                close(fd_in);
-            }
-            else if (redir->type == REDIRECT_OUT || redir->type == APPEND) {
-                int flags = O_WRONLY | O_CREAT;
-                if (redir->type == REDIRECT_OUT)
-                    flags |= O_TRUNC;
-                else if (redir->type == APPEND)
-                    flags |= O_APPEND;
-                
-                int fd_out = open(redir->filename, flags, 0644);
-                if (fd_out < 0) {
-                    perror(redir->filename);
-                    // Restore FDs and return
-                    dup2(saved_stdin, STDIN_FILENO);
-                    dup2(saved_stdout, STDOUT_FILENO);
-                    close(saved_stdin);
-                    close(saved_stdout);
-                    return;
-                }
-                dup2(fd_out, STDOUT_FILENO);
-                close(fd_out);
-            }
-            // Handle other redirection types (e.g., HEREDOC) here
-            redir = redir->next;
-        }
+        if (apply_redirections(cmd) < 0)
+		{
+			dup2(saved_stdin, STDIN_FILENO);
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdin);
+			close(saved_stdout);
+        	return;
+		}
+		if (is_builtin(cmd))
+			execute_builtin(cmd);
+		else
+		{
+			pid_t pid = fork();
+			if (pid < 0)
+				perror("fork");
+			else if (pid == 0)
+			{
+				char *exec_path = find_executable(cmd->str);
+				if (!exec_path)
+				{
+					fprintf(stderr, "%s: command not found\n", cmd->str[0]);
+					_exit(127);
+				}
+				execve(exec_path, cmd->str, environ); // or use your env array
+				perror("execve");
+				_exit(1);
+			}
+			else //parent
+			{
+				// wait
+				int status;
+				waitpid(pid, &status, 0);
+				// Optional: handle exit status if needed
+			}
+		}
+		// Restore FDs
+		dup2(saved_stdin, STDIN_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdin);
+		close(saved_stdout);
+	}
 
-        // Execute the built-in command
-        execute_builtin(cmd);
 
-        // Restore original FDs
-        dup2(saved_stdin, STDIN_FILENO);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(saved_stdin);
-        close(saved_stdout);
-    }
-    else {
-        // Handle external commands, possibly with forking and execution
-        execute_external_command(cmd);
-    }
-}
-
-void execute_pipeline(command_t *cmd)
+void execute_pipeline(t_op *cmd)
 {
+	extern char **environ;
     int pipeline_length = count_commands(cmd);
     pid_t *pids = malloc(sizeof(pid_t) * pipeline_length);
     if (!pids)
@@ -146,7 +200,7 @@ void execute_pipeline(command_t *cmd)
     pid_t pid;
     int i = 0;
     int prev_fd = -1;
-    command_t *current = cmd;
+    t_op *current = cmd;
 
     while (current)
     {
@@ -170,26 +224,36 @@ void execute_pipeline(command_t *cmd)
 
         if (pid == 0) // Child
         {
-            if (prev_fd != -1)
-            {
-                dup2(prev_fd, STDIN_FILENO);
-                close(prev_fd);
-            }
+            if (apply_redirections(current) < 0)
+				_exit(1);
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, STDIN_FILENO);
+				close(prev_fd);
+			}
+			// if there's a next command, set up our stdout to the pipe
             if (current->next)
             {
                 close(pipe_fds[0]);
                 dup2(pipe_fds[1], STDOUT_FILENO);
                 close(pipe_fds[1]);
             }
-            if (is_builtin(current->argv))
+            if (is_builtin(current))
             {
-                execute_builtin(current->argv);
+                execute_builtin(current);
                 _exit(0);
             }
             else
             {
-                execvp(current->argv[0], current->argv);
-                perror("execvp");
+				// external
+				char *exec_path = find_executable(current->str);
+				if (!exec_path)
+				{
+                    fprintf(stderr, "%s: command not found\n", current->str[0]);
+                    _exit(127);
+                }
+                execve(exec_path, current->str, environ);
+                perror("execve");
                 _exit(1);
             }
         }

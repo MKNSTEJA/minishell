@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_errors.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 16:52:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/30 02:54:39 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/04 00:41:21 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	split_errors(t_split *input)
 	{
 		if (ptr->type == PIPES && check_pipe(ptr))
 			return (1);
-		else if ((ptr->type != END && ptr->type != PIPES && ptr->type != WORD)
+		else if ((ptr->type != PIPES && ptr->type != WORD)
 			&& check_redirection(ptr))
 		{
 			return (1);

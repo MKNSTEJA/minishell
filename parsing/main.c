@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/02 18:09:41 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/04 06:36:12 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,29 @@ int	main(void)
 	while (1)
 	{
 		str = readline("\nMinishell: ");
+		if (!str) // user pressed Ctrl+D perhaps
+			break;
+		add_history(str);
 		input = split_inputs(str);
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
 			input = NULL;
+			free(str);
 			continue ;
 		}
+		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
-		print_cmd(cmd);
+		// print_cmd(cmd);
+		execute_commands(cmd);
+		//clean up
+		free_split(input);
+		free_op(cmd);
+		free(str);
+		input = NULL;
+		cmd = NULL;
 	}
-	free_split(input);
-	free_op(cmd);
+	return 0;
 	// system("leaks minishell");
 }
 
@@ -116,28 +127,37 @@ void	free_op(t_op *cmd)
 	int		i;
 
 	ptr = cmd;
-	next_ptr = cmd;
-	i = 0;
 	while (ptr)
 	{
-		next_ptr = next_ptr->next;
-		while (ptr->str[i])
+		next_ptr = ptr->next;
+		// 1. free the array of strings
+		if (ptr->str)
 		{
-			if (ptr->str[i])
+			i = 0;
+			while (ptr->str[i])
 			{
 				free(ptr->str[i]);
 				ptr->str[i] = NULL;
+				i++;
 			}
-			if (ptr->str)
-			{
-				free(ptr->str);
-				ptr->str = NULL;
-			}
+			free(ptr->str);
+			ptr->str = NULL;
 		}
-		if (ptr)
-			free(ptr);
+		// 2. free any redirections
+       
+        t_redir *redir = ptr->redirections;
+        while (redir)
+        {
+            t_redir *temp = redir->next;
+            free(redir->filename);
+			redir->filename = NULL;
+            free(redir);
+            redir = temp;
+        }
+
+		// 3. free the node itself
+		free(ptr);
+		ptr = NULL;
 		ptr = next_ptr;
 	}
-	ptr = NULL;
-	next_ptr = NULL;
 }
