@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/04 04:05:08 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/05 08:09:34 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	split_cmds(t_split *input, t_op *cmd)
 
 	while (ptr)
 	{
-		if (ptr->type == PIPES) // how would that be known? 
+		if (ptr->type == PIPES)
 		{
 				ptr = ptr->next; // move pointer to next token after pipe (start of next cmd)
 				if (ptr && ptr->str)

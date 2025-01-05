@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/05 07:31:19 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/05 08:42:05 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,16 @@ char *expand_var(const char *str, char **envp, size_t *i)
 	size_t var_len = 0;
 	while (ft_isalnum(str[start + var_len]) || str[start + var_len] == '_')
 		var_len++;
+	// if var_len = 0 => no variable name => return "$"
+	if (var_len == 0)
+	{
+		(*i)++;
+		return ft_strdup("$");
+	}
+
+	// build the variable name
+	char *var_name = ft_substr(str, start, var_len);
+	// skip over the var name
 }
 
 t_split *remove_token(t_split **head, t_split *token)
