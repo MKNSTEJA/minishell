@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/04 08:01:22 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/05 07:31:19 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,120 @@ void expand_tokens(t_split *head, char **envp)
 	t_split *curr = head;
 	while (curr)
 	{
-		if (curr->type == WORD && curr->str)
+		// if single_quoted, skip
+		if (curr->quote_state == QUOTE_SINGLE)
 		{
-			// expand $VAR
-			// expand $?
-			// expand ~
-			// expand wildcards
+			curr = curr->next;
+			continue ;
+		}
+		// if double_quoted, expand variables
+		char *expanded_str = expand_one_token(curr->str, envp, curr->quote_state);
+		// if expansion yields no text, remove the token
+		if (!expanded_str || expanded_str[0] == '\0')
+		{
+			free(curr->str);
+			curr->str = NULL;
+			// remove the token
+			curr = remove_token(&head, curr);
+			free(expanded_str);
+			continue ;
+		}
+		// if expansion introduces whitespace, split into multiple tokens
+		if (curr->quote_state == QUOTE_NONE)
+			handle_field_splitting(&head, &curr, expanded_str);
+		else
+		{
+			//double-quoted => keep as one token
+			free(curr->str);
+			curr->str = expanded_str;
+		}
+		
+		curr = curr->next;
+	}
+}
+/*
+ * Expands shell-like variables within a string.
+ * Specifically, it handles the following cases:
+ *
+ * 1. Special Variable $?:
+ *    - Represents the exit status of the last executed command.
+ *
+ * 2. Standard Variables $VAR:
+ *    - Represents environment variables.
+ *
+ * 3. Edge Cases:
+ *    - Handles scenarios like '$' without a valid variable name.
+ */
+
+char *expand_var(const char *str, char **envp, size_t *i)
+{
+	// str[0] == '$'
+	size_t start = 1;
+	if (str[1] == '?')
+	{
+		(*i)+= 2;
+		return ft_itoa(g_exit_code);
+	}
+	// parse the variable name
+	size_t var_len = 0;
+	while (ft_isalnum(str[start + var_len]) || str[start + var_len] == '_')
+		var_len++;
+}
+
+t_split *remove_token(t_split **head, t_split *token)
+{
+	t_split *prev = token->prev;
+	t_split *next = token->next;
+	if (prev)
+		prev->next = next;
+	if (next)
+		next->prev = prev;
+	if (token == *head)
+		*head = next;
+	free(token->str);
+	free(token);
+	return next;
+}
+
+char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
+{
+	size_t i = 0;
+    char   *expanded = ft_strdup("");  // start empty
+    char   *tmp = NULL;
+
+    while (token && token[i])
+	{
+		if (token[i] == '$' && quote_state != QUOTE_SINGLE)
+		{
+			// expand the variable
+			char *var_value = expand_var(&token[i], envp, &i);
+			// append the expansion to the expanded string
+			tmp = ft_strjoin(expanded, var_value);
+			free(expanded);
+			expanded = tmp;
+			free(var_value);
+		}
+		else if (i == 0 && token[i] == '~' && (token[i+1] == '/' || token[i+1] == '\0'))
+		{
+			// expand the tilde
+			char *home = get_env_value("HOME", envp);
+			if (!home)
+				home = "~"; //fallback if HOME not set
+			tmp = ft_strjoin(expanded, home);
+			free(expanded);
+			expanded = tmp;
+			i++;
+		}
+		else
+		{
+			char onechar[2] = {token[i], '\0'};
+			tmp = ft_strjoin(expanded, onechar);
+			free(expanded);
+			expanded = tmp;
+			i++;
 		}
 	}
-	
+	return expanded;
 }
 
 int	main(void)

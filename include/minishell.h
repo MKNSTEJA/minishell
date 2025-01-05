@@ -35,7 +35,15 @@ typedef struct s_split
 	t_type			type;       // The token type (WORD, IN, OUT, etc.)
 	struct s_split	*prev;      // Pointer to previous element (if using a doubly-linked list)
 	struct s_split	*next;      // Pointer to the next element
+	t_quote_state	quote_state; // The current quote state
 }	t_split;
+
+typedef enum e_quote_state
+{
+	QUOTE_NONE,
+	QUOTE_SINGLE,
+	QUOTE_DOUBLE
+} t_quote_state;
 
 typedef struct s_redir
 {
