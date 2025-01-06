@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/05 08:42:05 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/06 04:18:50 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,24 @@ void	free_op(t_op *cmd);
 t_split *split_inputs(char *string);
 int      split_errors(t_split *input);
 t_op    *initialise_cmd(t_split *input);
+
+
+
+// Function to retrieve the value of an environment variable
+char *get_env_value(const char *var_name, char **envp)
+{
+    size_t len = ft_strlen(var_name);
+    for (int i = 0; envp[i] != NULL; i++)
+    {
+        // Check if the current env string starts with var_name followed by '='
+        if (ft_strncmp(envp[i], var_name, len) == 0 && envp[i][len] == '=')
+        {
+            return envp[i] + len + 1; // Return pointer to the value part
+        }
+    }
+    return NULL; // Variable not found
+}
+
 
 /*
 ** expand_tokens
@@ -105,6 +123,13 @@ char *expand_var(const char *str, char **envp, size_t *i)
 	// build the variable name
 	char *var_name = ft_substr(str, start, var_len);
 	// skip over the var name
+	(*i) += var_len + 1;
+
+	char *value = get_env_value(var_name, envp);
+	if(!value)
+		value = ft_strdup(""); //fallback if variable not set
+	free(var_name);
+	return value;
 }
 
 t_split *remove_token(t_split **head, t_split *token)

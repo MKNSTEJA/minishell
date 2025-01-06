@@ -73,6 +73,10 @@ void handle_pwd(char **argv);
 void handle_echo(char **argv);
 int apply_redirections(t_op *cmd);
 int count_commands(t_op *cmd);
+char *get_env_value(const char *var_name, char **envp);
+void expand_tokens(t_split *head, char **envp);
+char *expand_one_token(char *token, char **envp, t_quote_state quote_state);
+
 
 // int count_commands(command_t *cmd);
 // command_t *mock_simple_command(void);
