@@ -6,11 +6,14 @@
 /*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/06 04:18:50 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/07 06:44:42 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int g_exit_code = 0;
+
 
 void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
@@ -35,6 +38,71 @@ char *get_env_value(const char *var_name, char **envp)
         }
     }
     return NULL; // Variable not found
+}
+
+t_split *create_new_token(char *str, t_type type, t_quote_state quote_state)
+{
+	t_split *new_node = malloc(sizeof(t_split));
+	if (!new_node)
+	{
+		perror("malloc");
+		exit(1);
+	}
+	new_node->str = ft_strdup(str);
+	new_node->type = type;
+	new_node->quote_state = quote_state;
+	new_node->prev = NULL;
+	new_node->next = NULL;
+	return new_node;
+}
+
+void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str)
+{
+    t_split *curr = *curr_ptr;
+
+    // split expanded_str on whitespace
+    // e.g. "Hello   World" => [ "Hello", "World" ]
+
+    char **fields = ft_split(expanded_str, ' '); 
+    if (!fields)
+    {
+        // if ft_split_whitespace fails or returns NULL, remove the token entirely
+        free(curr->str);
+        curr->str = NULL;
+        curr = remove_token(head, curr);
+        *curr_ptr = curr;
+        return;
+    }
+
+    // The first field becomes the current token’s string
+    free(curr->str);
+    curr->str = ft_strdup(fields[0]);
+
+    // Any subsequent fields become new tokens inserted after `curr`
+    int i = 1;
+    while (fields[i])
+    {
+        t_split *new_node = create_new_token(fields[i], WORD, QUOTE_NONE);
+        // Insert new_node after curr
+        new_node->next = curr->next;
+        if (curr->next)
+            curr->next->prev = new_node;
+        curr->next = new_node;
+        new_node->prev = curr;
+
+        curr = new_node;  // move to newly created node
+        i++;
+    }
+
+    // curr now points to the last inserted token
+    // so update *curr_ptr to it, so the main loop can continue from there
+    *curr_ptr = curr;
+
+    // free the fields array
+    i = 0;
+    while (fields[i])
+        free(fields[i++]);
+    free(fields);
 }
 
 
@@ -198,13 +266,33 @@ int	main(void)
 	cmd = NULL;
 	while (1)
 	{
-		str = readline("\nMinishell: ");
+		/*
+         * 1) If input is from an interactive terminal, use readline.
+         * 2) Otherwise (piped or from a file/tester), use get_next_line.
+         */
+        if (isatty(fileno(stdin)))
+        {
+            str = readline("Minishell: ");
+        }
+        else
+        {
+            char *line = get_next_line(fileno(stdin));
+            if (!line)  // get_next_line might return NULL if EOF reached
+            {
+                // If there's no more input, we should clean up and exit.
+                // Possibly break or return, depending on your logic.
+                break;
+            }
+            str = ft_strtrim(line, "\n");
+            free(line);
+        }
+		// str = readline("\nMinishell: ");
 		if (!str) // user pressed Ctrl+D perhaps
 			break;
 		add_history(str);
 		input = split_inputs(str);
 		// print input
-		print_split(input);
+		// print_split(input);
 		
 		// expand_tokens(input);
 

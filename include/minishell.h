@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include "../libft/libft.h"
 
+extern int g_exit_code;
+
 /* Enum for token types */
 typedef enum e_type
 {
@@ -23,6 +25,13 @@ typedef enum e_type
 	APPEND,     // (for ">>")
 	HEREDOC     // (for "<<")
 }	t_type;
+
+typedef enum e_quote_state
+{
+	QUOTE_NONE,
+	QUOTE_SINGLE,
+	QUOTE_DOUBLE
+} t_quote_state;
 
 /*
  * This struct (t_split) is used to store each 'split' token along with its type,
@@ -38,12 +47,7 @@ typedef struct s_split
 	t_quote_state	quote_state; // The current quote state
 }	t_split;
 
-typedef enum e_quote_state
-{
-	QUOTE_NONE,
-	QUOTE_SINGLE,
-	QUOTE_DOUBLE
-} t_quote_state;
+
 
 typedef struct s_redir
 {
@@ -76,7 +80,8 @@ int count_commands(t_op *cmd);
 char *get_env_value(const char *var_name, char **envp);
 void expand_tokens(t_split *head, char **envp);
 char *expand_one_token(char *token, char **envp, t_quote_state quote_state);
-
+t_split *remove_token(t_split **head, t_split *token);
+void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str);
 
 // int count_commands(command_t *cmd);
 // command_t *mock_simple_command(void);

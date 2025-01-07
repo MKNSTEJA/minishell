@@ -133,7 +133,9 @@ void execute_builtin(t_op *cmd)
 void execute_simple_command(t_op *cmd) {
 	extern char **environ;
     if (!cmd || !cmd->str || !cmd->str[0])
-        return;
+	{
+		return;
+	}
         // Save original FDs
 	int saved_stdin = dup(STDIN_FILENO);
 	int saved_stdout = dup(STDOUT_FILENO);
