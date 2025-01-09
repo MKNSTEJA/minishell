@@ -80,22 +80,98 @@ void handle_pwd(char **argv)
 
 void handle_echo(char **argv)
 {
-	int newline = 1;
-	int i = 1;
-	if (argv[1] && strcmp(argv[1], "-n") == 0)
+	int i = 1; //start from 1 bec. 0 is the command itself
+	int newline = 1; //default is to print newline
+	int enable_escape = 0; //default is to disable escape
+
+	// 1) parse flags
+	while (argv[i] && argv[i][0] == '-' && argv[i][1] != '\0')
 	{
-		newline = 0;
-		i = 2;
+		int j = 1;
+		int valid_flag = 1; //default is to assume the flag is valid
+		while (argv[i][j])
+		{
+			if (argv[i][j] == 'n')
+				newline = 0;
+			else if (argv[i][j] == 'e')
+				enable_escape = 1;
+			else if (argv[i][j] == 'E')
+				enable_escape = 0;
+			else
+			{
+				valid_flag = 0;
+				break;
+			}
+			j++;
+		}
+		if (!valid_flag)
+			break;
+		i++;
 	}
+
+	// 2) print arguments
+	int first_arg = 1;
 	while (argv[i])
 	{
-		if (i > 2 || (i > 1 && newline))
+		if (!first_arg)
 			printf(" ");
-		printf("%s", argv[i]);
+		else
+			first_arg = 0;
+		
+		if (enable_escape)
+		{
+			char *expanded = expand_escape(argv[i]);
+			if (expanded)
+			{
+				printf("%s", expanded);
+				free(expanded);
+			}
+			else
+				printf("%s", argv[i]);
+		}
+		else
+			printf("%s", argv[i]);
 		i++;
 	}
 	if (newline)
 		printf("\n");
+}
+
+// that we pass
+
+char *expand_escape(const char *str)
+{
+	char *expanded = ft_strdup("");
+	char *tmp = NULL;
+	size_t i = 0;
+
+	while (str && str[i])
+	{
+		if (str[i] == '\\' && str[i + 1])
+		{
+			i++;
+			if (str[i] == 'n')
+				tmp = ft_strjoin(expanded, "\n");
+			else if (str[i] == 't')
+				tmp = ft_strjoin(expanded, "\t");
+			else
+			{
+				char onechar[2] = {str[i], '\0'};
+				tmp = ft_strjoin(expanded, onechar);
+			}
+			free(expanded);
+			expanded = tmp;
+		}
+		else
+		{
+			char onechar[2] = {str[i], '\0'};
+			tmp = ft_strjoin(expanded, onechar);
+			free(expanded);
+			expanded = tmp;
+		}
+		i++;
+	}
+	return expanded;
 }
 
 

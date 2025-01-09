@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/05 08:09:34 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/09 12:17:02 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void	split_cmds(t_split *input, t_op *cmd)
 				if (ptr && ptr->str)
 					append_cmd(c_ptr, ptr->str);
 				else
-					append_cmd(c_ptr, NULL);
+					append_cmd(c_ptr, NULL); // handle case where pipe is at the end
 				c_ptr = c_ptr->next;
 			}
 			else if (ptr->type == IN || ptr->type == OUT || ptr->type == APPEND || ptr->type == HEREDOC)
@@ -112,7 +112,11 @@ void	split_cmds(t_split *input, t_op *cmd)
 				//then we expect the next token to be the filename.
 				t_split *filename_token = ptr->next;
 				if (!filename_token || filename_token->type != WORD)
-					fprintf(stderr, "syntax error near token %s\n", ptr->str);
+					{
+						fprintf(stderr, "syntax error near token %s\n", ptr->str);
+						// handle error gracefully: possibly exit or skip to next pipe
+						return;
+					}
 				else
 				{
 					add_redirection(c_ptr, ptr->type, filename_token->str);

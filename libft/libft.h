@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 20:37:12 by ykhattab          #+#    #+#             */
-/*   Updated: 2024/11/22 21:10:40 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/09 14:59:39 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# include "gnl/get_next_line.h"
 # include <stddef.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include "gnl/get_next_line.h"
 
 // Memory functions
 void				*ft_memset(void *s, int c, size_t n);
@@ -36,6 +36,7 @@ char				*ft_strrchr(const char *s, int c);
 char				*ft_strnstr(const char *haystack, const char *needle,
 						size_t len);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
+int					ft_strcmp(const char *s1, const char *s2);
 char				*ft_strjoin(const char *s1, const char *s2);
 char				*ft_substr(const char *s, unsigned int start, size_t len);
 char				*ft_strtrim(char const *s1, char const *set);

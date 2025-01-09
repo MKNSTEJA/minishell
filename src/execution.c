@@ -54,11 +54,37 @@ int apply_redirections(t_op *cmd)
         }
         else if (redir->type == HEREDOC) // "<<"
         {
-            // Handle heredoc. Usually you'd have a pipe or a temp file
-            // with the heredoc contents, then read from it.
-            // For example:
-            //   int fd_in = open("/tmp/.heredoc1234", O_RDONLY);
-            //   dup2(fd_in, STDIN_FILENO); close(fd_in);
+			// create a pipe to store heredoc content
+			int heredoc_pipe[2];
+			if (pipe(heredoc_pipe) < 0)
+			{
+				perror("pipe");
+				return (-1);
+			}
+			char *limiter = redir->filename;
+			char *line = NULL;
+			while (1)
+			{
+				ft_putstr_fd("> ", 1);
+				line = get_next_line(0);
+				if (!line)
+					break;
+				size_t len = ft_strlen(line);
+				if (len > 0 && line[len - 1] == '\n')
+					line[len -1] = '\0';
+
+				if (ft_strcmp(line, limiter) == 0)
+				{
+					free(line);
+					break;
+				}
+				write(heredoc_pipe[1], line, ft_strlen(line));
+				write(heredoc_pipe[1], "\n", 1);
+				free(line);
+			}
+			close(heredoc_pipe[1]); 
+			dup2(heredoc_pipe[0], STDIN_FILENO);
+			close(heredoc_pipe[0]);
         }
         redir = redir->next;
     }
