@@ -3,38 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/07 06:10:27 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/10 23:13:09 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-#include <string.h>
 
-char	*handle_delimiter(char *string, char c, int(*i));
-void	append_list(t_split *input, char *string);
+
+char	*handle_delimiter(char *string, char c, int *i);
 void	tokenise(t_split *input);
 
-t_split	*first_initialise(char *string, int(*i))
+t_split	*first_initialise(char *string, int *i)
 {
 	t_split	*input;
 
-	(void)i;
-	input = malloc(sizeof(t_split));
+	// (void)i;
+	input = calloc(1, sizeof(t_split)); //bec. it's just one token
 	if (!input)
 		exit(-1);
-	input->str = NULL;
-	input->prev = NULL;
-	input->type = NONE;
+	// input->str = NULL;
+	// input->prev = NULL;
+	// input->type = NONE;
 	while (string[(*i)] == ' ' || string[(*i)] == '\t')
 		(*i)++;
-	if (string[(*i)] == '\"' || string[(*i)] == '\'')
+	if (string[(*i)] == '\"' || string[(*i)] == '\'') // If we are at a quote, call the function with the quote as the delimiter
+	{
+		char quote = string[(*i)];
 		input->str = handle_delimiter(string, string[(*i)], i);
-	else if (ft_isprint(string[(*i)]) == 1)
-		input->str = handle_delimiter(string, ' ', i);
-	input->next = NULL;
+		if (quote == '"')
+			input->quote_state = QUOTE_DOUBLE;
+		else
+			input->quote_state = QUOTE_SINGLE;
+	}
+	else if (ft_isprint(string[(*i)]) == 1) // otherwise, call the function with space as the delimiter
+		{
+			input->str = handle_delimiter(string, ' ', i);
+			input->quote_state = QUOTE_NONE;
+		}
 	return (input);
 }
 
@@ -51,10 +59,16 @@ t_split	*split_inputs(char *string)
 			i++;
 		if (!string[i]) // We might be at '\0' after skipping spaces
         break;
-		if (string[i] == '\"' || string[i] == '\'')
-			append_list(input, handle_delimiter(string, string[i], &i));
+		if (string[i] == '"' || string[i] == '\'')
+        {
+            char quote = string[i];
+            if (quote == '"')
+                append_list(input, handle_delimiter(string, string[i], &i), QUOTE_DOUBLE);
+            else
+                append_list(input, handle_delimiter(string, string[i], &i), QUOTE_SINGLE);
+        }
 		else if (ft_isprint(string[i]))
-			append_list(input, handle_delimiter(string, ' ', &i));
+			append_list(input, handle_delimiter(string, ' ', &i), QUOTE_NONE);
     // Now see if we ended on a valid character or at the end
     	if (!string[i]) 
 			{ // If we are at end of string, no more tokens
@@ -127,7 +141,7 @@ char *handle_delimiter(char *string, char c, int *i)
 // 	return (result);
 // }
 
-void	append_list(t_split *input, char *string)
+void	append_list(t_split *input, char *string, t_quote_state quote_state)
 {
 	t_split	*new;
 	t_split	*ptr;
@@ -139,7 +153,9 @@ void	append_list(t_split *input, char *string)
 	new->str = ft_strdup(string);
 	if (!new->str)
 		exit(-1);
+	new->quote_state = quote_state;
 	new->next = NULL;
+	new->prev = NULL;
 	if (!input->next)
 		input->next = new;
 	else
@@ -147,6 +163,7 @@ void	append_list(t_split *input, char *string)
 		while (ptr->next)
 			ptr = ptr->next;
 		ptr->next = new;
+		new->prev = ptr;
 	}
 }
 

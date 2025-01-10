@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/07 06:44:42 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/10 22:43:42 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,11 +256,13 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 	return expanded;
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_split	*input;
 	t_op	*cmd;
 	char	*str;
+	(void)argc;
+    (void)argv;
 
 	input = NULL;
 	cmd = NULL;
@@ -294,7 +296,7 @@ int	main(void)
 		// print input
 		// print_split(input);
 		
-		// expand_tokens(input);
+		expand_tokens(input, envp);
 
 		
 		if (split_errors(input) == 1)
@@ -423,3 +425,5 @@ void	free_op(t_op *cmd)
 		ptr = next_ptr;
 	}
 }
+
+

@@ -82,6 +82,8 @@ void expand_tokens(t_split *head, char **envp);
 char *expand_one_token(char *token, char **envp, t_quote_state quote_state);
 t_split *remove_token(t_split **head, t_split *token);
 void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str);
+char *expand_escape(const char *str);
+void	append_list(t_split *input, char *string, t_quote_state quote_state);
 
 // int count_commands(command_t *cmd);
 // command_t *mock_simple_command(void);

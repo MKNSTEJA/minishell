@@ -137,41 +137,39 @@ void handle_echo(char **argv)
 		printf("\n");
 }
 
-// that we pass
-
 char *expand_escape(const char *str)
 {
-	char *expanded = ft_strdup("");
-	char *tmp = NULL;
-	size_t i = 0;
+    // We'll allocate enough space for the worst case:
+    char *result = malloc(ft_strlen(str) + 1);
+    if (!result)
+        return NULL;
 
-	while (str && str[i])
-	{
-		if (str[i] == '\\' && str[i + 1])
-		{
-			i++;
-			if (str[i] == 'n')
-				tmp = ft_strjoin(expanded, "\n");
-			else if (str[i] == 't')
-				tmp = ft_strjoin(expanded, "\t");
-			else
-			{
-				char onechar[2] = {str[i], '\0'};
-				tmp = ft_strjoin(expanded, onechar);
-			}
-			free(expanded);
-			expanded = tmp;
-		}
-		else
-		{
-			char onechar[2] = {str[i], '\0'};
-			tmp = ft_strjoin(expanded, onechar);
-			free(expanded);
-			expanded = tmp;
-		}
-		i++;
-	}
-	return expanded;
+    int i = 0, j = 0;
+    while (str[i])
+    {
+        if (str[i] == '\\' && str[i + 1] != '\0')
+        {
+            i++;
+            if (str[i] == 'n')
+                result[j++] = '\n';
+            else if (str[i] == 't')
+                result[j++] = '\t';
+            else
+            {
+                // Unknown escape => treat it literally
+                result[j++] = '\\';
+                result[j++] = str[i];
+            }
+        }
+        else
+        {
+            result[j++] = str[i];
+        }
+        i++;
+    }
+    result[j] = '\0';
+    return result;
 }
+
 
 
