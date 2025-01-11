@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/02 18:09:41 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/08 12:23:06 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@ void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
 void	print_split(t_split *input);
 void	free_op(t_op *cmd);
-t_split *split_inputs(char *string);
-int      split_errors(t_split *input);
-t_op    *initialise_cmd(t_split *input);
-
-
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
+	(void) argc;
+	(void) argv;
+	(void) envp;
 	t_split	*input;
 	t_op	*cmd;
 	char	*str;
@@ -32,6 +30,8 @@ int	main(void)
 	while (1)
 	{
 		str = readline("\nMinishell: ");
+		if(!ft_strncmp(str, "exit", ft_strlen("exit")) || !str)
+			break;
 		input = split_inputs(str);
 		if (split_errors(input) == 1)
 		{
@@ -39,12 +39,14 @@ int	main(void)
 			input = NULL;
 			continue ;
 		}
-		cmd = initialise_cmd(input);
+		cmd = initialise_cmd(input, envp);
 		print_cmd(cmd);
+		free_split(input);
+		free_op(cmd);
+		free(str);
 	}
-	free_split(input);
-	free_op(cmd);
-	// system("leaks minishell");
+	free(str);
+	system("leaks minishell");
 }
 
 void	free_split(t_split *list)
@@ -64,10 +66,7 @@ void	free_split(t_split *list)
 			current->str = NULL;
 		}
 		if (current)
-		{
 			free(current);
-			current = NULL;
-		}
 		current = next_node;
 	}
 }
@@ -99,7 +98,7 @@ void	print_cmd(t_op *cmd)
 		printf("String inside %d: \n", counter);
 		while (ptr->str && ptr->str[i])
 		{
-			printf("%s ", ptr->str[i]);
+			printf("%d: %s \n", i, ptr->str[i]);
 			i++;
 		}
 		printf("\n");
@@ -121,18 +120,17 @@ void	free_op(t_op *cmd)
 	while (ptr)
 	{
 		next_ptr = next_ptr->next;
-		while (ptr->str[i])
+		i = 0;
+		while (ptr->str && ptr->str[i])
 		{
-			if (ptr->str[i])
-			{
-				free(ptr->str[i]);
-				ptr->str[i] = NULL;
-			}
-			if (ptr->str)
-			{
-				free(ptr->str);
-				ptr->str = NULL;
-			}
+			free(ptr->str[i]);
+			ptr->str[i] = NULL;
+			i++;
+		}
+		if (ptr->str)
+		{
+			free(ptr->str);
+			ptr->str = NULL;
 		}
 		if (ptr)
 			free(ptr);

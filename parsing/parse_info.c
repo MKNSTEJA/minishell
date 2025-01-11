@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2024/12/30 01:42:56 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/08 12:20:33 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ char	*handle_delimiter(char *string, char c, int(*i))
 
 	result = NULL;
 	start = (unsigned int)(*i);
-	// if(c == ' ' || c == '\t')
 	while (string[*i] && string[*i] != '\"' && string[*i] != '\''
 		&& string[*i] != ' ')
 		(*i)++;
@@ -80,17 +79,6 @@ char	*handle_delimiter(char *string, char c, int(*i))
 		  (*i)++;
 	}
 	result = ft_substr(string, start, (unsigned int)(*i) - start);
-	// printf("result: %s\n", result);
-	// else
-	// {
-	// 	while(string[(*i)] && string[(*i)] != c)
-	// 	{
-	// 		(*i)++;
-	// 		counter++;
-	// 	}
-	// 	result = ft_substr(string, start, counter);
-	// }
-	// (*i)--;
 	return (result);
 }
 
@@ -103,7 +91,7 @@ void	append_list(t_split *input, char *string)
 	if (!new)
 		exit(-1);
 	ptr = input;
-	new->str = ft_strdup(string);
+	new->str = string;
 	if (!new->str)
 		exit(-1);
 	new->next = NULL;
