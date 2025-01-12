@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/11 16:25:15 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/12 08:26:50 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,8 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 {
 	size_t i = 0;
     char   *expanded = ft_strdup("");  // start empty
+	if (!expanded)  // Check for ft_strdup failure
+        return NULL;
     char   *tmp = NULL;
 
     while (token && token[i])
@@ -240,9 +242,11 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 				var_value = ft_strdup(""); // ensure var_value is not NULL
 			// append the expansion to the expanded string
 			tmp = ft_strjoin(expanded, var_value);
-			free(expanded);
-			expanded = tmp;
 			free(var_value);
+			free(expanded);
+			if (!tmp)
+				return NULL;
+			expanded = tmp;
 		}
 		else if (i == 0 && token[i] == '~' && (token[i+1] == '/' || token[i+1] == '\0'))
 		{
@@ -260,9 +264,11 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 				home = ft_strdup("~"); //fallback if HOME not set
 				
 			tmp = ft_strjoin(expanded, home);
-			free(expanded);
-			expanded = tmp;
 			free(home);
+			free(expanded);
+			if (!tmp)
+				return NULL;
+			expanded = tmp;
 			i++;
 		}
 		else
@@ -270,6 +276,8 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 			char onechar[2] = {token[i], '\0'};
 			tmp = ft_strjoin(expanded, onechar);
 			free(expanded);
+			if (!tmp)
+				return NULL;
 			expanded = tmp;
 			i++;
 		}
@@ -302,6 +310,8 @@ int	main(int argc, char **argv, char **envp)
         if (isatty(fileno(stdin)))
         {
             str = readline("Minishell: ");
+			if(!ft_strncmp(str, "exit", ft_strlen("exit")) || !str)
+				break;
         }
         else
         {
@@ -319,6 +329,8 @@ int	main(int argc, char **argv, char **envp)
 		if (!str) // user pressed Ctrl+D perhaps
 			break;
 		add_history(str);
+		// if(!ft_strncmp(str, "exit", ft_strlen("exit")) || !str)
+		// 	break;
 		input = split_inputs(str);
 		// print input
 		// print_split(input);
@@ -336,16 +348,17 @@ int	main(int argc, char **argv, char **envp)
 		
 		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
-		execute_commands(cmd);
-
+		// execute_commands(cmd);
+		print_cmd(cmd);
 		free_split(input);
 		free_op(cmd);
 		free(str);
 		input = NULL;
 		cmd = NULL;
 	}
+	free(str);
 	return 0;
-	// system("leaks minishell");
+	system("leaks minishell");
 }
 
 void	free_split(t_split *list)

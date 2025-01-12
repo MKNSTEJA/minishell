@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/12 04:22:59 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/12 08:03:16 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void	append_list(t_split *input, char *string, t_quote_state quote_state)
 	if (!new)
 		exit(-1);
 	ptr = input;
-	new->str = ft_strdup(string);
+	new->str = string;
 	if (!new->str)
 		exit(-1);
 	new->quote_state = quote_state;
