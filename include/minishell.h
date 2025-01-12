@@ -78,7 +78,7 @@ void handle_echo(char **argv);
 int apply_redirections(t_op *cmd);
 int count_commands(t_op *cmd);
 char *get_env_value(const char *var_name, char **envp);
-void expand_tokens(t_split *head, char **envp);
+void expand_tokens(t_split **head, char **envp);
 char *expand_one_token(char *token, char **envp, t_quote_state quote_state);
 t_split *remove_token(t_split **head, t_split *token);
 void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str);

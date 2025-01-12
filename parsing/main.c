@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/10 22:43:42 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/11 16:25:15 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,9 @@ void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_s
 **    'envp' or a custom env structure can be used to fetch environment values.
 **    For special parameters ($?, $#, etc.) we hardcode them (they're not in env).
 */
-void expand_tokens(t_split *head, char **envp)
+void expand_tokens(t_split **head, char **envp)
 {
-	t_split *curr = head;
+	t_split *curr = *head;
 	while (curr)
 	{
 		// if single_quoted, skip
@@ -137,13 +137,13 @@ void expand_tokens(t_split *head, char **envp)
 			free(curr->str);
 			curr->str = NULL;
 			// remove the token
-			curr = remove_token(&head, curr);
+			curr = remove_token(head, curr);
 			free(expanded_str);
 			continue ;
 		}
 		// if expansion introduces whitespace, split into multiple tokens
 		if (curr->quote_state == QUOTE_NONE)
-			handle_field_splitting(&head, &curr, expanded_str);
+			handle_field_splitting(head, &curr, expanded_str);
 		else
 		{
 			//double-quoted => keep as one token
@@ -190,14 +190,23 @@ char *expand_var(const char *str, char **envp, size_t *i)
 
 	// build the variable name
 	char *var_name = ft_substr(str, start, var_len);
+	if (!var_name)
+		return ft_strdup(""); //fallback if variable not set
 	// skip over the var name
 	(*i) += var_len + 1;
 
 	char *value = get_env_value(var_name, envp);
-	if(!value)
-		value = ft_strdup(""); //fallback if variable not set
 	free(var_name);
-	return value;
+	if (value)
+	{
+		// duplicate the value to ensure it is heap-allocated
+		char *duplicated_value = ft_strdup(value);
+		if (!duplicated_value)
+			return ft_strdup(""); //fallback if allocation fails
+		return duplicated_value;
+	}
+	else
+		return ft_strdup(""); //fallback if variable not set
 }
 
 t_split *remove_token(t_split **head, t_split *token)
@@ -227,6 +236,8 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 		{
 			// expand the variable
 			char *var_value = expand_var(&token[i], envp, &i);
+			if (!var_value)
+				var_value = ft_strdup(""); // ensure var_value is not NULL
 			// append the expansion to the expanded string
 			tmp = ft_strjoin(expanded, var_value);
 			free(expanded);
@@ -237,11 +248,21 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 		{
 			// expand the tilde
 			char *home = get_env_value("HOME", envp);
-			if (!home)
-				home = "~"; //fallback if HOME not set
+			if (home)
+			{
+				char *tmp_home = ft_strdup(home);
+				free(home);
+				home = tmp_home;
+				if (!home)
+					home = ft_strdup("~"); //fallback if HOME not set
+			}
+			else
+				home = ft_strdup("~"); //fallback if HOME not set
+				
 			tmp = ft_strjoin(expanded, home);
 			free(expanded);
 			expanded = tmp;
+			free(home);
 			i++;
 		}
 		else
@@ -252,6 +273,12 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 			expanded = tmp;
 			i++;
 		}
+	}
+	if (!tmp)
+	{
+		// handling ft_strjoin failure
+		free(expanded);
+		return NULL;
 	}
 	return expanded;
 }
@@ -296,7 +323,7 @@ int	main(int argc, char **argv, char **envp)
 		// print input
 		// print_split(input);
 		
-		expand_tokens(input, envp);
+		expand_tokens(&input, envp);
 
 		
 		if (split_errors(input) == 1)
@@ -309,9 +336,8 @@ int	main(int argc, char **argv, char **envp)
 		
 		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
-		// print_cmd(cmd);
 		execute_commands(cmd);
-		//clean up
+
 		free_split(input);
 		free_op(cmd);
 		free(str);
@@ -339,10 +365,7 @@ void	free_split(t_split *list)
 			current->str = NULL;
 		}
 		if (current)
-		{
 			free(current);
-			current = NULL;
-		}
 		current = next_node;
 	}
 }

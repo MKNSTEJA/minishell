@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/10 23:13:09 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/12 04:22:59 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_split	*first_initialise(char *string, int *i)
 	t_split	*input;
 
 	// (void)i;
-	input = calloc(1, sizeof(t_split)); //bec. it's just one token
+	input = calloc(1, sizeof(t_split));
 	if (!input)
 		exit(-1);
 	// input->str = NULL;
