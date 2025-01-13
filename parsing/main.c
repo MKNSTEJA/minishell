@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/12 08:26:50 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/13 09:10:13 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_s
     // split expanded_str on whitespace
     // e.g. "Hello   World" => [ "Hello", "World" ]
 
-    char **fields = ft_split(expanded_str, ' '); 
+    char **fields = ft_split(expanded_str, ' ');
     if (!fields)
     {
         // if ft_split_whitespace fails or returns NULL, remove the token entirely
@@ -71,6 +71,7 @@ void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_s
         curr->str = NULL;
         curr = remove_token(head, curr);
         *curr_ptr = curr;
+		free(expanded_str);
         return;
     }
 
@@ -143,7 +144,10 @@ void expand_tokens(t_split **head, char **envp)
 		}
 		// if expansion introduces whitespace, split into multiple tokens
 		if (curr->quote_state == QUOTE_NONE)
-			handle_field_splitting(head, &curr, expanded_str);
+			{
+				handle_field_splitting(head, &curr, expanded_str);
+				free(expanded_str);
+			}
 		else
 		{
 			//double-quoted => keep as one token
@@ -251,12 +255,11 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 		else if (i == 0 && token[i] == '~' && (token[i+1] == '/' || token[i+1] == '\0'))
 		{
 			// expand the tilde
-			char *home = get_env_value("HOME", envp);
-			if (home)
+			char *env_home = get_env_value("HOME", envp);
+			char *home;
+			if (env_home)
 			{
-				char *tmp_home = ft_strdup(home);
-				free(home);
-				home = tmp_home;
+				home = ft_strdup(env_home);
 				if (!home)
 					home = ft_strdup("~"); //fallback if HOME not set
 			}
@@ -357,8 +360,9 @@ int	main(int argc, char **argv, char **envp)
 		cmd = NULL;
 	}
 	free(str);
+	rl_clear_history();
 	return 0;
-	system("leaks minishell");
+	// system("leaks minishell");
 }
 
 void	free_split(t_split *list)
