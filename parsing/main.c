@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/13 09:10:13 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/13 19:09:14 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int g_exit_code = 0;
 
 
-void	print_cmd(t_op *cmd);
+// void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
 void	print_split(t_split *input);
 void	free_op(t_op *cmd);
@@ -351,8 +351,8 @@ int	main(int argc, char **argv, char **envp)
 		
 		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
-		// execute_commands(cmd);
-		print_cmd(cmd);
+		execute_commands(cmd);
+		// print_cmd(cmd);
 		free_split(input);
 		free_op(cmd);
 		free(str);
@@ -399,30 +399,30 @@ void	print_split(t_split *input)
 	}
 }
 
-void	print_cmd(t_op *cmd)
-{
-	t_op	*ptr;
-	int		i;
-	int 	counter;
+// void	print_cmd(t_op *cmd)
+// {
+// 	t_op	*ptr;
+// 	int		i;
+// 	int 	counter;
 
-	ptr = cmd;
-	i = 0;
-	counter = 0;
-	while (ptr)
-	{
-		i = 0;
-		printf("String inside %d: \n", counter);
-		while (ptr->str && ptr->str[i])
-		{
-			printf("%s ", ptr->str[i]);
-			i++;
-		}
-		printf("\n");
-		ptr = ptr->next;
-		counter++;
-	}
-	printf("\n");
-}
+// 	ptr = cmd;
+// 	i = 0;
+// 	counter = 0;
+// 	while (ptr)
+// 	{
+// 		i = 0;
+// 		printf("String inside %d: \n", counter);
+// 		while (ptr->str && ptr->str[i])
+// 		{
+// 			printf("%s ", ptr->str[i]);
+// 			i++;
+// 		}
+// 		printf("\n");
+// 		ptr = ptr->next;
+// 		counter++;
+// 	}
+// 	printf("\n");
+// }
 
 void	free_op(t_op *cmd)
 {
