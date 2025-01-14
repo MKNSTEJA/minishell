@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/13 19:09:14 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/14 20:21:56 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ void expand_tokens(t_split **head, char **envp)
 char *expand_var(const char *str, char **envp, size_t *i)
 {
 	// str[0] == '$'
+	(void)envp;
 	size_t start = 1;
 	if (str[1] == '?')
 	{
@@ -199,7 +200,8 @@ char *expand_var(const char *str, char **envp, size_t *i)
 	// skip over the var name
 	(*i) += var_len + 1;
 
-	char *value = get_env_value(var_name, envp);
+	// char *value = get_env_value(var_name, envp);
+	char *value = getenv(var_name);
 	free(var_name);
 	if (value)
 	{
@@ -296,6 +298,7 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 
 int	main(int argc, char **argv, char **envp)
 {
+	extern char **environ;
 	t_split	*input;
 	t_op	*cmd;
 	char	*str;
@@ -339,6 +342,7 @@ int	main(int argc, char **argv, char **envp)
 		// print_split(input);
 		
 		expand_tokens(&input, envp);
+		// expand_tokens(&input, environ);
 
 		
 		if (split_errors(input) == 1)

@@ -2,6 +2,7 @@
 
 #include "../include/minishell.h"
 
+
 void execute_commands(t_op *cmd)
 {
     // if we see multiple commands, we assume pipeline
@@ -154,6 +155,8 @@ void execute_builtin(t_op *cmd)
 		handle_pwd(argv);
 	else if (strcmp(argv[0], "echo") == 0)
 		handle_echo(argv);
+	else if (strcmp(argv[0], "export") == 0)
+		handle_export(argv);
 }
 
 void execute_simple_command(t_op *cmd) {
