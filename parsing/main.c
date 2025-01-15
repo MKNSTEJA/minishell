@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/15 20:01:25 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/15 20:03:07 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,30 +405,30 @@ void	print_split(t_split *input)
 	}
 }
 
-// void	print_cmd(t_op *cmd)
-// {
-// 	t_op	*ptr;
-// 	int		i;
-// 	int 	counter;
+void	print_cmd(t_op *cmd)
+{
+	t_op	*ptr;
+	int		i;
+	int 	counter;
 
-// 	ptr = cmd;
-// 	i = 0;
-// 	counter = 0;
-// 	while (ptr)
-// 	{
-// 		i = 0;
-// 		printf("String inside %d: \n", counter);
-// 		while (ptr->str && ptr->str[i])
-// 		{
-// 			printf("%s ", ptr->str[i]);
-// 			i++;
-// 		}
-// 		printf("\n");
-// 		ptr = ptr->next;
-// 		counter++;
-// 	}
-// 	printf("\n");
-// }
+	ptr = cmd;
+	i = 0;
+	counter = 0;
+	while (ptr)
+	{
+		i = 0;
+		printf("String inside %d: \n", counter);
+		while (ptr->str && ptr->str[i])
+		{
+			printf("%s ", ptr->str[i]);
+			i++;
+		}
+		printf("\n");
+		ptr = ptr->next;
+		counter++;
+	}
+	printf("\n");
+}
 
 void	free_op(t_op *cmd)
 {
