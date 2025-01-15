@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/15 19:49:49 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/15 20:01:25 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int g_exit_code = 0;
 
 
-// void	print_cmd(t_op *cmd);
+void	print_cmd(t_op *cmd);
 void	free_split(t_split *list);
 void	print_split(t_split *input);
 void	free_op(t_op *cmd);
