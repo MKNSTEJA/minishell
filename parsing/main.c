@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/15 08:28:13 by yousef           ###   ########.fr       */
+/*   Updated: 2025/01/15 19:49:49 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,8 +340,8 @@ int	main(int argc, char **argv, char **envp)
 		// 	break;
 		input = split_inputs(str);
 		// print input
-		// print_split(input);
-		
+		print_split(input);
+		printf("\n");
 		// expand_tokens(&input, envp);
 		expand_tokens(&input, environ);
 
@@ -356,8 +356,9 @@ int	main(int argc, char **argv, char **envp)
 		
 		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
+		print_cmd(cmd);
+		printf("\n");
 		execute_commands(cmd);
-		// print_cmd(cmd);
 		free_split(input);
 		free_op(cmd);
 		free(str);
