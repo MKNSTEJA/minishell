@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/09 12:17:02 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/17 19:16:40 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void add_redirection(t_op *cmd, t_type type, char *filename)
 
 t_op	*initialise_cmd(t_split *input)
 {
-	t_op	*cmd = calloc(1, sizeof(t_op));
+	t_op	*cmd = ft_calloc(1, sizeof(t_op));
 	if (!cmd)
 		exit(-1);
 	split_cmds(input, cmd);
@@ -135,7 +135,7 @@ void	append_cmd(t_op *cmd, char *string)
 {
 	t_op	*new;
 
-	new = calloc(1, sizeof(t_op));
+	new = ft_calloc(1, sizeof(t_op));
 	if (!new)
 		exit(-1);
 	// printf("\n goes into append_str ");

@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -I/usr/local/include
 #  -g -fsanitize=address
 # SRCS = src/main.c src/signal.c src/lexer.c src/parser.c src/utils.c src/built-in.c src/execution.c
 SRCS = parsing/main.c parsing/parse_info.c parsing/segregate_info.c parsing/split_errors.c \
-       src/signal.c src/utils.c src/built-in.c src/execution.c
+       src/signal.c src/utils.c src/built-in.c src/execution.c parsing/expansion.c
 OBJ_DIR = obj
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 INCLUDES = -I include

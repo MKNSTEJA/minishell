@@ -14,6 +14,12 @@
 
 extern int g_exit_code;
 
+
+typedef struct s_char_node {
+    char c;
+    struct s_char_node *next;
+} t_char_node;
+
 /* Enum for token types */
 typedef enum e_type
 {
@@ -33,6 +39,13 @@ typedef enum e_quote_state
 	QUOTE_DOUBLE
 } t_quote_state;
 
+typedef struct s_segment {
+    char *text;
+    t_quote_state quote_state;
+    struct s_segment *next;
+} t_segment;
+
+
 /*
  * This struct (t_split) is used to store each 'split' token along with its type,
  * forming a linked list (possibly doubly-linked if you want to navigate backward).
@@ -42,9 +55,10 @@ typedef struct s_split
 {
 	char			*str;       // The actual token/string (e.g., "ls", ">", "file", etc.)
 	t_type			type;       // The token type (WORD, IN, OUT, etc.)
+	t_segment		*segments;
 	struct s_split	*prev;      // Pointer to previous element (if using a doubly-linked list)
 	struct s_split	*next;      // Pointer to the next element
-	t_quote_state	quote_state; // The current quote state
+	// t_quote_state	quote_state;
 }	t_split;
 
 
@@ -64,9 +78,7 @@ typedef struct s_op
 }	t_op;
 
 
-// Token *tokenize(const char *input);
-// Token *create_token(char *value, TokenType type);
-// void set_signals_interactive(void);
+
 void ignore_sigquit(void);
 void signal_reset_prompt(int signo);
 void handle_exit(char **argv);
@@ -88,7 +100,8 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state);
 t_split *remove_token(t_split **head, t_split *token);
 void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str);
 char *expand_escape(const char *str);
-void	append_list(t_split *input, char *string, t_quote_state quote_state);
+void append_list(t_split **head, t_segment *segments, t_type type);
+
 
 // int count_commands(command_t *cmd);
 // command_t *mock_simple_command(void);
