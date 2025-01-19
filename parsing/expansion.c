@@ -159,7 +159,20 @@ void expand_tokens(t_split **head, char **envp)
 
 			while (str[i])
 			{
-				if (str[i] == '"' && curr_segment->quote_state == QUOTE_DOUBLE)
+				// printf("Inspecting char: %c (at index %zu)\n", str[i], i);
+				// $"..."
+				if (str[i] == '$' && str[i + 1] == '"')
+				{
+					i += 2;
+					while (str[i] && str[i] != '"')
+					{
+						append_char_node(&expanded_head, &expanded_tail, str[i]);
+						i++;
+					}
+					if (str[i] == '"')
+						i++;
+				}
+				else if (str[i] == '"' && curr_segment->quote_state == QUOTE_DOUBLE)
 					expand_double_quote(str, envp, &i, &expanded_head, &expanded_tail);
 				else if (str[i] == '\'' && curr_segment->quote_state == QUOTE_SINGLE)
 					expand_single_quote(str, &i, &expanded_head, &expanded_tail);

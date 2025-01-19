@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/18 23:00:02 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:53:58 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,22 +118,32 @@ t_split	*split_inputs(char *string)
                     i += 1;
 				}
 			}
-		continue;
-	}
-
-	if (!current_segment)
+			continue;
+		}
+		// $"..." pattern
+		if (quote_state == QUOTE_NONE && string[i] == '$' && string[i + 1] == '"')
         {
-            current_segment = create_segment("", QUOTE_NONE);
+			// printf("Found $\"\n");
+            quote_state = QUOTE_DOUBLE; 
+            current_segment = create_segment("$\"", quote_state); 
             append_segment(&current_segments, current_segment);
+            i += 2;  // Skip over the $" part
+            continue;
         }
-		
-        char temp_char[2] = { string[i], '\0' };
-        char *updated_text = ft_strjoin(current_segment->text, temp_char);
-        free(current_segment->text);
-        current_segment->text = updated_text;
 
-        i++;
-    }
+		if (!current_segment)
+		{
+			current_segment = create_segment("", QUOTE_NONE);
+			append_segment(&current_segments, current_segment);
+		}
+			
+		char temp_char[2] = { string[i], '\0' };
+		char *updated_text = ft_strjoin(current_segment->text, temp_char);
+		free(current_segment->text);
+		current_segment->text = updated_text;
+
+		i++;
+	}
 
     if (current_segments)
         append_list(&input, current_segments, token_type);
