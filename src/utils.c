@@ -33,3 +33,54 @@ int is_builtin(t_op *cmd)
             strcmp(cmd->str[0], "pwd") == 0 ||
             strcmp(cmd->str[0], "echo") == 0);
 }
+
+int is_numeric(const char *s)
+{
+	if (!s || !*s)
+		return 0;
+	int i = 0;
+	if (s[i] == '-' || s[i] == '+')
+		i++;
+	while (s[i])
+	{
+		if (!isdigit(s[i]))
+			return 0;
+		i++;
+	}
+	return 1;
+}
+
+int print_command_error(char *command, char *detail, char *error_message, int error_nb)
+{
+    char *msg;
+    char *temp;
+
+    msg = ft_strjoin("minishell: ", command);
+    if (command)
+    {
+        temp = ft_strjoin(msg, ": ");
+        free(msg);
+        msg = temp;
+    }
+    if (detail)
+    {
+        temp = ft_strjoin(msg, detail);
+        free(msg);
+        msg = temp;
+
+        temp = ft_strjoin(msg, ": ");
+        free(msg);
+        msg = temp;
+    }
+
+    temp = ft_strjoin(msg, error_message);
+    free(msg);
+    msg = temp;
+
+    ft_putendl_fd(msg, STDERR_FILENO);
+    free(msg);
+
+    return error_nb;
+}
+
+

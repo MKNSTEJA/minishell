@@ -145,8 +145,29 @@ void    handle_export(char **argv)
 void handle_exit(char **argv)
 {
     int status = 0;
-    if (argv[1])
-        status = atoi(argv[1]);
+	int count = 0;
+	while (argv[count])
+		count++;
+	
+    if (count > 1)
+	{
+		if (!is_numeric(argv[1]))
+		{
+			print_command_error("exit", argv[1], "numeric argument required", 2);
+			exit(255);
+		}
+		else if (count > 2)
+		{
+			print_command_error("exit", argv[2], "too many arguments", 1);
+			return;
+		}
+		else
+		{
+			status = ft_atoi(argv[1]) % 256;
+			if (status < 0)
+				status += 256;
+		}
+	}
     exit(status);
 }
 // void handle_cd(char **argv)

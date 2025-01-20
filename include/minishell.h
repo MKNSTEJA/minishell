@@ -77,8 +77,8 @@ typedef struct s_op
 	struct s_op	*next;
 }	t_op;
 
-
-
+int is_numeric(const char *s);
+int print_command_error(char *command, char *detail, char *error_message, int error_nb);
 void ignore_sigquit(void);
 void signal_reset_prompt(int signo);
 void handle_exit(char **argv);

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/19 20:51:33 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/20 22:17:14 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	free_op(t_op *cmd);
 t_split *split_inputs(char *string);
 int      split_errors(t_split *input);
 t_op    *initialise_cmd(t_split *input);
-
 
 
 
@@ -45,11 +44,7 @@ int	main(int argc, char **argv, char **envp)
          * 2) Otherwise (piped or from a file/tester), use get_next_line.
          */
         if (isatty(fileno(stdin)))
-        {
             str = readline("Minishell: ");
-			if(!ft_strncmp(str, "exit", ft_strlen("exit")) || !str)
-				break;
-        }
         else
         {
             char *line = get_next_line(fileno(stdin));
@@ -66,8 +61,6 @@ int	main(int argc, char **argv, char **envp)
 		if (!str) // user pressed Ctrl+D perhaps
 			break;
 		add_history(str);
-		// if(!ft_strncmp(str, "exit", ft_strlen("exit")) || !str)
-		// 	break;
 		input = split_inputs(str);
 		// print input
 		// print_split(input);

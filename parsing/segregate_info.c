@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/17 19:16:40 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/20 21:22:41 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_op	*initialise_cmd(t_split *input)
 {
 	t_op	*cmd = ft_calloc(1, sizeof(t_op));
 	if (!cmd)
-		exit(-1);
+		exit(1);
 	split_cmds(input, cmd);
 	return (cmd);
 }
@@ -66,7 +66,7 @@ void	append_str(t_op *cmd, char *string)
 	}
 	new = malloc(sizeof(char *) * (i + 2));
 	if (!new)
-		exit(-1);
+		exit(1);
 	i = 0;
 	while (cmd->str && cmd->str[i])
 	{
@@ -79,7 +79,7 @@ void	append_str(t_op *cmd, char *string)
 	// printf("2 ");
 	// printf("%s \n", new[i]);
 	if (!new[i])
-		exit(-1);
+		exit(1);
 	new[i + 1] = NULL;
 	i = 0;
 	while (cmd->str && cmd->str[i])
@@ -137,7 +137,7 @@ void	append_cmd(t_op *cmd, char *string)
 
 	new = ft_calloc(1, sizeof(t_op));
 	if (!new)
-		exit(-1);
+		exit(1);
 	// printf("\n goes into append_str ");
 	if (string)
 		append_str(new, string);

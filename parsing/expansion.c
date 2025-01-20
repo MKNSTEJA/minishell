@@ -201,7 +201,6 @@ void expand_tokens(t_split **head, char **envp)
 							append_char_node(&expanded_head, &expanded_tail, home[j]);
 							j++;
 						}
-						// free(home);
 					}
 					else
 						append_char_node(&expanded_head, &expanded_tail, '~');
