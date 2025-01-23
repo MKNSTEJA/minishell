@@ -1,5 +1,14 @@
-
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansion.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
+/*   Updated: 2025/01/23 07:47:58 by mknsteja         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/minishell.h"
 
@@ -145,6 +154,7 @@ void expand_tokens(t_split **head, char **envp)
 	if (!head || !*head)
 		return;
 	t_split *curr = *head;
+	int escaped = 0;
 	while (curr)
 	{
 		// printf("Expanding token: %s\n", curr->str);
@@ -161,7 +171,20 @@ void expand_tokens(t_split **head, char **envp)
 			{
 				// printf("Inspecting char: %c (at index %zu)\n", str[i], i);
 				// $"..."
-				if (str[i] == '$' && str[i + 1] == '"')
+				if (str[i] == '\\' && !escaped)
+				{
+					escaped = 1;
+					i++;
+					continue;
+				}
+				if (escaped)
+				{
+					append_char_node(&expanded_head, &expanded_tail, str[i]);
+					escaped = 0;
+					i++;
+					continue;
+				}
+				if (str[i] == '$' && str[i + 1] == '"' && !escaped)
 				{
 					i += 2;
 					while (str[i] && str[i] != '"')
@@ -172,11 +195,11 @@ void expand_tokens(t_split **head, char **envp)
 					if (str[i] == '"')
 						i++;
 				}
-				else if (str[i] == '"' && curr_segment->quote_state == QUOTE_DOUBLE)
+				else if (str[i] == '"' && curr_segment->quote_state == QUOTE_DOUBLE && !escaped)
 					expand_double_quote(str, envp, &i, &expanded_head, &expanded_tail);
-				else if (str[i] == '\'' && curr_segment->quote_state == QUOTE_SINGLE)
+				else if (str[i] == '\'' && curr_segment->quote_state == QUOTE_SINGLE && !escaped)
 					expand_single_quote(str, &i, &expanded_head, &expanded_tail);
-				else if (str[i] == '$' && curr_segment->quote_state != QUOTE_SINGLE)
+				else if (str[i] == '$' && curr_segment->quote_state != QUOTE_SINGLE && !escaped)
 				{
 					char *var = expand_var(&str[i], envp, &i);
 					if (var)

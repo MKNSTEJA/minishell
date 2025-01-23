@@ -129,12 +129,14 @@ char *find_executable(char **argv)
 		sp++;
 	}
 	char **tmp = split_path;
-	while (*tmp)
+	while (tmp && *tmp)
 	{
 		free(*tmp);
+		*tmp = NULL;
 		tmp++;
 	}
 	free(split_path);
+	// tmp = NULL;
 	return executable_path;
 }
 
