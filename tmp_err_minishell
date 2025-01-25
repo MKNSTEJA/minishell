@@ -1,0 +1,22 @@
+=================================================================
+==5675==ERROR: AddressSanitizer: attempting double-free on 0x602000000070 in thread T0:
+    #0 0x7f6ae6f10537 in __interceptor_free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:127
+    #1 0x55f9108a4c11 in main parsing/main.c:88
+    #2 0x7f6ae6c08d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #3 0x7f6ae6c08e3f in __libc_start_main_impl ../csu/libc-start.c:392
+    #4 0x55f9108a47a4 in _start (/home/mknsteja/git_repos/minishell_yousef/minishell+0x37a4)
+
+0x602000000070 is located 0 bytes inside of 15-byte region [0x602000000070,0x60200000007f)
+freed by thread T0 here:
+    #0 0x7f6ae6f10537 in __interceptor_free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:127
+    #1 0x55f9108a4bc5 in main parsing/main.c:84
+    #2 0x7f6ae6c08d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+
+previously allocated by thread T0 here:
+    #0 0x7f6ae6f10887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x55f9108af5b3 in ft_strtrim (/home/mknsteja/git_repos/minishell_yousef/minishell+0xe5b3)
+    #2 0x55f9108a49fa in main parsing/main.c:55
+    #3 0x7f6ae6c08d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+
+SUMMARY: AddressSanitizer: double-free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:127 in __interceptor_free
+==5675==ABORTING

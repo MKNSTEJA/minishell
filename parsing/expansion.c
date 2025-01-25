@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/23 07:47:58 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/23 08:26:30 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,13 +255,14 @@ void expand_tokens(t_split **head, char **envp)
 		// if expansion introduces whitespace, split into multiple tokens
 		int token_unquoted = is_token_unquoted(curr);
 		if (token_unquoted)
-			{
-				handle_field_splitting(head, &curr, expanded_str);
-				// printf("After splitting, current token is: %s\n", curr ? curr->str : "NULL");
+		{
+			handle_field_splitting(head, &curr, expanded_str);
+			// printf("After splitting, current token is: %s\n", curr ? curr->str : "NULL");
+			if(expanded_str)
 				free(expanded_str);
-				if (curr)
-					curr = curr->next;
-			}
+			if (curr)
+				curr = curr->next;
+		}
 		else
 		{
 			free(curr->str);

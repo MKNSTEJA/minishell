@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/23 06:32:15 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/25 07:19:09 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	free_op(t_op *cmd);
 t_split *split_inputs(char *string);
 int      split_errors(t_split *input);
 t_op    *initialise_cmd(t_split *input);
+void free_segment(t_split *list);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -86,7 +87,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free(str);
 	rl_clear_history();
-	// system("leaks minishell");
+	system("leaks minishell");
 	return 0;
 }
 
@@ -101,6 +102,7 @@ void	free_split(t_split *list)
 	while (current)
 	{
 		next_node = current->next;
+		free_segment(current);
 		if (current->str)
 		{
 			free(current->str);
@@ -109,6 +111,26 @@ void	free_split(t_split *list)
 		if (current)
 			free(current);
 		current = next_node;
+	}
+}
+void free_segment(t_split *list)
+{
+	t_segment *current_seg;
+	t_segment *next_seg;
+	current_seg = list->segments;
+	next_seg = NULL;
+	
+	while(current_seg)
+	{
+		next_seg = current_seg->next;
+		if(current_seg->text)
+		{
+			free(current_seg->text);
+			current_seg->text = NULL;
+		}
+		if(current_seg)
+			free(current_seg);
+		current_seg = next_seg;
 	}
 }
 
@@ -156,7 +178,7 @@ void	free_op(t_op *cmd)
 	int		i;
 
 	ptr = cmd;
-  i = 0;
+  	i = 0;
 	while (ptr)
 	{
 		next_ptr = ptr->next;
@@ -175,15 +197,15 @@ void	free_op(t_op *cmd)
 		}
 		// 2. free any redirections
        
-  t_redir *redir = ptr->redirections;
-  while (redir)
-  {
-    t_redir *temp = redir->next;
-    free(redir->filename);
-		redir->filename = NULL;
-    free(redir);
-    redir = temp;
-  }
+		t_redir *redir = ptr->redirections;
+		while (redir)
+		{
+			t_redir *temp = redir->next;
+			free(redir->filename);
+				redir->filename = NULL;
+			free(redir);
+			redir = temp;
+		}
 
 		// 3. free the node itself
 		free(ptr);
@@ -191,5 +213,6 @@ void	free_op(t_op *cmd)
 		ptr = next_ptr;
 	}
 }
+
 
 
