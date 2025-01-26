@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/25 07:19:09 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/25 17:35:45 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ int	main(int argc, char **argv, char **envp)
 		// printf("\n");
 		// expand_tokens(&input, envp);
 		expand_tokens(&input, environ);
-		
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
@@ -73,7 +72,6 @@ int	main(int argc, char **argv, char **envp)
 			free(str);
 			continue ;
 		}
-		
 		// convert t_split -> t_op
 		cmd = initialise_cmd(input);
 		// print_cmd(cmd);
@@ -82,13 +80,11 @@ int	main(int argc, char **argv, char **envp)
 		free_split(input);
 		free_op(cmd);
 		free(str);
-		input = NULL;
-		cmd = NULL;
 	}
 	free(str);
 	rl_clear_history();
 	system("leaks minishell");
-	return 0;
+	return g_exit_code;
 }
 
 void	free_split(t_split *list)
@@ -137,11 +133,23 @@ void free_segment(t_split *list)
 void	print_split(t_split *input)
 {
 	t_split	*ptr;
-
+	t_segment *ptrs;
+	int i;
+	
 	ptr = input;
+	ptrs = NULL;
+	i = 0;
 	while (ptr)
-	{
+	{	
+		ptrs = ptr->segments;
 		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
+		i = 0;
+		while(ptrs)
+		{
+			printf("Seg%d = %s, quote = %d\n",i, ptrs->text, ptrs->quote_state);
+			i++;
+			ptrs = ptrs->next;
+		}
 		ptr = ptr->next;
 	}
 }

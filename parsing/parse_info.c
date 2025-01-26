@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/19 20:53:58 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/01/26 07:03:11 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,10 @@ t_split	*split_inputs(char *string)
     t_segment *current_segment = NULL;
     t_quote_state quote_state = QUOTE_NONE;
     t_type token_type = WORD;
+	t_quote_state new_state = QUOTE_NONE;
 	
 	if (!string || !*string)
 		return NULL;
-
-
 	while (string[i])
 	{
 		if (quote_state == QUOTE_NONE && (string[i] == ' ' || string[i] == '\t'))
@@ -45,16 +44,13 @@ t_split	*split_inputs(char *string)
 			}
 			i++;
 			continue;
-		}
-			
+		}			
 		if (string[i] == '"' || string[i] == '\'')
 		{
-			t_quote_state new_state;
 			if (string[i] == '"')
 				new_state = QUOTE_DOUBLE;
 			else
 				new_state = QUOTE_SINGLE;
-				
 			if (quote_state == QUOTE_NONE)
 			{
 				quote_state = new_state;
@@ -77,7 +73,8 @@ t_split	*split_inputs(char *string)
 		}
 		if (quote_state == QUOTE_NONE && (string[i] == '|' || string[i] == '<' || string[i] == '>'))
 		{
-			if (current_segments){
+			if (current_segments)
+			{
 				append_list(&input, current_segments, token_type);
                 current_segments = NULL;
                 token_type = WORD;
@@ -130,13 +127,11 @@ t_split	*split_inputs(char *string)
             i += 2;  // Skip over the $" part
             continue;
         }
-
 		if (!current_segment)
 		{
 			current_segment = create_segment("", QUOTE_NONE);
 			append_segment(&current_segments, current_segment);
 		}
-			
 		char temp_char[2] = { string[i], '\0' };
 		char *updated_text = ft_strjoin(current_segment->text, temp_char);
 		free(current_segment->text);
@@ -144,11 +139,8 @@ t_split	*split_inputs(char *string)
 
 		i++;
 	}
-
     if (current_segments)
         append_list(&input, current_segments, token_type);
-
-    
     t_split *ptr = input;
     while (ptr)
     {
@@ -174,18 +166,16 @@ t_split	*split_inputs(char *string)
         }
         ptr = ptr->next;
     }
-
     // tokenise(input);
-
     return input;
 }
-
 
 /*
  * handle_delimiter():
  *    If passed quote char (single or double), it reads until the matching quote.
  *    Otherwise (c == ' ' in typical usage), read until space, tab, or quote/operator.
  */
+
 char *handle_delimiter(char *string, char c, int *i)
 {
     char          *result;
@@ -222,6 +212,7 @@ char *handle_delimiter(char *string, char c, int *i)
     }
     return (result);
 }
+
 t_segment *create_segment(const char *text, t_quote_state state)
 {
 	t_segment *seg = malloc(sizeof(t_segment));
@@ -257,6 +248,7 @@ void append_segment(t_segment **head, t_segment *new_seg)
 void append_list(t_split **head, t_segment *segments, t_type type)
 {
 	t_split	*new_node = malloc(sizeof(t_split));
+	t_split *current = *head;
 	if (!new_node)
 	{
 		perror("malloc");
@@ -273,7 +265,6 @@ void append_list(t_split **head, t_segment *segments, t_type type)
 		*head = new_node;
 	else
 	{
-		t_split *current = *head;
 		while (current->next)
 			current = current->next;
 		current->next = new_node;
