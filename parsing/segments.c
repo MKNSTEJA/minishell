@@ -6,125 +6,108 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/26 07:26:43 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/28 09:49:41 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void		handle_space(t_split *input, t_segment *current_segments,
-				t_type token, int *i);
-void		handle_quotes(t_quote_state quote_state,
-				t_segment *current_segments, int *i, char *string);
-void		handle_others(t_split *input, t_segment *current_segments,
-				t_type *token, int *i, char *string);
+void		assign_segments(t_split **input, t_segment **current_segments,
+				char *string, t_quote_state quote);
+t_segment	*create_segment(const char *text, t_quote_state state);
+void		append_segment(t_segment **head, t_segment *new_seg);
+void		final_assign(char *string, int *i, t_segment **current_segment,
+				t_segment **current_segments);
 
-t_segment	*handle_segments(char *string, t_split *input)
+void	handle_segments(char *string, t_split **input)
 {
 	t_segment		*current_segments;
 	t_quote_state	quote;
-	int				i;
-	t_type			token;
 
-	token = WORD;
 	quote = QUOTE_NONE;
 	current_segments = NULL;
+	assign_segments(input, &current_segments, string, quote);
+}
+
+t_segment	*create_segment(const char *text, t_quote_state state)
+{
+	t_segment	*seg;
+
+	seg = malloc(sizeof(t_segment));
+	if (!seg)
+	{
+		perror("malloc");
+		exit(1);
+	}
+	seg->text = ft_strdup(text);
+	seg->quote_state = state;
+	seg->next = NULL;
+	return (seg);
+}
+
+void	assign_segments(t_split **input, t_segment **current_segments,
+		char *string, t_quote_state quote)
+{
+	int			i;
+	t_type		token;
+	t_segment	*current_segment;
+
 	i = 0;
+	token = WORD;
+	current_segment = NULL;
 	while (string[i])
 	{
 		if (quote == QUOTE_NONE && (string[i] == 32 || string[i] == 9))
-		{
-			handle_space(input, current_segments, token, &i);
-			continue ;
-		}
-		if (string[i] == '"' || string[i] == '\'')
-		{
-			handle_quotes(quote, current_segments, &i, string);
-			continue ;
-		}
+			current_segment = handle_space(input, current_segments, &token, &i);
+		else if (string[i] == '"' || string[i] == '\'')
+			current_segment = handle_quotes(&quote, current_segments, &i,
+					string);
+		else if (quote == QUOTE_NONE && (string[i] == '|' || string[i] == '<'
+				|| string[i] == '>'))
+			handle_others(input, current_segments, &token, &i, string);
+		else if (quote == QUOTE_NONE && string[i] == '$'
+			&& string[i + 1] == '"')
+			current_segment = handle_dollar(current_segments, &quote, &i);
+		else
+			final_assign(string, &i, &current_segment, current_segments);
+	}
+	if (*current_segments)
+		append_list(input, *current_segments, token);
+}
+
+void	append_segment(t_segment **head, t_segment *new_seg)
+{
+	t_segment	*current;
+
+	if (!*head)
+	{
+		*head = new_seg;
+	}
+	else
+	{
+		current = *head;
+		while (current->next)
+			current = current->next;
+		current->next = new_seg;
 	}
 }
 
-void	handle_space(t_split *input, t_segment *current_segments, t_type token,
-		int *i)
+void	final_assign(char *string, int *i, t_segment **current_segment,
+		t_segment **current_segments)
 {
-	if (current_segments)
+	char	temp_char[2];
+	char	*updated_text;
+
+	temp_char[0] = string[*i];
+	temp_char[1] = '\0';
+	updated_text = NULL;
+	if (!(*current_segment))
 	{
-		append_list(&input, current_segments, token);
-		current_segments = NULL;
-		token = WORD;
+		*current_segment = create_segment("", QUOTE_NONE);
+		append_segment(current_segments, *current_segment);
 	}
+	updated_text = ft_strjoin((*current_segment)->text, temp_char);
+	free((*current_segment)->text);
+	(*current_segment)->text = updated_text;
 	(*i)++;
-}
-
-void	handle_quotes(t_quote_state quote, t_segment *current_segments, int *i,
-		char *string)
-{
-	t_quote_state	new_state;
-	t_segment		*current_segment;
-
-	new_state = QUOTE_NONE;
-	current_segment = NULL;
-	if (string[*i] == '"' || string[*i] == '\'')
-	{
-		if (string[*i] == '"')
-			new_state = QUOTE_DOUBLE;
-		else
-			new_state = QUOTE_SINGLE;
-		if (quote == QUOTE_NONE)
-		{
-			quote = new_state;
-			current_segment = create_segment("", quote);
-			append_segment(&current_segments, current_segment);
-			(*i)++;
-		}
-		else if (quote == new_state)
-		{
-			quote = QUOTE_NONE;
-			current_segment = NULL;
-			(*i)++;
-		}
-	}
-}
-
-void	handle_others(t_split *input, t_segment *current_segments,
-		t_type *token, int *i, char *string)
-{
-	if (current_segments)
-	{
-		append_list(&input, current_segments, token);
-		current_segments = NULL;
-		*token = WORD;
-	}
-	if (string[*i] == '|')
-	{
-		append_list(&input, create_segment("|", QUOTE_NONE), PIPES);
-		(*i)++;
-	}
-	else if (string[*i] == '<')
-	{
-		if (string[*i + 1] == '<')
-		{
-			append_list(&input, create_segment("<<", QUOTE_NONE), HEREDOC);
-			*i += 2;
-		}
-		else
-		{
-			append_list(&input, create_segment("<", QUOTE_NONE), IN);
-			*i += 1;
-		}
-	}
-	else if (string[*i] == '>')
-	{
-		if (string[*i + 1] == '>')
-		{
-			append_list(&input, create_segment(">>", QUOTE_NONE), APPEND);
-			*i += 2;
-		}
-		else
-		{
-			append_list(&input, create_segment(">", QUOTE_NONE), OUT);
-			*i += 1;
-		}
-	}
 }

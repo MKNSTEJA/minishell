@@ -81,6 +81,15 @@ int is_numeric(const char *s);
 int print_command_error(char *command, char *detail, char *error_message, int error_nb);
 void ignore_sigquit(void);
 void signal_reset_prompt(int signo);
+t_segment 	*create_segment(const char *text, t_quote_state state);
+void 		append_segment(t_segment **head, t_segment *new_seg);
+void	final_assign(char *string, int *i, t_segment **current_segment,
+		t_segment **current_segments);
+void		handle_segments(char *string, t_split **input);
+t_segment		*handle_space(t_split **input, t_segment **current_segments, t_type *token, int *i);
+t_segment	*handle_quotes(t_quote_state *quote_state, t_segment **current_segments, int *i, char *string);
+void		handle_others(t_split **input, t_segment **current_segments, t_type *token, int *i, char *string);
+t_segment	*handle_dollar(t_segment **current_segments, t_quote_state *quote_state, int *i);
 void handle_exit(char **argv);
 void handle_cd(char **argv);
 void handle_unset(char **argv);
@@ -101,10 +110,6 @@ t_split *remove_token(t_split **head, t_split *token);
 void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str);
 char *expand_escape(const char *str);
 void append_list(t_split **head, t_segment *segments, t_type type);
-
-
-// int count_commands(command_t *cmd);
-// command_t *mock_simple_command(void);
 int is_builtin(t_op *cmd);
 void execute_commands(t_op *cmd);
 void execute_pipeline(t_op *cmd);
