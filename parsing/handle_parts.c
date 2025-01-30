@@ -6,7 +6,7 @@
 /*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/28 10:01:52 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/28 10:22:48 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,14 @@ t_segment	*handle_quotes(t_quote_state *quote, t_segment **current_segments,
 		*quote = new_state;
 		current_segment = create_segment("", *quote);
 		append_segment(current_segments, current_segment);
+		(*i)++;
 	}
 	else if (*quote == new_state)
 	{
 		*quote = QUOTE_NONE;
 		current_segment = NULL;
+		(*i)++;
 	}
-	(*i)++;
 	return (current_segment);
 }
 
