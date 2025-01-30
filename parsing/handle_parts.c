@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/30 19:12:01 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/01/30 21:07:45 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,29 +28,30 @@ t_segment	*handle_space(t_split **input, t_segment **current_segments,
 }
 
 t_segment	*handle_quotes(t_quote_state *quote, t_segment **current_segments,
-		int *i, char *string)
+		int *i, char *string, t_segment **current_segment)
 {
 	t_quote_state	new_state;
-	t_segment		*current_segment;
 
 	new_state = QUOTE_NONE;
-	current_segment = NULL;
-	printf("Quote: %d, i = %d, string[i] = %c\n", *quote, *i, string[*i]);
+	// printf("Quote: %d, i = %d, string[i] = %c\n", *quote, *i, string[*i]);
 	if (string[*i] == '"')
 		new_state = QUOTE_DOUBLE;
-	else
+	else if(string[*i] == '\'')
 		new_state = QUOTE_SINGLE;
 	if (*quote == QUOTE_NONE)
 	{
 		*quote = new_state;
-		current_segment = create_segment("", *quote);
-		append_segment(current_segments, current_segment);
+		*current_segment = create_segment("", *quote);
+		append_segment(current_segments, *current_segment);
 	}
 	else if (*quote == new_state)
+	{
 		*quote = QUOTE_NONE;
+		*current_segment = NULL;
+	}
 	else
-		final_assign(string, i, &current_segment, current_segments);
-	return ((*i)++, current_segment);
+		return (final_assign(string, i, current_segment, current_segments));
+	return ((*i)++, *current_segment);
 }
 
 void	handle_others(t_split **input, t_segment **current_segments,

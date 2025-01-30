@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/30 19:13:17 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/01/30 21:07:07 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void		assign_segments(t_split **input, t_segment **current_segments,
 				char *string, t_quote_state quote);
 t_segment	*create_segment(const char *text, t_quote_state state);
 void		append_segment(t_segment **head, t_segment *new_seg);
-void		final_assign(char *string, int *i, t_segment **current_segment,
+t_segment		*final_assign(char *string, int *i, t_segment **current_segment,
 				t_segment **current_segments);
 
 void	handle_segments(char *string, t_split **input)
@@ -60,8 +60,7 @@ void	assign_segments(t_split **input, t_segment **current_segments,
 		if (quote == QUOTE_NONE && (string[i] == 32 || string[i] == 9))
 			current_segment = handle_space(input, current_segments, &token, &i);
 		else if (string[i] == '"' || string[i] == '\'')
-			current_segment = handle_quotes(&quote, current_segments, &i,
-					string);
+			handle_quotes(&quote, current_segments, &i, string, &current_segment);
 		else if (quote == QUOTE_NONE && (string[i] == '|' || string[i] == '<'
 				|| string[i] == '>'))
 			handle_others(input, current_segments, &token, &i, string);
@@ -70,6 +69,7 @@ void	assign_segments(t_split **input, t_segment **current_segments,
 			current_segment = handle_dollar(current_segments, &quote, &i);
 		else
 			final_assign(string, &i, &current_segment, current_segments);
+		// printf("Current segment: %s | Quote State: %d\n", current_segment->text, current_segment->quote_state);
 	}
 	if (*current_segments)
 		append_list(input, *current_segments, token);
@@ -92,7 +92,7 @@ void	append_segment(t_segment **head, t_segment *new_seg)
 	}
 }
 
-void	final_assign(char *string, int *i, t_segment **current_segment,
+t_segment	*final_assign(char *string, int *i, t_segment **current_segment,
 		t_segment **current_segments)
 {
 	char	temp_char[2];
@@ -110,4 +110,5 @@ void	final_assign(char *string, int *i, t_segment **current_segment,
 	free((*current_segment)->text);
 	(*current_segment)->text = updated_text;
 	(*i)++;
+	return(*current_segment);
 }

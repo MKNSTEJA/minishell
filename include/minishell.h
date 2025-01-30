@@ -42,6 +42,7 @@ typedef enum e_quote_state
 typedef struct s_segment {
     char *text;
     t_quote_state quote_state;
+	struct s_segment *current_segment;
     struct s_segment *next;
 } t_segment;
 
@@ -83,11 +84,11 @@ void ignore_sigquit(void);
 void signal_reset_prompt(int signo);
 t_segment 	*create_segment(const char *text, t_quote_state state);
 void 		append_segment(t_segment **head, t_segment *new_seg);
-void	final_assign(char *string, int *i, t_segment **current_segment,
+t_segment	*final_assign(char *string, int *i, t_segment **current_segment,
 		t_segment **current_segments);
 void		handle_segments(char *string, t_split **input);
 t_segment		*handle_space(t_split **input, t_segment **current_segments, t_type *token, int *i);
-t_segment	*handle_quotes(t_quote_state *quote_state, t_segment **current_segments, int *i, char *string);
+t_segment	*handle_quotes(t_quote_state *quote_state, t_segment **current_segments, int *i, char *string, t_segment **current_segment);
 void		handle_others(t_split **input, t_segment **current_segments, t_type *token, int *i, char *string);
 t_segment	*handle_dollar(t_segment **current_segments, t_quote_state *quote_state, int *i);
 void handle_exit(char **argv);
