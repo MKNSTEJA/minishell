@@ -1,68 +1,135 @@
-==30671== Memcheck, a memory error detector
-==30671== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
-==30671== Using Valgrind-3.24.0-fcdaa47426-20241101 and LibVEX; rerun with -h for copyright info
-==30671== Command: .//minishell
-==30671== Parent PID: 26768
-==30671== 
---30671-- 
---30671-- Valgrind options:
---30671--    --leak-check=full
---30671--    --show-leak-kinds=all
---30671--    --track-origins=yes
---30671--    --verbose
---30671--    --log-file=tmp_valgrind-out.txt
---30671-- Contents of /proc/version:
---30671--   Linux version 5.10.102.1-microsoft-standard-WSL2 (oe-user@oe-host) (x86_64-msft-linux-gcc (GCC) 9.3.0, GNU ld (GNU Binutils) 2.34.0.20200220) #1 SMP Wed Mar 2 00:30:59 UTC 2022
---30671-- 
---30671-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed-fma
---30671-- Page sizes: currently 4096, max supported 4096
---30671-- Valgrind library directory: /home/linuxbrew/.linuxbrew/Cellar/valgrind/3.24.0/libexec/valgrind
---30671-- Reading syms from /home/mknsteja/git_repos/minishell_yousef/minishell
---30671-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
---30671--   Considering /usr/lib/debug/.build-id/41/86944c50f8a32b47d74931e3f512b811813b64.debug ..
---30671--   .. build-id is valid
---30671-- Reading syms from /home/linuxbrew/.linuxbrew/Cellar/valgrind/3.24.0/libexec/valgrind/memcheck-amd64-linux
---30671--    object doesn't have a dynamic symbol table
---30671-- Scheduler: using generic scheduler lock implementation.
---30671-- Reading suppressions file: /home/linuxbrew/.linuxbrew/Cellar/valgrind/3.24.0/libexec/valgrind/default.supp
-==30671== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-30671-by-mknsteja-on-???
-==30671== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-30671-by-mknsteja-on-???
-==30671== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-30671-by-mknsteja-on-???
-==30671== 
-==30671== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==30671== don't want to do, unless you know exactly what you're doing,
-==30671== or are doing some strange experiment):
-==30671==   /home/linuxbrew/.linuxbrew/Cellar/valgrind/3.24.0/libexec/valgrind/../../bin/vgdb --pid=30671 ...command...
-==30671== 
-==30671== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==30671==   /path/to/gdb .//minishell
-==30671== and then give GDB the following command
-==30671==   target remote | /home/linuxbrew/.linuxbrew/Cellar/valgrind/3.24.0/libexec/valgrind/../../bin/vgdb --pid=30671
-==30671== --pid is optional if only one valgrind process is running
-==30671== 
---30671-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c2842 (vgPlain_amd64_linux_REDIR_FOR_strlen)
---30671-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x580c285c (vgPlain_amd64_linux_REDIR_FOR_strcmp)
---30671-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580c2877 (vgPlain_amd64_linux_REDIR_FOR_index)
-==30671== 
-==30671== Process terminating with default action of signal 2 (SIGINT)
-==30671==    at 0x4026B16: __open_nocancel (open64_nocancel.c:39)
-==30671==    by 0x4007658: open_verify.constprop.1 (dl-load.c:1626)
-==30671==    by 0x400A5B3: _dl_map_object (dl-load.c:2265)
-==30671==    by 0x40203D8: map_doit (rtld.c:666)
-==30671==    by 0x401D349: _dl_catch_exception (dl-error-skeleton.c:208)
-==30671==    by 0x401D3F2: _dl_catch_error (dl-error-skeleton.c:227)
-==30671==    by 0x4021820: do_preload (rtld.c:841)
-==30671==    by 0x4021820: handle_preload_list (rtld.c:917)
-==30671==    by 0x4024AB8: dl_main (rtld.c:1847)
-==30671==    by 0x401F83B: _dl_sysdep_start (dl-sysdep.c:256)
-==30671==    by 0x4021597: _dl_start_final (rtld.c:507)
-==30671==    by 0x4021597: _dl_start (rtld.c:596)
-==30671==    by 0x4020297: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-==30671== 
-==30671== HEAP SUMMARY:
-==30671==     in use at exit: 0 bytes in 0 blocks
-==30671==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
-==30671== 
-==30671== All heap blocks were freed -- no leaks are possible
-==30671== 
-==30671== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==24410== Memcheck, a memory error detector
+==24410== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==24410== Using Valgrind-3.24.0.GIT-lbmacos-ef8cbb3087-20241024 and LibVEX; rerun with -h for copyright info
+==24410== Command: .//minishell
+==24410== Parent PID: 24389
+==24410== 
+--24410-- 
+--24410-- Valgrind options:
+--24410--    --leak-check=full
+--24410--    --show-leak-kinds=all
+--24410--    --track-origins=yes
+--24410--    --verbose
+--24410--    --log-file=tmp_valgrind-out.txt
+--24410-- Output from sysctl({CTL_KERN,KERN_VERSION}):
+--24410--   Darwin Kernel Version 19.6.0: Tue Jun 21 21:18:39 PDT 2022; root:xnu-6153.141.66~1/RELEASE_X86_64
+--24410-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed-fma
+--24410-- Page sizes: currently 4096, max supported 4096
+--24410-- Valgrind library directory: /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind
+--24410-- /usr/lib/dyld (rx at 0x100028000, rw at 0x1000bb000)
+--24410--    reading syms   from primary file (5 2729)
+--24410-- Scheduler: using generic scheduler lock implementation.
+--24410-- Reading suppressions file: /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/default.supp
+==24410== embedded gdbserver: reading from /var/folders/zz/zyxvpxvq6csfxvn_n000clf80034vk/T//vgdb-pipe-from-vgdb-to-24410-by-kmummadi-on-???
+==24410== embedded gdbserver: writing to   /var/folders/zz/zyxvpxvq6csfxvn_n000clf80034vk/T//vgdb-pipe-to-vgdb-from-24410-by-kmummadi-on-???
+==24410== embedded gdbserver: shared mem   /var/folders/zz/zyxvpxvq6csfxvn_n000clf80034vk/T//vgdb-pipe-shared-mem-vgdb-24410-by-kmummadi-on-???
+==24410== 
+==24410== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==24410== don't want to do, unless you know exactly what you're doing,
+==24410== or are doing some strange experiment):
+==24410==   /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/../../bin/vgdb --pid=24410 ...command...
+==24410== 
+==24410== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==24410==   /path/to/gdb .//minishell
+==24410== and then give GDB the following command
+==24410==   target remote | /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/../../bin/vgdb --pid=24410
+==24410== --pid is optional if only one valgrind process is running
+==24410== 
+--24410-- REDIR: 0x10007a340 (dyld:strcmp) redirected to 0x2580594e7 (???)
+--24410-- REDIR: 0x100074614 (dyld:arc4random) redirected to 0x258059585 (???)
+--24410-- REDIR: 0x100079720 (dyld:strlen) redirected to 0x2580594b6 (???)
+--24410-- REDIR: 0x10007a640 (dyld:strcpy) redirected to 0x258059503 (???)
+--24410-- REDIR: 0x1000777ba (dyld:strcat) redirected to 0x2580594c7 (???)
+--24410-- REDIR: 0x10007951a (dyld:strlcat) redirected to 0x258059520 (???)
+--24410-- /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/vgpreload_core-amd64-darwin.so (rx at 0x10012e000, rw at 0x100132000)
+--24410--    reading syms   from primary file (3 53)
+--24410--    dSYM= /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/vgpreload_core-amd64-darwin.so.dSYM/Contents/Resources/DWARF/vgpreload_core-amd64-darwin.so
+--24410-- /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/vgpreload_memcheck-amd64-darwin.so (rx at 0x10013a000, rw at 0x100146000)
+--24410--    reading syms   from primary file (140 63)
+--24410--    dSYM= /Users/kmummadi/.brew/Cellar/valgrind/HEAD-ef8cbb3/libexec/valgrind/vgpreload_memcheck-amd64-darwin.so.dSYM/Contents/Resources/DWARF/vgpreload_memcheck-amd64-darwin.so
+--24410-- /usr/local/lib/libreadline.8.dylib (rx at 0x100152000, rw at 0x10017a000)
+--24410--    reading syms   from primary file (735 345)
+--24410-- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib (rx at 0x100196000, rw at 0x100226000)
+--24410--    reading syms   from primary file (288 1992)
+--24410-- /usr/lib/libSystem.B.dylib (rx at 0x100ed2000, rw at 0x100ed4000)
+--24410--    reading syms   from primary file (29 8)
+--24410-- /usr/lib/libncurses.5.4.dylib (rx at 0x100edc000, rw at 0x100f0c000)
+--24410--    reading syms   from primary file (613 1)
+--24410-- /usr/lib/system/libcache.dylib (rx at 0x100f20000, rw at 0x100f26000)
+--24410--    reading syms   from primary file (32 29)
+--24410-- /usr/lib/system/libcommonCrypto.dylib (rx at 0x100f2d000, rw at 0x100f39000)
+--24410--    reading syms   from primary file (241 173)
+--24410-- /usr/lib/system/libcompiler_rt.dylib (rx at 0x100f49000, rw at 0x100f51000)
+--24410--    reading syms   from primary file (505 8)
+--24410-- /usr/lib/system/libcopyfile.dylib (rx at 0x100f61000, rw at 0x100f6b000)
+--24410--    reading syms   from primary file (11 38)
+--24410-- /usr/lib/system/libcorecrypto.dylib (rx at 0x100f73000, rw at 0x101006000)
+--24410--    reading syms   from primary file (586 845)
+--24410-- /usr/lib/system/libdispatch.dylib (rx at 0x101026000, rw at 0x101067000)
+--24410--    reading syms   from primary file (328 1607)
+--24410-- /usr/lib/system/libdyld.dylib (rx at 0x1010a4000, rw at 0x1010db000)
+--24410--    reading syms   from primary file (119 1467)
+--24410-- /usr/lib/system/libkeymgr.dylib (rx at 0x101104000, rw at 0x101105000)
+--24410--    reading syms   from primary file (11 2)
+--24410-- /usr/lib/system/libmacho.dylib (rx at 0x101114000, rw at 0x10111a000)
+--24410--    reading syms   from primary file (105 2)
+--24410-- /usr/lib/system/libquarantine.dylib (rx at 0x101122000, rw at 0x101125000)
+--24410--    reading syms   from primary file (91 12)
+--24410-- /usr/lib/system/libremovefile.dylib (rx at 0x10112d000, rw at 0x10112f000)
+--24410--    reading syms   from primary file (12 8)
+--24410-- /usr/lib/system/libsystem_asl.dylib (rx at 0x101136000, rw at 0x10114e000)
+--24410--    reading syms   from primary file (219 234)
+--24410-- /usr/lib/system/libsystem_blocks.dylib (rx at 0x10115e000, rw at 0x10115f000)
+--24410--    reading syms   from primary file (21 8)
+--24410-- /usr/lib/system/libsystem_c.dylib (rx at 0x101166000, rw at 0x1011ee000)
+--24410--    reading syms   from primary file (1346 892)
+--24410-- /usr/lib/system/libsystem_configuration.dylib (rx at 0x10121e000, rw at 0x101222000)
+--24410--    reading syms   from primary file (36 68)
+--24410-- /usr/lib/system/libsystem_coreservices.dylib (rx at 0x10122b000, rw at 0x10122f000)
+--24410--    reading syms   from primary file (14 47)
+--24410-- /usr/lib/system/libsystem_darwin.dylib (rx at 0x101237000, rw at 0x101240000)
+--24410--    reading syms   from primary file (63 562)
+--24410-- /usr/lib/system/libsystem_dnssd.dylib (rx at 0x10124f000, rw at 0x101257000)
+--24410--    reading syms   from primary file (40 26)
+--24410-- /usr/lib/system/libsystem_featureflags.dylib (rx at 0x10125f000, rw at 0x101261000)
+--24410--    reading syms   from primary file (1 12)
+--24410-- /usr/lib/system/libsystem_info.dylib (rx at 0x101268000, rw at 0x1012b6000)
+--24410--    reading syms   from primary file (427 715)
+--24410-- /usr/lib/system/libsystem_m.dylib (rx at 0x1012ce000, rw at 0x101316000)
+--24410--    reading syms   from primary file (811 1)
+--24410-- /usr/lib/system/libsystem_malloc.dylib (rx at 0x101327000, rw at 0x10134f000)
+--24410--    reading syms   from primary file (98 470)
+--24410-- /usr/lib/system/libsystem_networkextension.dylib (rx at 0x10135f000, rw at 0x10136d000)
+--24410--    reading syms   from primary file (118 242)
+--24410-- /usr/lib/system/libsystem_notify.dylib (rx at 0x10137d000, rw at 0x101387000)
+--24410--    reading syms   from primary file (23 1)
+--24410-- /usr/lib/system/libsystem_sandbox.dylib (rx at 0x10138f000, rw at 0x101394000)
+--24410--    reading syms   from primary file (112 23)
+--24410-- /usr/lib/system/libsystem_secinit.dylib (rx at 0x10139d000, rw at 0x1013a0000)
+--24410--    reading syms   from primary file (5 20)
+--24410-- /usr/lib/system/libsystem_kernel.dylib (rx at 0x1013a7000, rw at 0x1013d4000)
+--24410--    reading syms   from primary file (1362 230)
+--24410-- /usr/lib/system/libsystem_platform.dylib (rx at 0x1013f3000, rw at 0x1013fc000)
+--24410--    reading syms   from primary file (168 103)
+--24410-- /usr/lib/system/libsystem_pthread.dylib (rx at 0x101406000, rw at 0x101411000)
+--24410--    reading syms   from primary file (189 143)
+--24410-- /usr/lib/system/libsystem_symptoms.dylib (rx at 0x10141e000, rw at 0x101426000)
+--24410--    reading syms   from primary file (10 86)
+--24410-- /usr/lib/system/libsystem_trace.dylib (rx at 0x10142e000, rw at 0x101445000)
+--24410--    reading syms   from primary file (131 274)
+--24410-- /usr/lib/system/libunwind.dylib (rx at 0x101456000, rw at 0x10145c000)
+--24410--    reading syms   from primary file (102 52)
+--24410-- /usr/lib/system/libxpc.dylib (rx at 0x101465000, rw at 0x10149b000)
+--24410--    reading syms   from primary file (627 1467)
+--24410-- /usr/lib/libobjc.A.dylib (rx at 0x1014c9000, rw at 0x1014fd000)
+--24410--    reading syms   from primary file (382 771)
+--24410-- /usr/lib/libc++abi.dylib (rx at 0x101521000, rw at 0x101537000)
+--24410--    reading syms   from primary file (366 704)
+--24410-- /usr/lib/libc++.1.dylib (rx at 0x101555000, rw at 0x1015a8000)
+--24410--    reading syms   from primary file (2088 1160)
+--24410-- REDIR: 0x1013f43a0 (libsystem_platform.dylib:_platform_memcmp) redirected to 0x100142434 (_platform_memcmp)
+--24410-- REDIR: 0x1013f3800 (libsystem_platform.dylib:_platform_strcmp) redirected to 0x100141e25 (_platform_strcmp)
+--24410-- REDIR: 0x1011bd0bc (libsystem_c.dylib:strrchr) redirected to 0x1001415ae (strrchr)
+--24410-- UNKNOWN task message [id 3453, to mach_task_self(), reply 0x707]
+--24410-- REDIR: 0x101332216 (libsystem_malloc.dylib:malloc_zone_register) redirected to 0x1001414ad (malloc_zone_register)
+==24410== Warning: set address range perms: large range [0xffffffff000, 0x120000000000) (defined)

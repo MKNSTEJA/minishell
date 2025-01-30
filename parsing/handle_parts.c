@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle_parts.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/28 10:22:48 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/30 19:12:01 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void		handle_redirections(t_split **input, int *i, char *string);
 
 t_segment	*handle_space(t_split **input, t_segment **current_segments,
 		t_type *token, int *i)
@@ -33,6 +35,7 @@ t_segment	*handle_quotes(t_quote_state *quote, t_segment **current_segments,
 
 	new_state = QUOTE_NONE;
 	current_segment = NULL;
+	printf("Quote: %d, i = %d, string[i] = %c\n", *quote, *i, string[*i]);
 	if (string[*i] == '"')
 		new_state = QUOTE_DOUBLE;
 	else
@@ -42,15 +45,12 @@ t_segment	*handle_quotes(t_quote_state *quote, t_segment **current_segments,
 		*quote = new_state;
 		current_segment = create_segment("", *quote);
 		append_segment(current_segments, current_segment);
-		(*i)++;
 	}
 	else if (*quote == new_state)
-	{
 		*quote = QUOTE_NONE;
-		current_segment = NULL;
-		(*i)++;
-	}
-	return (current_segment);
+	else
+		final_assign(string, i, &current_segment, current_segments);
+	return ((*i)++, current_segment);
 }
 
 void	handle_others(t_split **input, t_segment **current_segments,
@@ -67,31 +67,31 @@ void	handle_others(t_split **input, t_segment **current_segments,
 		append_list(input, create_segment("|", QUOTE_NONE), PIPES);
 		(*i)++;
 	}
+	else
+		handle_redirections(input, i, string);
+}
+
+void	handle_redirections(t_split **input, int *i, char *string)
+{
+	if (string[*i] == '<' && string[*i + 1] == '<')
+	{
+		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC);
+		(*i) += 2;
+	}
 	else if (string[*i] == '<')
 	{
-		if (string[*i + 1] == '<')
-		{
-			append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC);
-			(*i) += 2;
-		}
-		else
-		{
-			append_list(input, create_segment("<", QUOTE_NONE), IN);
-			(*i) += 1;
-		}
+		append_list(input, create_segment("<", QUOTE_NONE), IN);
+		(*i) += 1;
+	}
+	else if (string[*i] == '>' && string[*i + 1] == '>')
+	{
+		append_list(input, create_segment(">>", QUOTE_NONE), APPEND);
+		(*i) += 2;
 	}
 	else if (string[*i] == '>')
 	{
-		if (string[*i + 1] == '>')
-		{
-			append_list(input, create_segment(">>", QUOTE_NONE), APPEND);
-			(*i) += 2;
-		}
-		else
-		{
-			append_list(input, create_segment(">", QUOTE_NONE), OUT);
-			(*i) += 1;
-		}
+		append_list(input, create_segment(">", QUOTE_NONE), OUT);
+		(*i) += 1;
 	}
 }
 

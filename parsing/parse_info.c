@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/28 08:18:30 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/30 18:03:38 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,153 +23,153 @@ size_t	seg_len(t_segment *seg);
 
 t_split	*split_inputs(char *string)
 {
-	// int i = 0;
     t_split *input = NULL;
-    // t_segment *current_segments = NULL;
-    // t_segment *current_segment = NULL;
-    // t_quote_state quote_state = QUOTE_NONE;
-    // t_type token_type = WORD;
-	// t_quote_state new_state = QUOTE_NONE;
+	int i = 0;
+    t_segment *current_segments = NULL;
+    t_segment *current_segment = NULL;
+    t_quote_state quote_state = QUOTE_NONE;
+    t_type token_type = WORD;
+	t_quote_state new_state = QUOTE_NONE;
 	
-	// if (!string || !*string)
-	// 	return NULL;
-	// while (string[i])
-	// {
-	// 	if (quote_state == QUOTE_NONE && (string[i] == ' ' || string[i] == '\t'))
-	// 	{
-	// 		if (current_segments)
-	// 		{
-	// 			append_list(&input, current_segments, token_type);
-	// 			current_segments = NULL;
-	// 			current_segment = NULL;
-	// 			token_type = WORD;
-	// 		}
-	// 		i++;
-	// 		continue;
-	// 	}			
-	// 	if (string[i] == '"' || string[i] == '\'')
-	// 	{
-	// 		if (string[i] == '"')
-	// 			new_state = QUOTE_DOUBLE;
-	// 		else
-	// 			new_state = QUOTE_SINGLE;
-	// 		if (quote_state == QUOTE_NONE)
-	// 		{
-	// 			quote_state = new_state;
-	// 			current_segment = create_segment("", quote_state);
-	// 			append_segment(&current_segments, current_segment);
-	// 			i++;
-	// 			continue;
-	// 		}
-	// 		else if (quote_state == new_state)
-	// 		{
-	// 			quote_state = QUOTE_NONE;
-	// 			current_segment = NULL;
-	// 			i++;
-	// 			continue;
-	// 		}
-	// 		else
-	// 		{
-	// 			//will handle here later mismatched quotes
-	// 		}
-	// 	}
-	// 	if (quote_state == QUOTE_NONE && (string[i] == '|' || string[i] == '<' || string[i] == '>'))
-	// 	{
-	// 		if (current_segments)
-	// 		{
-	// 			append_list(&input, current_segments, token_type);
-    //             current_segments = NULL;
-    //             token_type = WORD;
-	// 		}
-	// 		if (string[i] == '|')
-	// 		{
-	// 			t_segment *op_seg = create_segment("|", QUOTE_NONE);
-    //             append_list(&input, op_seg, PIPES);
-    //             i++;
-	// 		}
-	// 		else if (string[i] == '<')
-    //         {
-    //             if (string[i + 1] == '<')
-    //             {
-    //                 t_segment *op_seg = create_segment("<<", QUOTE_NONE);
-    //                 append_list(&input, op_seg, HEREDOC);
-    //                 i += 2;
-    //             }
-    //             else
-    //             {
-    //                 t_segment *op_seg = create_segment("<", QUOTE_NONE);
-    //                 append_list(&input, op_seg, IN);
-    //                 i += 1;
-    //             }
-    //         }
-	// 		else if (string[i] == '>')
-	// 		{
-	// 			if (string[i + 1] == '>')
-	// 			{
-	// 				t_segment *op_seg = create_segment(">>", QUOTE_NONE);
-    //                 append_list(&input, op_seg, APPEND);
-    //                 i += 2;
-	// 			}
-	// 			else
-	// 			{
-	// 				t_segment *op_seg = create_segment(">", QUOTE_NONE);
-    //                 append_list(&input, op_seg, OUT);
-    //                 i += 1;
-	// 			}
-	// 		}
-	// 		continue;
-	// 	}
-	// 	// $"..." pattern
-	// 	if (quote_state == QUOTE_NONE && string[i] == '$' && string[i + 1] == '"')
-    //     {
-	// 		// printf("Found $\"\n");
-    //         quote_state = QUOTE_DOUBLE; 
-    //         current_segment = create_segment("$\"", quote_state); 
-    //         append_segment(&current_segments, current_segment);
-    //         i += 2;  // Skip over the $" part
-    //         continue;
-    //     }
-	// 	if (!current_segment)
-	// 	{
-	// 		current_segment = create_segment("", QUOTE_NONE);
-	// 		append_segment(&current_segments, current_segment);
-	// 	}
-	// 	char temp_char[2] = { string[i], '\0' };
-	// 	char *updated_text = ft_strjoin(current_segment->text, temp_char);
-	// 	free(current_segment->text);
-	// 	current_segment->text = updated_text;
+	if (!string || !*string)
+		return NULL;
+	while (string[i])
+	{
+		if (quote_state == QUOTE_NONE && (string[i] == ' ' || string[i] == '\t'))
+		{
+			if (current_segments)
+			{
+				append_list(&input, current_segments, token_type);
+				current_segments = NULL;
+				current_segment = NULL;
+				token_type = WORD;
+			}
+			i++;
+			continue;
+		}			
+		if (string[i] == '"' || string[i] == '\'')
+		{
+			if (string[i] == '"')
+				new_state = QUOTE_DOUBLE;
+			else
+				new_state = QUOTE_SINGLE;
+			if (quote_state == QUOTE_NONE)
+			{
+				quote_state = new_state;
+				current_segment = create_segment("", quote_state);
+				append_segment(&current_segments, current_segment);
+				i++;
+				continue;
+			}
+			else if (quote_state == new_state)
+			{
+				quote_state = QUOTE_NONE;
+				current_segment = NULL;
+				i++;
+				continue;
+			}
+			else
+			{
+				//will handle here later mismatched quotes
+			}
+		}
+		if (quote_state == QUOTE_NONE && (string[i] == '|' || string[i] == '<' || string[i] == '>'))
+		{
+			if (current_segments)
+			{
+				append_list(&input, current_segments, token_type);
+                current_segments = NULL;
+                token_type = WORD;
+			}
+			if (string[i] == '|')
+			{
+				t_segment *op_seg = create_segment("|", QUOTE_NONE);
+                append_list(&input, op_seg, PIPES);
+                i++;
+			}
+			else if (string[i] == '<')
+            {
+                if (string[i + 1] == '<')
+                {
+                    t_segment *op_seg = create_segment("<<", QUOTE_NONE);
+                    append_list(&input, op_seg, HEREDOC);
+                    i += 2;
+                }
+                else
+                {
+                    t_segment *op_seg = create_segment("<", QUOTE_NONE);
+                    append_list(&input, op_seg, IN);
+                    i += 1;
+                }
+            }
+			else if (string[i] == '>')
+			{
+				if (string[i + 1] == '>')
+				{
+					t_segment *op_seg = create_segment(">>", QUOTE_NONE);
+                    append_list(&input, op_seg, APPEND);
+                    i += 2;
+				}
+				else
+				{
+					t_segment *op_seg = create_segment(">", QUOTE_NONE);
+                    append_list(&input, op_seg, OUT);
+                    i += 1;
+				}
+			}
+			continue;
+		}
+		// $"..." pattern
+		if (quote_state == QUOTE_NONE && string[i] == '$' && string[i + 1] == '"')
+        {
+			// printf("Found $\"\n");
+            quote_state = QUOTE_DOUBLE; 
+            current_segment = create_segment("$\"", quote_state); 
+            append_segment(&current_segments, current_segment);
+            i += 2;  // Skip over the $" part
+            continue;
+        }
+		if (!current_segment)
+		{
+			current_segment = create_segment("", QUOTE_NONE);
+			append_segment(&current_segments, current_segment);
+		}
+		char temp_char[2] = { string[i], '\0' };
+		char *updated_text = ft_strjoin(current_segment->text, temp_char);
+		free(current_segment->text);
+		current_segment->text = updated_text;
 
-	// 	i++;
-	// }
-    // if (current_segments)
-    //     append_list(&input, current_segments, token_type);
-    // t_split *ptr = input;
-    // while (ptr)
-    // {
-    //     size_t total_length = 0;
-    //     t_segment *seg = ptr->segments;
-    //     while (seg)
-    //     {
-    //         total_length += strlen(seg->text);
-    //         seg = seg->next;
-    //     }
-    //     ptr->str = malloc(total_length + 1);
-    //     if (!ptr->str)
-    //     {
-    //         perror("malloc");
-    //         exit(1);
-    //     }
-    //     ptr->str[0] = '\0';
-    //     seg = ptr->segments;
-    //     while (seg)
-    //     {
-    //         strcat(ptr->str, seg->text);
-    //         seg = seg->next;
-    //     }
-    //     ptr = ptr->next;
-    // }
-	handle_segments(string, &input);
-	fill_inputs(&input);
+		i++;
+	}
+    if (current_segments)
+        append_list(&input, current_segments, token_type);
+    t_split *ptr = input;
+    while (ptr)
+    {
+        size_t total_length = 0;
+        t_segment *seg = ptr->segments;
+        while (seg)
+        {
+            total_length += strlen(seg->text);
+            seg = seg->next;
+        }
+        ptr->str = malloc(total_length + 1);
+        if (!ptr->str)
+        {
+            perror("malloc");
+            exit(1);
+        }
+        ptr->str[0] = '\0';
+        seg = ptr->segments;
+        while (seg)
+        {
+            strcat(ptr->str, seg->text);
+            seg = seg->next;
+        }
+        ptr = ptr->next;
+    }
+	// handle_segments(string, &input);
+	// fill_inputs(&input);
     // tokenise(input);
     return input;
 }
