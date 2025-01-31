@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/31 20:01:12 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/01/31 21:22:29 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,11 @@ void free_segment(t_split *list);
 
 int	main(int argc, char **argv, char **envp)
 {
-	extern char **environ;
 	t_split	*input;
 	t_op	*cmd;
 	char	*str;
 	(void)argc;
     (void)argv;
-	(void)envp;
 
 	input = NULL;
 	cmd = NULL;
@@ -62,8 +60,8 @@ int	main(int argc, char **argv, char **envp)
 		input = split_inputs(str);
 		// print_split(input);
 		// printf("\n");
-		// expand_tokens(&input, envp);
-		expand_tokens(&input, environ);
+		expand_tokens(&input, envp);
+		// expand_tokens(&input, environ);
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
@@ -75,7 +73,7 @@ int	main(int argc, char **argv, char **envp)
 		cmd = initialise_cmd(input);
 		// print_cmd(cmd);
 		// printf("\n");
-		execute_commands(cmd);
+		execute_commands(cmd, envp);
 		free_split(input);
 		free_op(cmd);
 		free(str);

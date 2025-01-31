@@ -3,13 +3,13 @@
 #include "../include/minishell.h"
 
 
-void execute_commands(t_op *cmd)
+void execute_commands(t_op *cmd, char **envp)
 {
     // if we see multiple commands, we assume pipeline
     if (cmd && cmd->next != NULL)
-        execute_pipeline(cmd);
+        execute_pipeline(cmd, envp);
     else
-        execute_simple_command(cmd);
+        execute_simple_command(cmd, envp);
 }
 int apply_redirections(t_op *cmd)
 {
@@ -140,7 +140,7 @@ char *find_executable(char **argv)
 	return executable_path;
 }
 
-void execute_builtin(t_op *cmd)
+void execute_builtin(t_op *cmd, char **envp)
 {
 	char **argv = cmd->str;
 	if (!argv || !argv[0])
@@ -150,19 +150,18 @@ void execute_builtin(t_op *cmd)
 	else if (strcmp(argv[0], "cd") == 0)
 		handle_cd(argv);
 	else if (strcmp(argv[0], "unset") == 0)
-		handle_unset(argv);
+		handle_unset(argv, envp);
 	else if (strcmp(argv[0], "env") == 0)
-		handle_env(argv);
+		handle_env(argv, envp);
 	else if (strcmp(argv[0], "pwd") == 0)
 		handle_pwd(argv);
 	else if (strcmp(argv[0], "echo") == 0)
 		handle_echo(argv);
 	else if (strcmp(argv[0], "export") == 0)
-		handle_export(argv);
+		handle_export(argv, envp);
 }
 
-void execute_simple_command(t_op *cmd) {
-	extern char **environ;
+void execute_simple_command(t_op *cmd, char **envp) {
     if (!cmd || !cmd->str || !cmd->str[0])
 	{
 		return;
@@ -184,7 +183,7 @@ void execute_simple_command(t_op *cmd) {
         	return;
 		}
 		if (is_builtin(cmd))
-			execute_builtin(cmd);
+			execute_builtin(cmd, envp);
 		else
 		{
 			pid_t pid = fork();
@@ -198,7 +197,7 @@ void execute_simple_command(t_op *cmd) {
 					fprintf(stderr, "%s: command not found\n", cmd->str[0]);
 					_exit(127);
 				}
-				execve(exec_path, cmd->str, environ); // or use your env array
+				execve(exec_path, cmd->str, envp);
 				perror("execve");
 				_exit(1);
 			}
@@ -218,9 +217,8 @@ void execute_simple_command(t_op *cmd) {
 	}
 
 
-void execute_pipeline(t_op *cmd)
+void execute_pipeline(t_op *cmd, char **envp)
 {
-	extern char **environ;
     int pipeline_length = count_commands(cmd);
     pid_t *pids = malloc(sizeof(pid_t) * pipeline_length);
     if (!pids)
@@ -273,7 +271,7 @@ void execute_pipeline(t_op *cmd)
             }
             if (is_builtin(current))
             {
-                execute_builtin(current);
+                execute_builtin(current, envp);
                 _exit(0);
             }
             else
@@ -285,7 +283,7 @@ void execute_pipeline(t_op *cmd)
                     fprintf(stderr, "%s: command not found\n", current->str[0]);
                     _exit(127);
                 }
-                execve(exec_path, current->str, environ);
+                execve(exec_path, current->str, envp);
                 perror("execve");
                 _exit(1);
             }

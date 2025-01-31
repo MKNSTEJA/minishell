@@ -1,39 +1,35 @@
 #include "../include/minishell.h"
 
 
-void print_exported_environ(void)
+void print_exported_environ(char **envp)
 {
-    extern char **environ;
-    for (int i = 0; environ[i]; i++)
+    for (int i = 0; envp[i]; i++)
     {
         // We print it in "declare -x KEY=VALUE" style (bash-like).
         // Optional: parse out KEY and VALUE to insert quotes around VALUE.
         // For a simpler approach, just do:
-        printf("declare -x %s\n", environ[i]);
+        printf("declare -x %s\n", envp[i]);
     }
 }
 
-void set_env_variable(const char *key, const char *value)
+void set_env_variable(const char *key, const char *value, char **envp)
 {
-    extern char **environ;
     int   key_len = ft_strlen(key);
 
     // 1) Search existing environment for the key
-    for (int i = 0; environ[i]; i++)
+    for (int i = 0; envp[i]; i++)
     {
-        // Look for 'KEY=' at start of environ[i]
-        // i.e. if strncmp matches and environ[i][key_len] == '='
-        if (ft_strncmp(environ[i], key, key_len) == 0 && environ[i][key_len] == '=')
+        if (ft_strncmp(envp[i], key, key_len) == 0 && envp[i][key_len] == '=')
         {
             // 2) Found => replace old "KEY=old_value" with "KEY=new_value"
-            free(environ[i]); // free the old "KEY=VALUE" string
-            environ[i] = create_env_string(key, value);
+            free(envp[i]); // free the old "KEY=VALUE" string
+            envp[i] = create_env_string(key, value);
             return;
         }
     }
 
     // 3) Not found => add new environment variable
-    add_env_variable(key, value);
+    add_env_variable(key, value, envp);
 }
 
 char *create_env_string(const char *key, const char *value)
@@ -57,13 +53,12 @@ char *create_env_string(const char *key, const char *value)
 }
 
 
-void add_env_variable(const char *key, const char *value)
+void add_env_variable(const char *key, const char *value, char **envp)
 {
-    extern char **environ;
 
     // 1) Count how many entries in environ
     int i = 0;
-    while (environ[i])
+    while (envp[i])
         i++;
 
     // 2) Allocate new array (old_count + 2),
@@ -77,7 +72,7 @@ void add_env_variable(const char *key, const char *value)
 
     // 3) Copy old environ pointers
     for (int j = 0; j < i; j++)
-        new_env[j] = environ[j];
+        new_env[j] = envp[j];
 
     // 4) Create "KEY=VALUE" and append
     new_env[i] = create_env_string(key, value);
@@ -90,21 +85,20 @@ void add_env_variable(const char *key, const char *value)
     // but in some setups, 'environ' might be statically allocated by the system.
     // In 42 projects, typically we've duplicated environ at startup,
     // so we can safely free it. Adjust to your code:
-    free(environ);
+    free(envp);
 
     // 6) Point `environ` to the new array
-    environ = new_env;
+    envp = new_env;
 }
 
 
-void    handle_export(char **argv)
+void    handle_export(char **argv, char **envp)
 {
-    extern char **environ;
 
     // If "export" has no arguments, just display the environment
     if (!argv[1])
     {
-        print_exported_environ();
+        print_exported_environ(envp);
         return;
     }
 
@@ -127,7 +121,7 @@ void    handle_export(char **argv)
             // Validate key, etc. (optional: handle errors for invalid keys)
 
             // Update or add this KEY=VALUE in environ
-            set_env_variable(key, value);
+            set_env_variable(key, value, envp);
 
             free(key);
             free(value);
@@ -137,7 +131,7 @@ void    handle_export(char **argv)
             // No '=' => "export KEY"
             // By default, let's set KEY to empty if it doesn't exist
             // or do nothing if it already exists
-            set_env_variable(argv[i], "");
+            set_env_variable(argv[i], "", envp);
         }
     }
 }
@@ -228,17 +222,16 @@ void handle_cd(char **argv)
 
 
 
-void handle_unset(char **argv)
+void handle_unset(char **argv, char **envp)
 {
 	(void)argv;
-	extern char **environ;
 	if (!argv[1])
 	{
 		const char *error_msg = "unset: Missing argument\n";
 		write(STDERR_FILENO, error_msg, strlen(error_msg));
 		return;
 	}
-	char **env = environ;
+	char **env = envp;
 	while (*env)
 	{
 		if (strncmp(*env, argv[1], ft_strlen(argv[1])) == 0 && (*env)[strlen(argv[1])] == '=')
@@ -255,11 +248,10 @@ void handle_unset(char **argv)
 		}
 }
 
-void handle_env(char **argv)
+void handle_env(char **argv, char **envp)
 {
 	(void)argv;
-	extern char **environ;
-	char **env = environ;
+	char **env = envp;
 
 	while (*env)
 	{

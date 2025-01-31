@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/23 08:26:30 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/31 21:04:25 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,8 +395,6 @@ t_split *create_new_token(char *str, t_type type)
 	return new_node;
 }
 
-
-// Function to retrieve the value of an environment variable
 char *get_env_value(const char *var_name, char **envp)
 {
     size_t len = ft_strlen(var_name);
