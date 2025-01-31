@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/25 17:35:45 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/01/31 20:01:12 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int	main(int argc, char **argv, char **envp)
 			break;
 		add_history(str);
 		input = split_inputs(str);
-		// print input
 		// print_split(input);
 		// printf("\n");
 		// expand_tokens(&input, envp);
@@ -83,7 +82,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free(str);
 	rl_clear_history();
-	system("leaks minishell");
+	// system("leaks minishell");
 	return g_exit_code;
 }
 
