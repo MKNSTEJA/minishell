@@ -50,37 +50,52 @@ int is_numeric(const char *s)
 	return 1;
 }
 
-int print_command_error(char *command, char *detail, char *error_message, int error_nb)
+void print_error_msg(const char *cmd, const char *arg, const char *err_msg)
 {
-    char *msg;
-    char *temp;
-
-    msg = ft_strjoin("minishell: ", command);
-    if (command)
+    write(2, "minishell: ", 11);
+    write(2, cmd, ft_strlen(cmd));
+    write(2, ": ", 2);
+    if (arg)
     {
-        temp = ft_strjoin(msg, ": ");
-        free(msg);
-        msg = temp;
+        write(2, arg, ft_strlen(arg));
+        write(2, ": ", 2);
     }
-    if (detail)
-    {
-        temp = ft_strjoin(msg, detail);
-        free(msg);
-        msg = temp;
-
-        temp = ft_strjoin(msg, ": ");
-        free(msg);
-        msg = temp;
-    }
-
-    temp = ft_strjoin(msg, error_message);
-    free(msg);
-    msg = temp;
-
-    ft_putendl_fd(msg, STDERR_FILENO);
-    free(msg);
-
-    return error_nb;
+    write(2, err_msg, strlen(err_msg));
+    write(2, "\n", 1);
 }
+
+
+// int print_command_error(char *command, char *detail, char *error_message, int error_nb)
+// {
+//     char *msg;
+//     char *temp;
+
+//     msg = ft_strjoin("minishell: ", command);
+//     if (command)
+//     {
+//         temp = ft_strjoin(msg, ": ");
+//         free(msg);
+//         msg = temp;
+//     }
+//     if (detail)
+//     {
+//         temp = ft_strjoin(msg, detail);
+//         free(msg);
+//         msg = temp;
+
+//         temp = ft_strjoin(msg, ": ");
+//         free(msg);
+//         msg = temp;
+//     }
+
+//     temp = ft_strjoin(msg, error_message);
+//     free(msg);
+//     msg = temp;
+
+//     ft_putendl_fd(msg, STDERR_FILENO);
+//     free(msg);
+
+//     return error_nb;
+// }
 
 

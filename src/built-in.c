@@ -143,12 +143,12 @@ void handle_exit(char **argv)
 	{
 		if (!is_numeric(argv[1]))
 		{
-			print_command_error("exit", argv[1], "numeric argument required", 2);
-			exit(255);
+			print_error_msg("exit", argv[1], "numeric argument required");
+            exit(255);
 		}
 		else if (count > 2)
 		{
-			print_command_error("exit", argv[2], "too many arguments", 1);
+			print_error_msg("exit", NULL, "too many arguments");
 			return;
 		}
 		else
