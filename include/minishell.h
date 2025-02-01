@@ -26,6 +26,12 @@ typedef struct s_char_node
 	struct s_char_node	*next;
 }						t_char_node;
 
+typedef struct s_expand
+{
+	t_char_node *expanded_head;
+	t_char_node *expanded_tail;
+}						t_expand;
+
 typedef enum e_type
 {
 	NONE,
