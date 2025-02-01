@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/31 21:22:29 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/01 12:30:50 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,16 @@ int	main(int argc, char **argv, char **envp)
 	t_split	*input;
 	t_op	*cmd;
 	char	*str;
-	(void)argc;
+	t_data	data;
+	(void)argc; // this will be used later, so if norminette marked it as an additional parameter, ignore it
     (void)argv;
 
 	input = NULL;
 	cmd = NULL;
+
+	if (!init_data(&data, envp))
+		return EXIT_FAILURE;
+
 	while (1)
 	{
 		/*
@@ -60,7 +65,7 @@ int	main(int argc, char **argv, char **envp)
 		input = split_inputs(str);
 		// print_split(input);
 		// printf("\n");
-		expand_tokens(&input, envp);
+		expand_tokens(&input, data.env);
 		// expand_tokens(&input, environ);
 		if (split_errors(input) == 1)
 		{
@@ -73,7 +78,7 @@ int	main(int argc, char **argv, char **envp)
 		cmd = initialise_cmd(input);
 		// print_cmd(cmd);
 		// printf("\n");
-		execute_commands(cmd, envp);
+		execute_commands(cmd, &data);
 		free_split(input);
 		free_op(cmd);
 		free(str);
@@ -82,6 +87,47 @@ int	main(int argc, char **argv, char **envp)
 	rl_clear_history();
 	// system("leaks minishell");
 	return g_exit_code;
+}
+
+
+int init_data(t_data *data, char **envp)
+{
+    int i = 0;
+    while (envp[i])
+        i++;
+
+    data->env = malloc(sizeof(char *) * (i + 1));
+    if (!data->env)
+        return 0;
+	int j = 0;
+    while (j < i)
+    {
+        data->env[j] = ft_strdup(envp[j]);
+        if (!data->env[j])
+        {
+            while (--j >= 0)
+                free(data->env[j]);
+            free(data->env);
+            return 0;
+        }
+		j++;
+    }
+    data->env[i] = NULL;
+    return 1;
+}
+
+void free_data(t_data *data)
+{
+    if (data->env)
+    {
+        int i = 0;
+        while (data->env[i])
+        {
+            free(data->env[i]);
+            i++;
+        }
+        free(data->env);
+    }
 }
 
 void	free_split(t_split *list)

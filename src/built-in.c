@@ -12,22 +12,23 @@ void print_exported_environ(char **envp)
     }
 }
 
-void set_env_variable(const char *key, const char *value, char **envp)
+void set_env_variable(const char *key, const char *value, char ***envp)
 {
+	int i = 0;
     int   key_len = ft_strlen(key);
 
     // 1) Search existing environment for the key
-    for (int i = 0; envp[i]; i++)
+    while ((*envp)[i])
     {
-        if (ft_strncmp(envp[i], key, key_len) == 0 && envp[i][key_len] == '=')
+        if (ft_strncmp((*envp)[i], key, key_len) == 0 && (*envp)[i][key_len] == '=')
         {
             // 2) Found => replace old "KEY=old_value" with "KEY=new_value"
-            free(envp[i]); // free the old "KEY=VALUE" string
-            envp[i] = create_env_string(key, value);
+            free(*(envp)[i]); // free the old "KEY=VALUE" string
+            (*envp)[i] = create_env_string(key, value);
             return;
         }
+		i++;
     }
-
     // 3) Not found => add new environment variable
     add_env_variable(key, value, envp);
 }
@@ -53,30 +54,26 @@ char *create_env_string(const char *key, const char *value)
 }
 
 
-void add_env_variable(const char *key, const char *value, char **envp)
+void add_env_variable(const char *key, const char *value, char ***envp)
 {
 
     // 1) Count how many entries in environ
     int i = 0;
-    while (envp[i])
+    while ((*envp)[i])
         i++;
 
     // 2) Allocate new array (old_count + 2),
     //    because we need one extra for the new var and one for NULL terminator.
     char **new_env = (char **)malloc(sizeof(char *) * (i + 2));
     if (!new_env)
-    {
-        // handle error, e.g. perror or similar
         return;
-    }
 
     // 3) Copy old environ pointers
     for (int j = 0; j < i; j++)
-        new_env[j] = envp[j];
+        new_env[j] = (*envp)[j];
 
     // 4) Create "KEY=VALUE" and append
     new_env[i] = create_env_string(key, value);
-    // 5) Null-terminate
     new_env[i + 1] = NULL;
 
     // Optionally, free the old array if you're sure you allocated it
@@ -85,27 +82,25 @@ void add_env_variable(const char *key, const char *value, char **envp)
     // but in some setups, 'environ' might be statically allocated by the system.
     // In 42 projects, typically we've duplicated environ at startup,
     // so we can safely free it. Adjust to your code:
-    free(envp);
+    free(*envp);
 
     // 6) Point `environ` to the new array
-    envp = new_env;
+    *envp = new_env;
 }
 
 
-void    handle_export(char **argv, char **envp)
+void    handle_export(char **argv, t_data *data)
 {
-
+	int i = 1;
     // If "export" has no arguments, just display the environment
     if (!argv[1])
     {
-        print_exported_environ(envp);
+        print_exported_environ(data->env);
         return;
     }
-
-    // Process each argument after 'export'
-    for (int i = 1; argv[i]; i++)
+	
+    while (argv[i])
     {
-        // 1) Look for '=' in the argument
         char *equal_sign = ft_strchr(argv[i], '=');
 
         // 2) If found, separate KEY and VALUE
@@ -121,7 +116,7 @@ void    handle_export(char **argv, char **envp)
             // Validate key, etc. (optional: handle errors for invalid keys)
 
             // Update or add this KEY=VALUE in environ
-            set_env_variable(key, value, envp);
+            set_env_variable(key, value, &(data->env));
 
             free(key);
             free(value);
@@ -131,8 +126,9 @@ void    handle_export(char **argv, char **envp)
             // No '=' => "export KEY"
             // By default, let's set KEY to empty if it doesn't exist
             // or do nothing if it already exists
-            set_env_variable(argv[i], "", envp);
+            set_env_variable(argv[i], "", &(data->env));
         }
+		i++;
     }
 }
 
@@ -187,11 +183,10 @@ void handle_cd(char **argv)
     if (!argv[1]) 
     {
         char *home = getenv("HOME");
-        if (home) 
+        if (home)
         {
             if (chdir(home) == 0)
             {
-                // Update PWD in the environment
                 char *cwd = getcwd(NULL, 0);
                 if (cwd)
                 {
@@ -200,7 +195,7 @@ void handle_cd(char **argv)
                 }
             }
             else
-                perror("cd"); // Print error if chdir fails
+                perror("cd");
         } 
         else
             fprintf(stderr, "cd: HOME environment variable is not set\n");
@@ -248,10 +243,10 @@ void handle_unset(char **argv, char **envp)
 		}
 }
 
-void handle_env(char **argv, char **envp)
+void handle_env(char **argv, t_data *data)
 {
 	(void)argv;
-	char **env = envp;
+	char **env = data->env;
 
 	while (*env)
 	{

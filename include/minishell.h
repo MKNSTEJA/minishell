@@ -14,6 +14,12 @@
 
 extern int				g_exit_code;
 
+typedef struct s_data {
+    char    **env;       
+    int     last_exit; // last exit code
+    // some more data
+} t_data;
+
 typedef struct s_char_node
 {
 	char				c;
@@ -79,6 +85,8 @@ typedef struct s_op
 	struct s_op			*next;
 }						t_op;
 
+
+int init_data(t_data *data, char **envp);
 int						is_numeric(const char *s);
 int						print_command_error(char *command, char *detail,
 							char *error_message, int error_nb);
@@ -102,13 +110,13 @@ void					handle_dollar(t_segment **current_segments,
 void					handle_exit(char **argv);
 void					handle_cd(char **argv);
 void					handle_unset(char **argv, char **envp);
-void					handle_env(char **argv, char **envp);
+void					handle_env(char **argv, t_data *data);
 void					handle_pwd(char **argv);
 void					handle_echo(char **argv);
-void					handle_export(char **argv, char **envp);
-void					add_env_variable(const char *key, const char *value, char **envp);
+void					handle_export(char **argv, t_data *data);
+void					add_env_variable(const char *key, const char *value, char ***envp);
 char					*create_env_string(const char *key, const char *value);
-void					set_env_variable(const char *key, const char *value, char **envp);
+void					set_env_variable(const char *key, const char *value, char ***envp);
 void					print_exported_environ(char **envp);
 int						apply_redirections(t_op *cmd);
 int						count_commands(t_op *cmd);
@@ -123,10 +131,10 @@ char					*expand_escape(const char *str);
 void					append_list(t_split **head, t_segment *segments,
 							t_type type);
 int						is_builtin(t_op *cmd);
-void					execute_commands(t_op *cmd, char **envp);
-void					execute_pipeline(t_op *cmd, char **envp);
-void					execute_simple_command(t_op *cmd, char **envp);
-void					execute_builtin(t_op *cmd, char **envp);
+void					execute_commands(t_op *cmd, t_data *data);
+void					execute_pipeline(t_op *cmd, t_data *data);
+void					execute_simple_command(t_op *cmd, t_data *data);
+void					execute_builtin(t_op *cmd, t_data *data);
 void					print_cmd(t_op *cmd);
 void					free_split(t_split *list);
 void					print_split(t_split *input);
