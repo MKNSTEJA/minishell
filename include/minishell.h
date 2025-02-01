@@ -46,14 +46,14 @@ typedef enum e_type
 typedef enum e_quote_state
 {
 	QUOTE_NONE,
-	QUOTE_SINGLE,
-	QUOTE_DOUBLE
+	SQ,
+	DQ
 }						t_quote_state;
 
 typedef struct s_segment
 {
 	char				*text;
-	t_quote_state		quote_state;
+	t_quote_state		quote;
 	struct s_segment	*current_segment;
 	struct s_segment	*next;
 }						t_segment;
@@ -93,6 +93,7 @@ typedef struct s_op
 
 
 int init_data(t_data *data, char **envp);
+void					print_error_msg(const char *cmd, const char *arg, const char *err_msg);
 int						is_numeric(const char *s);
 int						print_command_error(char *command, char *detail,
 							char *error_message, int error_nb);

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/01 13:13:34 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:42:16 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int is_token_unquoted(t_split *token)
     t_segment *seg = token->segments;
     while (seg)
     {
-        if (seg->quote_state != QUOTE_NONE)
+        if (seg->quote != QUOTE_NONE)
             return 0;
         seg = seg->next;
     }
@@ -195,11 +195,11 @@ void expand_tokens(t_split **head, char **envp)
 					if (str[i] == '"')
 						i++;
 				}
-				else if (str[i] == '"' && curr_segment->quote_state == QUOTE_DOUBLE && !escaped)
+				else if (str[i] == '"' && curr_segment->quote == DQ && !escaped)
 					expand_double_quote(str, envp, &i, &expanded_head, &expanded_tail);
-				else if (str[i] == '\'' && curr_segment->quote_state == QUOTE_SINGLE && !escaped)
+				else if (str[i] == '\'' && curr_segment->quote == SQ && !escaped)
 					expand_single_quote(str, &i, &expanded_head, &expanded_tail);
-				else if (str[i] == '$' && curr_segment->quote_state != QUOTE_SINGLE && !escaped)
+				else if (str[i] == '$' && curr_segment->quote != SQ && !escaped)
 				{
 					char *var = expand_var(&str[i], envp, &i);
 					if (var)
@@ -419,7 +419,7 @@ char *expand_one_token(char *token, char **envp, t_quote_state quote_state)
 
     while (token && token[i])
 	{
-		if (token[i] == '$' && quote_state != QUOTE_SINGLE)
+		if (token[i] == '$' && quote_state != SQ)
 		{
 			// expand the variable
 			char *var_value = expand_var(&token[i], envp, &i);

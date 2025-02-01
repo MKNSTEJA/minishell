@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/01 12:30:50 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:39:06 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ void	print_split(t_split *input)
 		i = 0;
 		while(ptrs)
 		{
-			printf("Seg%d = %s, quote = %d\n",i, ptrs->text, ptrs->quote_state);
+			printf("Seg%d = %s, quote = %d\n",i, ptrs->text, ptrs->quote);
 			i++;
 			ptrs = ptrs->next;
 		}

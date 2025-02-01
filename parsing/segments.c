@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segments.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/31 20:12:46 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:42:26 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_segment	*create_segment(const char *text, t_quote_state state)
 		exit(1);
 	}
 	seg->text = ft_strdup(text);
-	seg->quote_state = state;
+	seg->quote = state;
 	seg->next = NULL;
 	return (seg);
 }

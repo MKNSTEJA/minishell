@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_parts.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/31 20:12:22 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:42:47 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 
 	new_state = QUOTE_NONE;
 	if ((*parts)->string[*i] == '"')
-		new_state = QUOTE_DOUBLE;
+		new_state = DQ;
 	else if ((*parts)->string[*i] == '\'')
-		new_state = QUOTE_SINGLE;
+		new_state = SQ;
 	if ((*parts)->quote == QUOTE_NONE)
 	{
 		(*parts)->quote = new_state;
@@ -96,7 +96,7 @@ void	handle_redirections(t_split **input, t_parts **parts, int *i)
 
 void	handle_dollar(t_segment **current_segments, t_parts **parts, int *i)
 {
-	(*parts)->quote = QUOTE_DOUBLE;
+	(*parts)->quote = DQ;
 	(*parts)->current_segment = create_segment("$\"", (*parts)->quote);
 	append_segment(current_segments, (*parts)->current_segment);
 	(*i) += 2;
