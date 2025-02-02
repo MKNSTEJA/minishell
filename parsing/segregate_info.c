@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segregate_info.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/20 21:22:41 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/02 23:23:38 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,23 @@ void add_redirection(t_op *cmd, t_type type, char *filename)
 	if (!new_redir)
 	{
 		perror("malloc");
-		exit(1); // handle later on gracefully
+		exit(1);
 	}
 	new_redir->type = type;
 	new_redir->filename = ft_strdup(filename);
 	new_redir->next = NULL;
-
+	
+	if (type == HEREDOC)
+    {
+        if (ft_strchr(filename, '\'') != NULL)
+            new_redir->quoted = 1;
+        else
+            new_redir->quoted = 0;
+    }
+    else
+    {
+        new_redir->quoted = 0;
+    }
 	// If this command has no redirections yet, new_redir is the first
 	if (!cmd->redirections)
 		cmd->redirections = new_redir;

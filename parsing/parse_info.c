@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/01/31 20:12:03 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:45:57 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,29 +122,3 @@ void	append_list(t_split **head, t_segment *segments, t_type type)
 		new_node->prev = current;
 	}
 }
-
-// void	tokenise(t_split *input)
-// {
-// 	t_split	*ptr;
-// 	int		strlen;
-
-// 	ptr = input;
-// 	strlen = 0;
-// 	while (ptr)
-// 	{
-// 		strlen = ft_strlen(ptr->str);
-// 		if (ft_strncmp(ptr->str, "|", strlen) == 0)
-// 			ptr->type = PIPES;
-// 		else if (ft_strncmp(ptr->str, "<", strlen) == 0)
-// 			ptr->type = IN;
-// 		else if (ft_strncmp(ptr->str, ">", strlen) == 0)
-// 			ptr->type = OUT;
-// 		else if (ft_strncmp(ptr->str, ">>", strlen) == 0)
-// 			ptr->type = APPEND;
-// 		else if (ft_strncmp(ptr->str, "<<", strlen) == 0)
-// 			ptr->type = HEREDOC;
-// 		else
-// 			ptr->type = WORD;
-// 		ptr = ptr->next;
-// 	}
-// }

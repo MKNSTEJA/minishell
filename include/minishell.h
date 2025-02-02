@@ -82,6 +82,7 @@ typedef struct s_redir
 	t_type				type;
 	char				*filename;
 	struct s_redir		*next;
+	int 				quoted;
 }						t_redir;
 
 typedef struct s_op
@@ -91,12 +92,14 @@ typedef struct s_op
 	struct s_op			*next;
 }						t_op;
 
-
-int init_data(t_data *data, char **envp);
+int						is_n_flag(char *arg);
+int						init_data(t_data *data, char **envp);
+void					free_data(t_data *data);
 void					print_error_msg(const char *cmd, const char *arg, const char *err_msg);
 int						is_numeric(const char *s);
-int						print_command_error(char *command, char *detail,
-							char *error_message, int error_nb);
+// int						print_command_error(char *command, char *detail,
+							// char *error_message, int error_nb);
+char					*expand_line(char *line, char **envp);
 void					ignore_sigquit(void);
 void					signal_reset_prompt(int signo);
 t_segment				*create_segment(const char *text, t_quote_state state);
@@ -115,17 +118,18 @@ void					handle_others(t_split **input,
 void					handle_dollar(t_segment **current_segments,
 							t_parts **parts, int *i);
 void					handle_exit(char **argv);
-void					handle_cd(char **argv);
+void					handle_cd(char **argv, char ***envp);
+char					*my_getenv(const char *name, char **env);
 void					handle_unset(char **argv, char **envp);
 void					handle_env(char **argv, t_data *data);
-void					handle_pwd(char **argv);
+void					handle_pwd(char **argv, char **envp);
 void					handle_echo(char **argv);
 void					handle_export(char **argv, t_data *data);
 void					add_env_variable(const char *key, const char *value, char ***envp);
 char					*create_env_string(const char *key, const char *value);
 void					set_env_variable(const char *key, const char *value, char ***envp);
 void					print_exported_environ(char **envp);
-int						apply_redirections(t_op *cmd);
+int						apply_redirections(t_op *cmd, char **envp);
 int						count_commands(t_op *cmd);
 char					*get_env_value(const char *var_name, char **envp);
 void					expand_tokens(t_split **head, char **envp);

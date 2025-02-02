@@ -23,7 +23,7 @@ void set_env_variable(const char *key, const char *value, char ***envp)
         if (ft_strncmp((*envp)[i], key, key_len) == 0 && (*envp)[i][key_len] == '=')
         {
             // 2) Found => replace old "KEY=old_value" with "KEY=new_value"
-            free(*(envp)[i]); // free the old "KEY=VALUE" string
+            free((*envp)[i]);
             (*envp)[i] = create_env_string(key, value);
             return;
         }
@@ -51,6 +51,18 @@ char *create_env_string(const char *key, const char *value)
     ft_strlcpy(env_string + key_len + 1, value, val_len + 1);
 
     return (env_string);
+}
+char *my_getenv(const char *name, char **env)
+{
+    int i = 0;
+    int len = ft_strlen(name);
+    while (env[i])
+    {
+        if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
+            return env[i] + len + 1;
+        i++;
+    }
+    return NULL;
 }
 
 
@@ -178,11 +190,17 @@ void handle_exit(char **argv)
 // 		printf("cd: no such file or directory: %s\n", argv[1]); // will come back to it to change to stderror
 // }
 
-void handle_cd(char **argv)
+void handle_cd(char **argv, char ***envp)
 {
-    if (!argv[1]) 
+    char *old_pwd = getcwd(NULL, 0);
+    if (!old_pwd) {
+        perror("getcwd");
+        return;
+    }
+    
+    if (!argv[1] || (argv[1][0] == '~' && argv[1][1] == '\0'))
     {
-        char *home = getenv("HOME");
+        char *home = my_getenv("HOME", *envp);
         if (home)
         {
             if (chdir(home) == 0)
@@ -190,30 +208,70 @@ void handle_cd(char **argv)
                 char *cwd = getcwd(NULL, 0);
                 if (cwd)
                 {
-                    setenv("PWD", cwd, 1);
+                    set_env_variable("OLDPWD", old_pwd, envp);
+                    set_env_variable("PWD", cwd, envp);
                     free(cwd);
                 }
             }
             else
+            {
                 perror("cd");
-        } 
+            }
+        }
         else
+        {
             fprintf(stderr, "cd: HOME environment variable is not set\n");
+        }
+        free(old_pwd);
         return;
     }
-    if (chdir(argv[1]) == 0)
+    else if (argv[1][0] == '-' && argv[1][1] == '\0')
     {
-        // Update PWD in the environment
-        char *cwd = getcwd(NULL, 0);
-        if (cwd)
+        char *oldpwd_env = my_getenv("OLDPWD", *envp);
+        if (!oldpwd_env)
         {
-            setenv("PWD", cwd, 1);
-            free(cwd);
+            fprintf(stderr, "cd: OLDPWD not set\n");
+            free(old_pwd);
+            return;
         }
+        if (chdir(oldpwd_env) == 0)
+        {
+            char *cwd = getcwd(NULL, 0);
+            if (cwd)
+            {
+                set_env_variable("OLDPWD", old_pwd, envp);
+                set_env_variable("PWD", cwd, envp);
+                printf("%s\n", cwd);
+                free(cwd);
+            }
+        }
+        else
+        {
+            perror("cd");
+        }
+        free(old_pwd);
+        return;
     }
     else
-        fprintf(stderr, "cd: no such file or directory: %s\n", argv[1]);
+    {
+        if (chdir(argv[1]) == 0)
+        {
+            char *cwd = getcwd(NULL, 0);
+            if (cwd)
+            {
+                set_env_variable("OLDPWD", old_pwd, envp);
+                set_env_variable("PWD", cwd, envp);
+                free(cwd);
+            }
+        }
+        else
+        {
+            fprintf(stderr, "cd: no such file or directory: %s\n", argv[1]);
+        }
+        free(old_pwd);
+    }
 }
+
 
 
 
@@ -245,19 +303,27 @@ void handle_unset(char **argv, char **envp)
 
 void handle_env(char **argv, t_data *data)
 {
-	(void)argv;
-	char **env = data->env;
+    char **env;
 
-	while (*env)
-	{
-		printf("%s\n", *env);
-		env++;
-	}
+    if (argv && argv[1]) {
+        print_error_msg("env", NULL, "too many arguments");
+        return;
+    }
+    env = data->env;
+    if (!env) {
+        return;
+    }
+    while (*env)
+    {
+        printf("%s\n", *env);
+        env++;
+    }
 }
-void handle_pwd(char **argv)
+
+void handle_pwd(char **argv, char **envp)
 {
 	(void)argv;
-	char *pwd = getenv("PWD");
+	char *pwd = my_getenv("PWD", envp);
     if (pwd)
         printf("%s\n", pwd);
     else
@@ -267,38 +333,34 @@ void handle_pwd(char **argv)
 	}
 }
 
+int is_n_flag(char *arg)
+{
+	int i;
+
+	i = 0;
+	if (arg[i] != '-')
+	{
+		return (0);
+	}
+	i++;
+	while (arg[i] == 'n')
+	{
+		i++;
+	}
+	return (arg[i] == '\0');
+}
 void handle_echo(char **argv)
 {
 	int i = 1; //start from 1 bec. 0 is the command itself
 	int newline = 1; //default is to print newline
-	int enable_escape = 0; //default is to disable escape
 
 	// 1) parse flags
-	while (argv[i] && argv[i][0] == '-' && argv[i][1] != '\0')
+	while (argv[i] && is_n_flag(argv[i]))
 	{
-		int j = 1;
-		int valid_flag = 1; //default is to assume the flag is valid
-		while (argv[i][j])
-		{
-			if (argv[i][j] == 'n')
-				newline = 0;
-			else if (argv[i][j] == 'e')
-				enable_escape = 1;
-			else if (argv[i][j] == 'E')
-				enable_escape = 0;
-			else
-			{
-				valid_flag = 0;
-				break;
-			}
-			j++;
-		}
-		if (!valid_flag)
-			break;
+		newline = 0;
 		i++;
 	}
 
-	// 2) print arguments
 	int first_arg = 1;
 	while (argv[i])
 	{
@@ -306,20 +368,8 @@ void handle_echo(char **argv)
 			printf(" ");
 		else
 			first_arg = 0;
-		
-		if (enable_escape)
-		{
-			char *expanded = expand_escape(argv[i]);
-			if (expanded)
-			{
-				printf("%s", expanded);
-				free(expanded);
-			}
-			else
-				printf("%s", argv[i]);
-		}
-		else
-			printf("%s", argv[i]);
+
+		printf("%s", argv[i]);
 		i++;
 	}
 	if (newline)

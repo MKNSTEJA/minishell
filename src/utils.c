@@ -60,7 +60,7 @@ void print_error_msg(const char *cmd, const char *arg, const char *err_msg)
         write(2, arg, ft_strlen(arg));
         write(2, ": ", 2);
     }
-    write(2, err_msg, strlen(err_msg));
+    write(2, err_msg, ft_strlen(err_msg));
     write(2, "\n", 1);
 }
 

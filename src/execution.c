@@ -11,7 +11,12 @@ void execute_commands(t_op *cmd, t_data *data)
         execute_simple_command(cmd, data);
 }
 
-int apply_redirections(t_op *cmd)
+char *expand_line(char *line, char **envp)
+{
+	return expand_one_token(line, envp, DQ);
+}
+
+int apply_redirections(t_op *cmd, char **envp)
 {
     t_redir *redir = cmd->redirections;
     while (redir)
@@ -55,7 +60,6 @@ int apply_redirections(t_op *cmd)
         }
         else if (redir->type == HEREDOC) // "<<"
         {
-			// create a pipe to store heredoc content
 			int heredoc_pipe[2];
 			if (pipe(heredoc_pipe) < 0)
 			{
@@ -78,6 +82,17 @@ int apply_redirections(t_op *cmd)
 				{
 					free(line);
 					break;
+				}
+				// expansion
+				if (!redir->quoted)
+				{
+					char *expanded_line = expand_line(line, envp);
+					free(line);
+					if (!expanded_line)
+					{
+						break;
+					}
+					line = expanded_line;
 				}
 				write(heredoc_pipe[1], line, ft_strlen(line));
 				write(heredoc_pipe[1], "\n", 1);
@@ -148,13 +163,13 @@ void execute_builtin(t_op *cmd, t_data *data)
 	if (strcmp(argv[0], "exit") == 0)
 		handle_exit(argv);
 	else if (strcmp(argv[0], "cd") == 0)
-		handle_cd(argv);
+		handle_cd(argv, &(data->env));
 	else if (strcmp(argv[0], "unset") == 0)
 		handle_unset(argv, data->env);
 	else if (strcmp(argv[0], "env") == 0)
 		handle_env(argv, data);
 	else if (strcmp(argv[0], "pwd") == 0)
-		handle_pwd(argv);
+		handle_pwd(argv, data->env);
 	else if (strcmp(argv[0], "echo") == 0)
 		handle_echo(argv);
 	else if (strcmp(argv[0], "export") == 0)
@@ -175,7 +190,7 @@ void execute_simple_command(t_op *cmd, t_data *data)
 		return;
         }
 
-        if (apply_redirections(cmd) < 0)
+        if (apply_redirections(cmd, data->env) < 0)
 		{
 			dup2(saved_stdin, STDIN_FILENO);
 			dup2(saved_stdout, STDOUT_FILENO);
@@ -215,7 +230,7 @@ void execute_simple_command(t_op *cmd, t_data *data)
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);
 		close(saved_stdout);
-	}
+}
 
 
 void execute_pipeline(t_op *cmd, t_data *data)
@@ -256,7 +271,7 @@ void execute_pipeline(t_op *cmd, t_data *data)
 
         if (pid == 0) // Child
         {
-            if (apply_redirections(current) < 0)
+            if (apply_redirections(current, data->env) < 0)
 				_exit(1);
 			if (prev_fd != -1)
 			{

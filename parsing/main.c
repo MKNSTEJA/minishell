@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/01 22:39:06 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/03 00:35:05 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ int	main(int argc, char **argv, char **envp)
 		// print_split(input);
 		// printf("\n");
 		expand_tokens(&input, data.env);
-		// expand_tokens(&input, environ);
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
@@ -85,6 +84,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free(str);
 	rl_clear_history();
+	free_data(&data);
 	// system("leaks minishell");
 	return g_exit_code;
 }
@@ -98,7 +98,10 @@ int init_data(t_data *data, char **envp)
 
     data->env = malloc(sizeof(char *) * (i + 1));
     if (!data->env)
-        return 0;
+        {
+			return 0;
+		}
+		
 	int j = 0;
     while (j < i)
     {
