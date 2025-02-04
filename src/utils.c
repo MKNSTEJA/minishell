@@ -65,6 +65,27 @@ void print_error_msg(const char *cmd, const char *arg, const char *err_msg)
 }
 
 
+void remove_env_variable(char ***envp, const char *var)
+{
+    int len = ft_strlen(var);
+    int i = 0;
+    while ((*envp)[i])
+    {
+        if (ft_strncmp((*envp)[i], var, len) == 0 && (*envp)[i][len] == '=')
+        {
+            free((*envp)[i]);
+            int j = i;
+            while ((*envp)[j])
+            {
+                (*envp)[j] = (*envp)[j+1];
+                j++;
+            }
+            continue;
+        }
+        i++;
+    }
+}
+
 // int print_command_error(char *command, char *detail, char *error_message, int error_nb)
 // {
 //     char *msg;

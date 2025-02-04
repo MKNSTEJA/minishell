@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/03 00:35:05 by yousef           ###   ########.fr       */
+/*   Updated: 2025/02/04 23:06:47 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ int	main(int argc, char **argv, char **envp)
 
 	input = NULL;
 	cmd = NULL;
-
+	str = NULL;
 	if (!init_data(&data, envp))
 		return EXIT_FAILURE;
-
+	remove_env_variable(&data.env, "OLDPWD");
 	while (1)
 	{
 		/*
@@ -82,7 +82,6 @@ int	main(int argc, char **argv, char **envp)
 		free_op(cmd);
 		free(str);
 	}
-	free(str);
 	rl_clear_history();
 	free_data(&data);
 	// system("leaks minishell");

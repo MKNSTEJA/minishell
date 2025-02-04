@@ -126,6 +126,7 @@ void					handle_pwd(char **argv, char **envp);
 void					handle_echo(char **argv);
 void					handle_export(char **argv, t_data *data);
 void					add_env_variable(const char *key, const char *value, char ***envp);
+void					remove_env_variable(char ***envp, const char *var);
 char					*create_env_string(const char *key, const char *value);
 void					set_env_variable(const char *key, const char *value, char ***envp);
 void					print_exported_environ(char **envp);
@@ -150,6 +151,6 @@ void					print_cmd(t_op *cmd);
 void					free_split(t_split *list);
 void					print_split(t_split *input);
 void					free_op(t_op *cmd);
-char					*find_executable(char **argv);
+char					*find_executable(char **argv, char **envp);
 
 #endif

@@ -193,7 +193,8 @@ void handle_exit(char **argv)
 void handle_cd(char **argv, char ***envp)
 {
     char *old_pwd = getcwd(NULL, 0);
-    if (!old_pwd) {
+    if (!old_pwd) 
+	{
         perror("getcwd");
         return;
     }

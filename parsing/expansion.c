@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/01 22:42:16 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/04 19:44:39 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,7 +350,7 @@ char *expand_var(const char *str, char **envp, size_t *i)
 	// skip over the var name
 	(*i) += var_len + 1;
 
-	char *value = get_env_value(var_name, envp);
+	char *value = my_getenv(var_name, envp);
 	// char *value = getenv(var_name);
 	free(var_name);
 	if (value)

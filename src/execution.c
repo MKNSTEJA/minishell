@@ -108,7 +108,7 @@ int apply_redirections(t_op *cmd, char **envp)
 }
 
 
-char *find_executable(char **argv)
+char *find_executable(char **argv, char **envp)
 {
 	if (argv[0][0] == '/' || argv[0][0] == '.')
     {
@@ -118,11 +118,13 @@ char *find_executable(char **argv)
             return NULL;
     }
 	char *executable_path = NULL;
-	char *path = getenv("PATH"); 
+	// char *path = getenv("PATH"); 
+	char *path = get_env_value("PATH", envp);
 	if (!path)
 	{
-		write(2, "PATH not set\n", 13);
-    	return NULL;
+		// write(2, "PATH not set\n", 13);
+    	// return NULL;
+		path = "/bin:/usr/bin";
 	}
 	char **split_path = ft_split(path, ':');
 	// printf("split_path: %s\n", *split_path);
@@ -185,51 +187,55 @@ void execute_simple_command(t_op *cmd, t_data *data)
         // Save original FDs
 	int saved_stdin = dup(STDIN_FILENO);
 	int saved_stdout = dup(STDOUT_FILENO);
-	if (saved_stdin < 0 || saved_stdout < 0) {
+	if (saved_stdin < 0 || saved_stdout < 0) 
+	{
 		perror("dup");
 		return;
-        }
+    }
 
-        if (apply_redirections(cmd, data->env) < 0)
-		{
-			dup2(saved_stdin, STDIN_FILENO);
-			dup2(saved_stdout, STDOUT_FILENO);
-			close(saved_stdin);
-			close(saved_stdout);
-        	return;
-		}
-		if (is_builtin(cmd))
-			execute_builtin(cmd, data);
-		else
-		{
-			pid_t pid = fork();
-			if (pid < 0)
-				perror("fork");
-			else if (pid == 0)
-			{
-				char *exec_path = find_executable(cmd->str);
-				if (!exec_path)
-				{
-					fprintf(stderr, "%s: command not found\n", cmd->str[0]);
-					_exit(127);
-				}
-				execve(exec_path, cmd->str, data->env);
-				perror("execve");
-				_exit(1);
-			}
-			else //parent
-			{
-				// wait
-				int status;
-				waitpid(pid, &status, 0);
-				// Optional: handle exit status if needed
-			}
-		}
-		// Restore FDs
+	if (apply_redirections(cmd, data->env) < 0)
+	{
 		dup2(saved_stdin, STDIN_FILENO);
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);
 		close(saved_stdout);
+		return;
+	}
+	if (is_builtin(cmd))
+		execute_builtin(cmd, data);
+	else
+	{
+		pid_t pid = fork();
+		if (pid < 0)
+			perror("fork");
+		else if (pid == 0)
+		{
+			char *exec_path = find_executable(cmd->str, data->env);
+			if (!exec_path)
+			{
+				fprintf(stderr, "%s: command not found\n", cmd->str[0]);
+				_exit(127);
+			}
+			// fprintf(stderr, "Executing: %s\n", exec_path);
+			execve(exec_path, cmd->str, data->env);
+			perror("execve");
+			_exit(1);
+		}
+		else //parent
+		{
+			int status;
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				g_exit_code = WEXITSTATUS(status);
+			else
+				g_exit_code = 1;
+		}
+	}
+	// Restore FDs
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
 }
 
 
@@ -248,7 +254,7 @@ void execute_pipeline(t_op *cmd, t_data *data)
     int i = 0;
     int prev_fd = -1;
     t_op *current = cmd;
-
+	pid_t last_pid = 0;
     while (current)
     {
         if (current->next)
@@ -293,7 +299,7 @@ void execute_pipeline(t_op *cmd, t_data *data)
             else
             {
 				// external
-				char *exec_path = find_executable(current->str);
+				char *exec_path = find_executable(current->str, data->env);
 				if (!exec_path)
 				{
                     fprintf(stderr, "%s: command not found\n", current->str[0]);
@@ -307,6 +313,7 @@ void execute_pipeline(t_op *cmd, t_data *data)
         else // Parent
         {
             pids[i++] = pid; // Store child PID
+			last_pid = pid;
 
             if (prev_fd != -1)
                 close(prev_fd);
@@ -321,8 +328,20 @@ void execute_pipeline(t_op *cmd, t_data *data)
     }
 
     // Wait for all children
+	int status = 0;
     for (int j = 0; j < pipeline_length; j++)
-        waitpid(pids[j], NULL, 0);
+	{
+		int child_status;
+		waitpid(pids[j], &child_status, 0);
+		if (pids[j] == last_pid)
+		{
+			status = child_status;
+		}
+		if (WIFEXITED(status))
+			g_exit_code = WEXITSTATUS(status);
+		else
+			g_exit_code = 1;
+	}	
+	free(pids);
 
-    free(pids);
 }
