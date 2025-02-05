@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/04 19:44:39 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/05 14:03:33 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char *get_env_value(const char *var_name, char **envp);
 t_split *remove_token(t_split **head, t_split *token);
 t_split *create_new_token(char *str, t_type type);
 void handle_field_splitting(t_split **head, t_split **curr_ptr, char *expanded_str);
-void append_char_node(t_char_node **head, t_char_node **tail, char c);
+void append_char_node(t_expand *exp, char c);
 int is_token_unquoted(t_split *token);
 
 
@@ -35,7 +35,7 @@ int is_token_unquoted(t_split *token)
 }
 
 
-void expand_double_quote(const char *str, char **envp, size_t *i, t_char_node **head, t_char_node **tail)
+void expand_double_quote(const char *str, char **envp, size_t *i, t_expand *exp)
 {
     (*i)++; // Skip the opening double quote
     while (str[*i] && str[*i] != '"')
@@ -45,18 +45,18 @@ void expand_double_quote(const char *str, char **envp, size_t *i, t_char_node **
             // Handle variable expansion
             char *var = expand_var(&str[*i], envp, i);
             for (size_t j = 0; var[j]; j++)
-                append_char_node(head, tail, var[j]);
+                append_char_node(exp, var[j]);
             free(var);
         }
         else if (str[*i] == '\\' && str[*i + 1] != '\0')
         {
             // Handle escape sequences within double quotes
-            append_char_node(head, tail, str[*i + 1]);
+            append_char_node(exp, str[*i + 1]);
             (*i) += 2;
         }
         else
         {
-            append_char_node(head, tail, str[*i]);
+            append_char_node(exp, str[*i]);
             (*i)++;
         }
     }
@@ -69,12 +69,12 @@ void expand_double_quote(const char *str, char **envp, size_t *i, t_char_node **
 }
 
 
-void expand_single_quote(const char *str, size_t *i, t_char_node **head, t_char_node **tail)
+void expand_single_quote(const char *str, size_t *i, t_expand *exp)
 {
     (*i)++; // Skip the opening single quote
     while (str[*i] && str[*i] != '\'')
     {
-        append_char_node(head, tail, str[*i]);
+        append_char_node(exp, str[*i]);
         (*i)++;
     }
     if (str[*i] == '\'')
@@ -126,7 +126,7 @@ void free_char_list(t_char_node *head)
 
 
 
-void append_char_node(t_char_node **head, t_char_node **tail, char c)
+void append_char_node(t_expand *exp, char c)
 {
 	t_char_node *new_node = malloc(sizeof(t_char_node));
 	if (!new_node)
@@ -136,15 +136,15 @@ void append_char_node(t_char_node **head, t_char_node **tail, char c)
 	}
 	new_node->c = c;
 	new_node->next = NULL;
-	if (*tail)
+	if (exp->expanded_tail)
 	{
-		(*tail)->next = new_node;
-		*tail = new_node;
+		(exp->expanded_tail)->next = new_node;
+		exp->expanded_tail = new_node;
 	}
 	else
 	{
-		*head = new_node;
-		*tail = new_node;
+		exp->expanded_head = new_node;
+		exp->expanded_tail = new_node;
 	}
 }
 
@@ -154,92 +154,93 @@ void expand_tokens(t_split **head, char **envp)
 	if (!head || !*head)
 		return;
 	t_split *curr = *head;
-	int escaped = 0;
 	while (curr)
 	{
 		// printf("Expanding token: %s\n", curr->str);
-		t_char_node *expanded_head = NULL;
-		t_char_node *expanded_tail = NULL;
-
+		t_expand exp;
+		// t_char_node *expanded_head = NULL;
+		// t_char_node *expanded_tail = NULL;
+		exp.expanded_head = NULL;
+		exp.expanded_tail = NULL;
 		t_segment *curr_segment = curr->segments;
 		while (curr_segment)
 		{
 			char *str = curr_segment->text;
-			size_t i = 0;
+			loop_string(str, &exp, envp, curr_segment);
 
-			while (str[i])
-			{
-				// printf("Inspecting char: %c (at index %zu)\n", str[i], i);
-				// $"..."
-				if (str[i] == '\\' && !escaped)
-				{
-					escaped = 1;
-					i++;
-					continue;
-				}
-				if (escaped)
-				{
-					append_char_node(&expanded_head, &expanded_tail, str[i]);
-					escaped = 0;
-					i++;
-					continue;
-				}
-				if (str[i] == '$' && str[i + 1] == '"' && !escaped)
-				{
-					i += 2;
-					while (str[i] && str[i] != '"')
-					{
-						append_char_node(&expanded_head, &expanded_tail, str[i]);
-						i++;
-					}
-					if (str[i] == '"')
-						i++;
-				}
-				else if (str[i] == '"' && curr_segment->quote == DQ && !escaped)
-					expand_double_quote(str, envp, &i, &expanded_head, &expanded_tail);
-				else if (str[i] == '\'' && curr_segment->quote == SQ && !escaped)
-					expand_single_quote(str, &i, &expanded_head, &expanded_tail);
-				else if (str[i] == '$' && curr_segment->quote != SQ && !escaped)
-				{
-					char *var = expand_var(&str[i], envp, &i);
-					if (var)
-					{
-						size_t j = 0;
-						while (var[j])
-						{
-							append_char_node(&expanded_head, &expanded_tail, var[j]);
-							j++;
-						}
-						free(var);
-					}
-				}
-				else if (str[i] == '~' && (i == 0) && (str[i + 1] == '/' || str[i + 1] == '\0'))
-				{
-					char *home = get_env_value("HOME", envp);
-					if (home)
-					{
-						size_t j = 0;
-						while (home[j])
-						{
-							append_char_node(&expanded_head, &expanded_tail, home[j]);
-							j++;
-						}
-					}
-					else
-						append_char_node(&expanded_head, &expanded_tail, '~');
-					i++;
-				}
-				else
-				{
-					append_char_node(&expanded_head, &expanded_tail, str[i]);
-                    i++;
-				}
-			}
+			// int escaped = 0;
+			// size_t i = 0;
+			// while (str[i])
+			// {
+				// if (str[i] == '\\' && !escaped)
+				// {
+				// 	escaped = 1;
+				// 	i++;
+				// 	continue;
+				// }
+				// if (escaped)
+				// {
+				// 	append_char_node(&expanded_head, &expanded_tail, str[i]);
+				// 	escaped = 0;
+				// 	i++;
+				// 	continue;
+				// }
+			// 	if (str[i] == '$' && str[i + 1] == '"' && !escaped)
+			// 	{
+			// 		i += 2;
+			// 		while (str[i] && str[i] != '"')
+			// 		{
+			// 			append_char_node(&expanded_head, &expanded_tail, str[i]);
+			// 			i++;
+			// 		}
+			// 		if (str[i] == '"')
+			// 			i++;
+			// 	}
+			// 	else if (str[i] == '"' && curr_segment->quote == DQ && !escaped)
+			// 		expand_double_quote(str, envp, &i, &expanded_head, &expanded_tail);
+			// 	else if (str[i] == '\'' && curr_segment->quote == SQ && !escaped)
+			// 		expand_single_quote(str, &i, &expanded_head, &expanded_tail);
+				// else if (str[i] == '$' && curr_segment->quote != SQ && !escaped)
+				// {
+				// 	char *var = expand_var(&str[i], envp, &i);
+				// 	if (var)
+				// 	{
+				// 		size_t j = 0;
+				// 		while (var[j])
+				// 		{
+				// 			append_char_node(&expanded_head, &expanded_tail, var[j]);
+				// 			j++;
+				// 		}
+				// 		free(var);
+				// 	}
+				// }
+			// 	else if (str[i] == '~' && (i == 0) && (str[i + 1] == '/' || str[i + 1] == '\0'))
+			// 	{
+			// 		char *home = get_env_value("HOME", envp);
+			// 		if (home)
+			// 		{
+			// 			size_t j = 0;
+			// 			while (home[j])
+			// 			{
+			// 				append_char_node(&expanded_head, &expanded_tail, home[j]);
+			// 				j++;
+			// 			}
+			// 		}
+			// 		else
+			// 			append_char_node(&expanded_head, &expanded_tail, '~');
+			// 		i++;
+			// 	}
+			// 	else
+			// 	{
+			// 		append_char_node(&expanded_head, &expanded_tail, str[i]);
+            //         i++;
+			// 	}
+			// }
 			curr_segment = curr_segment->next;
 		}
 
-        char *expanded_str = convert_char_list_to_string(expanded_head);
-		free_char_list(expanded_head);
+        char *expanded_str = convert_char_list_to_string(exp.expanded_head);
+		free_char_list(exp.expanded_head);
 
         if (!expanded_str || expanded_str[0] == '\0')
         {

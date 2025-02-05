@@ -14,11 +14,11 @@
 
 extern int				g_exit_code;
 
-typedef struct s_data {
-    char    **env;       
-    int     last_exit; // last exit code
-    // some more data
-} t_data;
+typedef struct s_data
+{
+	char				**env;
+	int					last_exit;
+}						t_data;
 
 typedef struct s_char_node
 {
@@ -28,8 +28,8 @@ typedef struct s_char_node
 
 typedef struct s_expand
 {
-	t_char_node *expanded_head;
-	t_char_node *expanded_tail;
+	t_char_node			*expanded_head;
+	t_char_node			*expanded_tail;
 }						t_expand;
 
 typedef enum e_type
@@ -82,7 +82,7 @@ typedef struct s_redir
 	t_type				type;
 	char				*filename;
 	struct s_redir		*next;
-	int 				quoted;
+	int					quoted;
 }						t_redir;
 
 typedef struct s_op
@@ -95,10 +95,11 @@ typedef struct s_op
 int						is_n_flag(char *arg);
 int						init_data(t_data *data, char **envp);
 void					free_data(t_data *data);
-void					print_error_msg(const char *cmd, const char *arg, const char *err_msg);
+void					print_error_msg(const char *cmd, const char *arg,
+							const char *err_msg);
 int						is_numeric(const char *s);
 // int						print_command_error(char *command, char *detail,
-							// char *error_message, int error_nb);
+// char *error_message, int error_nb);
 char					*expand_line(char *line, char **envp);
 void					ignore_sigquit(void);
 void					signal_reset_prompt(int signo);
@@ -125,10 +126,12 @@ void					handle_env(char **argv, t_data *data);
 void					handle_pwd(char **argv, char **envp);
 void					handle_echo(char **argv);
 void					handle_export(char **argv, t_data *data);
-void					add_env_variable(const char *key, const char *value, char ***envp);
+void					add_env_variable(const char *key, const char *value,
+							char ***envp);
 void					remove_env_variable(char ***envp, const char *var);
 char					*create_env_string(const char *key, const char *value);
-void					set_env_variable(const char *key, const char *value, char ***envp);
+void					set_env_variable(const char *key, const char *value,
+							char ***envp);
 void					print_exported_environ(char **envp);
 int						apply_redirections(t_op *cmd, char **envp);
 int						count_commands(t_op *cmd);
@@ -152,5 +155,11 @@ void					free_split(t_split *list);
 void					print_split(t_split *input);
 void					free_op(t_op *cmd);
 char					*find_executable(char **argv, char **envp);
+void	loop_string(char *str, t_expand *exp, char **envp,
+		t_segment *curr_segment);
+void append_char_node(t_expand *exp, char c);
+void expand_double_quote(const char *str, char **envp, size_t *i, t_expand *exp);
+void expand_single_quote(const char *str, size_t *i, t_expand *exp);
+char *expand_var(const char *str, char **envp, size_t *i);
 
 #endif
