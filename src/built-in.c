@@ -100,19 +100,36 @@ void add_env_variable(const char *key, const char *value, char ***envp)
     *envp = new_env;
 }
 
+static int is_valid_identifier(const char *key)
+{
+	int i;
+
+	if (!key || !key[0])
+		return (0);
+	if (!ft_isalpha(key[0]) && key[0] != '_')
+		return (0);
+	i = 1;
+	while (key[i])
+	{
+		if (!ft_isalnum(key[i]) && key[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 void    handle_export(char **argv, t_data *data)
 {
 	int i = 1;
-    // If "export" has no arguments, just display the environment
     if (!argv[1])
     {
         print_exported_environ(data->env);
         return;
     }
-	
+	// if i only found the equal sign, i would say not a valid identifier. 
     while (argv[i])
     {
+		// the way i would do is, before this place, 
         char *equal_sign = ft_strchr(argv[i], '=');
 
         // 2) If found, separate KEY and VALUE
@@ -121,6 +138,14 @@ void    handle_export(char **argv, t_data *data)
             int key_len = equal_sign - argv[i]; // distance from argv[i] start to '='
             // Extract key
             char *key = ft_substr(argv[i], 0, key_len);
+			if (!is_valid_identifier(key))
+			{
+				g_exit_code = 1;
+				print_error_msg("export", key, "not a valid identifier");
+				free(key);
+				i++;
+				continue;
+			}
             // Extract value (after '=')
             char *value = ft_substr(argv[i], key_len + 1,
                                     ft_strlen(argv[i]) - (key_len + 1));
@@ -135,9 +160,13 @@ void    handle_export(char **argv, t_data *data)
         }
         else
         {
-            // No '=' => "export KEY"
-            // By default, let's set KEY to empty if it doesn't exist
-            // or do nothing if it already exists
+			if (!is_valid_identifier(argv[i]))
+			{
+				g_exit_code = 1;
+				print_error_msg("export", argv[i], "not a valid identifier");
+				i++;
+				continue;
+			}
             set_env_variable(argv[i], "", &(data->env));
         }
 		i++;
@@ -285,6 +314,13 @@ void handle_unset(char **argv, char **envp)
 		write(STDERR_FILENO, error_msg, strlen(error_msg));
 		return;
 	}
+	if (!is_valid_identifier(argv[1]))
+	{
+		g_exit_code = 1;
+		print_error_msg("unset", argv[1], "not a valid identifier");
+		return;
+	}
+
 	char **env = envp;
 	while (*env)
 	{
