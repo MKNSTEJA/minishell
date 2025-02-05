@@ -26,12 +26,6 @@ typedef struct s_char_node
 	struct s_char_node	*next;
 }						t_char_node;
 
-typedef struct s_expand
-{
-	t_char_node			*expanded_head;
-	t_char_node			*expanded_tail;
-}						t_expand;
-
 typedef enum e_type
 {
 	NONE,
@@ -92,14 +86,28 @@ typedef struct s_op
 	struct s_op			*next;
 }						t_op;
 
+typedef struct s_expand
+{
+	t_char_node			*expanded_head;
+	t_char_node			*expanded_tail;
+	t_split				*split;
+	t_split				*to_remove;
+	t_segment			*seg;
+	char				*expanded_str;
+	int					token_unquoted;
+}						t_expand;
+
 int						is_n_flag(char *arg);
 int						init_data(t_data *data, char **envp);
 void					free_data(t_data *data);
+void					free_split(t_split *list);
+void					free_segment(t_split *list);
+void					free_op(t_op *cmd);
+int						free_expanded_str(t_expand *exp, t_split **head);
+void					free_char_list(t_char_node *head);
 void					print_error_msg(const char *cmd, const char *arg,
 							const char *err_msg);
 int						is_numeric(const char *s);
-// int						print_command_error(char *command, char *detail,
-// char *error_message, int error_nb);
 char					*expand_line(char *line, char **envp);
 void					ignore_sigquit(void);
 void					signal_reset_prompt(int signo);
@@ -135,11 +143,9 @@ void					set_env_variable(const char *key, const char *value,
 void					print_exported_environ(char **envp);
 int						apply_redirections(t_op *cmd, char **envp);
 int						count_commands(t_op *cmd);
-char					*get_env_value(const char *var_name, char **envp);
 void					expand_tokens(t_split **head, char **envp);
 char					*expand_one_token(char *token, char **envp,
 							t_quote_state quote_state);
-t_split					*remove_token(t_split **head, t_split *token);
 void					handle_field_splitting(t_split **head,
 							t_split **curr_ptr, char *expanded_str);
 char					*expand_escape(const char *str);
@@ -155,11 +161,18 @@ void					free_split(t_split *list);
 void					print_split(t_split *input);
 void					free_op(t_op *cmd);
 char					*find_executable(char **argv, char **envp);
-void	loop_string(char *str, t_expand *exp, char **envp,
-		t_segment *curr_segment);
-void append_char_node(t_expand *exp, char c);
-void expand_double_quote(const char *str, char **envp, size_t *i, t_expand *exp);
-void expand_single_quote(const char *str, size_t *i, t_expand *exp);
-char *expand_var(const char *str, char **envp, size_t *i);
+void					loop_string(char *str, t_expand *exp, char **envp,
+							t_segment *curr_segment);
+void					append_char_node(t_expand *exp, char c);
+void					expand_double_quote(const char *str, char **envp,
+							size_t *i, t_expand *exp);
+void					expand_single_quote(const char *str, size_t *i,
+							t_expand *exp);
+char					*expand_var(const char *str, char **envp, size_t *i);
+t_split					*create_new_token(char *str, t_type type);
+int						is_token_unquoted(t_split *token);
+t_split					*remove_token(t_split **head, t_split *token);
+char					*expand_var(const char *str, char **envp, size_t *i);
+char					*get_env_value(const char *var_name, char **envp);
 
 #endif

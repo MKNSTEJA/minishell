@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/05 14:31:06 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/05 14:44:17 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,17 @@ void	loop_string(char *str, t_expand *exp, char **envp,
 		t_segment *curr_segment)
 {
 	size_t	i;
-	int		escaped;
 
 	i = 0;
-	escaped = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1] == '"' && !escaped)
+		if (str[i] == '$' && str[i + 1] == '"')
 			skip_dollar(str, &i, exp);
-		else if (str[i] == '"' && curr_segment->quote == DQ && !escaped)
+		else if (str[i] == '"' && curr_segment->quote == DQ)
 			expand_double_quote(str, envp, &i, exp);
-		else if (str[i] == '\'' && curr_segment->quote == SQ && !escaped)
+		else if (str[i] == '\'' && curr_segment->quote == SQ)
 			expand_single_quote(str, &i, exp);
-		else if (str[i] == '$' && curr_segment->quote != SQ && !escaped)
+		else if (str[i] == '$' && curr_segment->quote != SQ)
 			expand_dollar(exp, envp, &i, str);
 		else if (str[i] == '~' && (!i) && (str[i + 1] == '/' || !str[i + 1]))
 			expand_home(envp, &i, exp);
@@ -44,7 +42,6 @@ void	loop_string(char *str, t_expand *exp, char **envp,
 		}
 	}
 }
-
 
 void	skip_dollar(char *str, size_t *i, t_expand *exp)
 {
@@ -62,7 +59,7 @@ void	expand_dollar(t_expand *exp, char **envp, size_t *i, char *str)
 {
 	char	*var;
 	size_t	j;
-	
+
 	var = expand_var(&str[*i], envp, i);
 	j = 0;
 	if (var)
