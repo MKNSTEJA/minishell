@@ -225,6 +225,8 @@ void handle_cd(char **argv, char ***envp)
     if (!old_pwd) 
 	{
         perror("getcwd");
+		free(old_pwd);
+		g_exit_code = 1;
         return;
     }
     
@@ -300,6 +302,7 @@ void handle_cd(char **argv, char ***envp)
         }
         free(old_pwd);
     }
+	g_exit_code = 0;
 }
 
 
@@ -312,6 +315,7 @@ void handle_unset(char **argv, char **envp)
 	{
 		const char *error_msg = "unset: Missing argument\n";
 		write(STDERR_FILENO, error_msg, strlen(error_msg));
+		g_exit_code = 1;
 		return;
 	}
 	if (!is_valid_identifier(argv[1]))
@@ -336,6 +340,7 @@ void handle_unset(char **argv, char **envp)
         }
         env++;
 		}
+	g_exit_code = 0;
 }
 
 void handle_env(char **argv, t_data *data)
@@ -344,6 +349,7 @@ void handle_env(char **argv, t_data *data)
 
     if (argv && argv[1]) {
         print_error_msg("env", NULL, "too many arguments");
+		g_exit_code = 1;
         return;
     }
     env = data->env;
@@ -355,6 +361,7 @@ void handle_env(char **argv, t_data *data)
         printf("%s\n", *env);
         env++;
     }
+	g_exit_code = 0;
 }
 
 void handle_pwd(char **argv, char **envp)
@@ -362,7 +369,10 @@ void handle_pwd(char **argv, char **envp)
 	(void)argv;
 	char *pwd = my_getenv("PWD", envp);
     if (pwd)
-        printf("%s\n", pwd);
+        {
+			printf("%s\n", pwd);
+			g_exit_code = 0;
+		}
     else
 	{
         const char *error_msg = "pwd: Unable to retrieve current directory\n";
@@ -391,13 +401,11 @@ void handle_echo(char **argv)
 	int i = 1; //start from 1 bec. 0 is the command itself
 	int newline = 1; //default is to print newline
 
-	// 1) parse flags
 	while (argv[i] && is_n_flag(argv[i]))
 	{
 		newline = 0;
 		i++;
 	}
-
 	int first_arg = 1;
 	while (argv[i])
 	{
@@ -409,6 +417,7 @@ void handle_echo(char **argv)
 		printf("%s", argv[i]);
 		i++;
 	}
+	g_exit_code = 0;
 	if (newline)
 		printf("\n");
 }
