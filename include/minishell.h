@@ -97,6 +97,7 @@ typedef struct s_expand
 	int					token_unquoted;
 }						t_expand;
 
+int						is_valid_identifier(const char *key);
 int						is_n_flag(char *arg);
 int						init_data(t_data *data, char **envp);
 void					free_data(t_data *data);
