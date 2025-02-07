@@ -26,6 +26,15 @@ typedef struct s_char_node
 	struct s_char_node	*next;
 }						t_char_node;
 
+typedef struct s_pipe_state {
+    pid_t   *pids;
+    int     index;
+    int     prev_fd;
+    pid_t   last_pid;
+    int     pipeline_length;
+} t_pipe_state;
+
+
 typedef enum e_type
 {
 	NONE,

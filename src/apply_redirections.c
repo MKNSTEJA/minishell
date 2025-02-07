@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   apply_redirections.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 22:13:57 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/06 23:57:33 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/07 11:43:27 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static int	handle_input_redirection(t_redir *redir)
 	if (fd_in < 0)
 	{
 		perror(redir->filename);
+		g_exit_code = 1;
 		return (-1);
 	}
 	dup2(fd_in, STDIN_FILENO);
@@ -35,6 +36,7 @@ static int	handle_output_redirection(t_redir *redir)
 	if (fd_out < 0)
 	{
 		perror(redir->filename);
+		g_exit_code = 1;
 		return (-1);
 	}
 	dup2(fd_out, STDOUT_FILENO);
@@ -50,6 +52,7 @@ static int	handle_append_redirection(t_redir *redir)
 	if (fd_out < 0)
 	{
 		perror(redir->filename);
+		g_exit_code = 1;
 		return (-1);
 	}
 	dup2(fd_out, STDOUT_FILENO);

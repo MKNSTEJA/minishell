@@ -27,22 +27,15 @@ char *find_executable(char **argv, char **envp)
             return NULL;
     }
 	char *executable_path = NULL;
-	// char *path = getenv("PATH"); 
 	char *path = get_env_value("PATH", envp);
 	if (!path)
-	{
-		// write(2, "PATH not set\n", 13);
-    	// return NULL;
 		path = "/bin:/usr/bin";
-	}
 	char **split_path = ft_split(path, ':');
-	// printf("split_path: %s\n", *split_path);
 	if (!split_path)
 		return NULL;
 	char **sp = split_path;
 	while (*sp)
 	{
-		// printf("sp: %s\n", *sp);
 		char *string_slash = ft_strjoin(*sp, "/");
 		char *full_path = ft_strjoin(string_slash, argv[0]);
 		free(string_slash);
@@ -148,109 +141,130 @@ void execute_simple_command(t_op *cmd, t_data *data)
 }
 
 
+static void	init_pipe_state(t_pipe_state *state, int len)
+{
+	state->pipeline_length = len;
+	state->index = 0;
+	state->prev_fd = -1;
+	state->last_pid = 0;
+	state->pids = malloc(sizeof(pid_t) * len);
+	if (!state->pids)
+	{
+		perror("malloc");
+		exit(1);
+	}
+}
+
+static void	setup_child_io(t_op *current, int prev_fd, int pipe_fds[2])
+{
+	if (prev_fd != -1)
+	{
+		dup2(prev_fd, STDIN_FILENO);
+		close(prev_fd);
+	}
+	if (current->next)
+	{
+		close(pipe_fds[0]);
+		dup2(pipe_fds[1], STDOUT_FILENO);
+		close(pipe_fds[1]);
+	}
+}
+
+static void	execute_child(t_op *current, t_data *data, int prev_fd,
+							int pipe_fds[2])
+{
+	char	*exec_path;
+
+	if (apply_redirections(current, data->env) < 0)
+		_exit(1);
+	setup_child_io(current, prev_fd, pipe_fds);
+	if (is_builtin(current))
+	{
+		execute_builtin(current, data);
+		_exit(0);
+	}
+	exec_path = find_executable(current->str, data->env);
+	if (!exec_path)
+	{
+		fprintf(stderr, "%s: command not found\n", current->str[0]);
+		_exit(127);
+	}
+	execve(exec_path, current->str, data->env);
+	perror("execve");
+	_exit(1);
+}
+
+
+static void wait_for_children(t_pipe_state *state)
+{
+    int status_last = 0;
+    int i = 0;
+    while (i < state->pipeline_length)
+    {
+        int child_status;
+        waitpid(state->pids[i], &child_status, 0);
+        if (state->pids[i] == state->last_pid)
+            status_last = child_status;
+        i++;
+    }
+    if (WIFEXITED(status_last))
+        g_exit_code = WEXITSTATUS(status_last);
+    else
+        g_exit_code = 1;
+}
+
+static void execute_parent(t_pipe_state *state, t_op *current,
+                           int pipe_fds[2], pid_t pid)
+{
+    state->pids[state->index] = pid;
+    state->last_pid = pid;
+    if (state->prev_fd != -1)
+        close(state->prev_fd);
+    if (current->next)
+    {
+        close(pipe_fds[1]);
+        state->prev_fd = pipe_fds[0];
+    }
+    state->index++;
+}
+
+static void	process_command(t_op *current, t_data *data, t_pipe_state *state)
+{
+	int		pipe_fds[2];
+	pid_t	pid;
+
+	if (current->next && pipe(pipe_fds) == -1)
+	{
+		perror("pipe");
+		free(state->pids);
+		exit(1);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		free(state->pids);
+		exit(1);
+	}
+	if (pid == 0)
+		execute_child(current, data, state->prev_fd, pipe_fds);
+	else
+		execute_parent(state, current, pipe_fds, pid);
+}
+
 void execute_pipeline(t_op *cmd, t_data *data)
 {
-    int pipeline_length = count_commands(cmd);
-    pid_t *pids = malloc(sizeof(pid_t) * pipeline_length);
-    if (!pids)
-    {
-        perror("malloc");
-        exit(1);
-    }
-
-    int pipe_fds[2];
-    pid_t pid;
-    int i = 0;
-    int prev_fd = -1;
+	int pipeline_length = count_commands(cmd);
+	t_pipe_state state;                    /* 1 variable for parent state */
     t_op *current = cmd;
-	pid_t last_pid = 0;
+
+    init_pipe_state(&state, pipeline_length);
+
     while (current)
     {
-        if (current->next)
-        {
-            if (pipe(pipe_fds) == -1)
-            {
-                perror("pipe");
-                free(pids);
-                exit(1);
-            }
-        }
-
-        pid = fork();
-        if (pid == -1) 
-        {
-            perror("fork");
-            free(pids);
-            exit(1);
-        }
-
-        if (pid == 0) // Child
-        {
-            if (apply_redirections(current, data->env) < 0)
-				_exit(1);
-			if (prev_fd != -1)
-			{
-				dup2(prev_fd, STDIN_FILENO);
-				close(prev_fd);
-			}
-			// if there's a next command, set up our stdout to the pipe
-            if (current->next)
-            {
-                close(pipe_fds[0]);
-                dup2(pipe_fds[1], STDOUT_FILENO);
-                close(pipe_fds[1]);
-            }
-            if (is_builtin(current))
-			{
-				execute_builtin(current, data);
-				_exit(0);
-			}
-            else
-            {
-				// external
-				char *exec_path = find_executable(current->str, data->env);
-				if (!exec_path)
-				{
-                    fprintf(stderr, "%s: command not found\n", current->str[0]);
-                    _exit(127);
-                }
-                execve(exec_path, current->str, data->env);
-                perror("execve");
-                _exit(1);
-            }
-        }
-        else // Parent
-        {
-            pids[i++] = pid; // Store child PID
-			last_pid = pid;
-
-            if (prev_fd != -1)
-                close(prev_fd);
-
-            if (current->next)
-            {
-                close(pipe_fds[1]);
-                prev_fd = pipe_fds[0];
-            }
-        }
+		process_command(current, data, &state);
         current = current->next;
     }
-
-    // Wait for all children
-	int status = 0;
-    for (int j = 0; j < pipeline_length; j++)
-	{
-		int child_status;
-		waitpid(pids[j], &child_status, 0);
-		if (pids[j] == last_pid)
-		{
-			status = child_status;
-		}
-		if (WIFEXITED(status))
-			g_exit_code = WEXITSTATUS(status);
-		else
-			g_exit_code = 1;
-	}	
-	free(pids);
-
+	wait_for_children(&state);
+	free(state.pids);
 }
