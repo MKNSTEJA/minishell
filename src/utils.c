@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/07 22:38:44 by ykhattab          #+#    #+#             */
+/*   Updated: 2025/02/07 23:41:13 by ykhattab         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/minishell.h"
 
@@ -18,13 +29,13 @@ int	is_builtin(t_op *cmd)
 {
 	if (!cmd || !cmd->str || !cmd->str[0])
 		return (0);
-	return (strcmp(cmd->str[0], "exit") == 0 ||
-			strcmp(cmd->str[0], "cd") == 0 ||
-			strcmp(cmd->str[0], "export") == 0 ||
-			strcmp(cmd->str[0], "unset") == 0 ||
-			strcmp(cmd->str[0], "env") == 0 ||
-			strcmp(cmd->str[0], "pwd") == 0 ||
-			strcmp(cmd->str[0], "echo") == 0);
+	return (strcmp(cmd->str[0], "exit") == 0
+		|| strcmp(cmd->str[0], "cd") == 0
+		|| strcmp(cmd->str[0], "export") == 0
+		|| strcmp(cmd->str[0], "unset") == 0
+		|| strcmp(cmd->str[0], "env") == 0
+		|| strcmp(cmd->str[0], "pwd") == 0
+		|| strcmp(cmd->str[0], "echo") == 0);
 }
 
 int	is_numeric(const char *s)
@@ -57,46 +68,4 @@ void	print_error_msg(const char *cmd, const char *arg, const char *err_msg)
 	}
 	write(2, err_msg, ft_strlen(err_msg));
 	write(2, "\n", 1);
-}
-
-static void	expand_escape_helper(const char *str, char *result, int *j)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\\' && str[i + 1] != '\0')
-		{
-			i++;
-			if (str[i] == 'n')
-				result[(*j)++] = '\n';
-			else if (str[i] == 't')
-				result[(*j)++] = '\t';
-			else
-			{
-				result[(*j)++] = '\\';
-				result[(*j)++] = str[i];
-			}
-		}
-		else
-		{
-			result[(*j)++] = str[i];
-		}
-		i++;
-	}
-}
-
-char	*expand_escape(const char *str)
-{
-	char	*result;
-	int		j;
-
-	j = 0;
-	result = malloc(ft_strlen(str) + 1);
-	if (!result)
-		return (NULL);
-	expand_escape_helper(str, result, &j);
-	result[j] = '\0';
-	return (result);
 }

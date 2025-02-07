@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_cd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 19:55:28 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 11:34:08 by yousef           ###   ########.fr       */
+/*   Updated: 2025/02/07 23:52:54 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	handle_cd(char **argv, char ***envp)
 		if (chdir(argv[1]) == 0)
 			update_pwd_and_oldpwd(old_pwd, envp);
 		else
-			fprintf(stderr, "cd: no such file or directory: %s\n", argv[1]); //TODO: change g_exit_code
+			fprintf(stderr, "cd: no such file or directory: %s\n", argv[1]);
 		free(old_pwd);
 	}
 	g_exit_code = 0;

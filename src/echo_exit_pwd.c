@@ -6,16 +6,15 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:47:58 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/06 21:07:29 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/07 23:59:13 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-
-static int handle_exit_args(char **argv, int count)
+static int	handle_exit_args(char **argv, int count)
 {
-	int status;
+	int	status;
 
 	status = 0;
 	if (!is_numeric(argv[1]))
@@ -71,9 +70,11 @@ int	is_n_flag(char *arg)
 void	handle_echo(char **argv)
 {
 	int	first_arg;
+	int	i;
+	int	newline;
 
-	int i = 1;
-	int newline = 1;
+	i = 1;
+	newline = 1;
 	while (argv[i] && is_n_flag(argv[i]))
 	{
 		newline = 0;
@@ -96,8 +97,8 @@ void	handle_echo(char **argv)
 
 void	handle_pwd(char **argv, char **envp)
 {
-	char *pwd;
-	const char *error_msg;
+	char		*pwd;
+	const char	*error_msg;
 
 	(void)argv;
 	pwd = my_getenv("PWD", envp);

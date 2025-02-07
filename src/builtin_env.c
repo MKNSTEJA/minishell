@@ -6,19 +6,19 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:52:53 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/06 21:06:34 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/07 23:33:42 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void export_with_value(const char *arg, t_data *data)
+static void	export_with_value(const char *arg, t_data *data)
 {
 	int		key_len;
 	char	*key;
 	char	*value;
 	char	*equal_sign;
-	
+
 	equal_sign = ft_strchr(arg, '=');
 	key_len = equal_sign - arg;
 	key = ft_substr(arg, 0, key_len);
@@ -29,8 +29,7 @@ static void export_with_value(const char *arg, t_data *data)
 		free(key);
 		return ;
 	}
-	value = ft_substr(arg, key_len + 1, ft_strlen(arg)
-			- (key_len + 1));
+	value = ft_substr(arg, key_len + 1, ft_strlen(arg) - (key_len + 1));
 	set_env_variable(key, value, &(data->env));
 	free(key);
 	free(value);

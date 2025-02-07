@@ -6,13 +6,35 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/01 22:42:47 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/07 23:31:18 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	handle_redirections(t_split **input, t_parts **parts, int *i);
+void	handle_redirections(t_split **input, t_parts **parts, int *i)
+{
+	if ((*parts)->string[*i] == '<' && (*parts)->string[*i + 1] == '<')
+	{
+		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC);
+		(*i) += 2;
+	}
+	else if ((*parts)->string[*i] == '<')
+	{
+		append_list(input, create_segment("<", QUOTE_NONE), IN);
+		(*i) += 1;
+	}
+	else if ((*parts)->string[*i] == '>' && (*parts)->string[*i + 1] == '>')
+	{
+		append_list(input, create_segment(">>", QUOTE_NONE), APPEND);
+		(*i) += 2;
+	}
+	else if ((*parts)->string[*i] == '>')
+	{
+		append_list(input, create_segment(">", QUOTE_NONE), OUT);
+		(*i) += 1;
+	}
+}
 
 void	handle_space(t_split **input, t_segment **current_segments,
 		t_parts **parts, int *i)
@@ -68,30 +90,6 @@ void	handle_others(t_split **input, t_segment **current_segments,
 	}
 	else
 		handle_redirections(input, parts, i);
-}
-
-void	handle_redirections(t_split **input, t_parts **parts, int *i)
-{
-	if ((*parts)->string[*i] == '<' && (*parts)->string[*i + 1] == '<')
-	{
-		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC);
-		(*i) += 2;
-	}
-	else if ((*parts)->string[*i] == '<')
-	{
-		append_list(input, create_segment("<", QUOTE_NONE), IN);
-		(*i) += 1;
-	}
-	else if ((*parts)->string[*i] == '>' && (*parts)->string[*i + 1] == '>')
-	{
-		append_list(input, create_segment(">>", QUOTE_NONE), APPEND);
-		(*i) += 2;
-	}
-	else if ((*parts)->string[*i] == '>')
-	{
-		append_list(input, create_segment(">", QUOTE_NONE), OUT);
-		(*i) += 1;
-	}
 }
 
 void	handle_dollar(t_segment **current_segments, t_parts **parts, int *i)

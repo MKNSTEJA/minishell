@@ -106,6 +106,12 @@ typedef struct s_expand
 	int					token_unquoted;
 }						t_expand;
 
+void					write_to_pipe(int pipe_fd, char *line);
+char					*expand_if_needed(char *line, t_redir *redir, char **envp);
+void					process_heredoc_input(int write_fd, t_redir *redir, char **envp);
+int						handle_heredoc_redirection(t_redir *redir, char **envp);
+void					wait_for_children(t_pipe_state *state);
+void					setup_child_io(t_op *current, int prev_fd, int pipe_fds[2]);
 int						is_valid_identifier(const char *key);
 int						is_n_flag(char *arg);
 int						init_data(t_data *data, char **envp);
@@ -118,7 +124,6 @@ void					free_char_list(t_char_node *head);
 void					print_error_msg(const char *cmd, const char *arg,
 							const char *err_msg);
 int						is_numeric(const char *s);
-char					*expand_line(char *line, char **envp);
 void					ignore_sigquit(void);
 void					signal_reset_prompt(int signo);
 t_segment				*create_segment(const char *text, t_quote_state state);

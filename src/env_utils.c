@@ -6,17 +6,22 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:50:12 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/06 21:08:31 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/07 23:57:56 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-// TODO: move two functions
 
 void	print_exported_environ(char **envp)
 {
-	for (int i = 0; envp[i]; i++)
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
 		printf("declare -x %s\n", envp[i]);
+		i++;
+	}
 }
 
 void	set_env_variable(const char *key, const char *value, char ***envp)
@@ -75,58 +80,23 @@ char	*my_getenv(const char *name, char **env)
 
 void	add_env_variable(const char *key, const char *value, char ***envp)
 {
-	int i;
-	char **new_env;
+	int		i;
+	char	**new_env;
 
 	i = 0;
+	j = 0;
 	while ((*envp)[i])
 		i++;
 	new_env = (char **)malloc(sizeof(char *) * (i + 2));
 	if (!new_env)
 		return ;
-	for (int j = 0; j < i; j++)
+	while (j < i)
+	{
 		new_env[j] = (*envp)[j];
+		j++;
+	}
 	new_env[i] = create_env_string(key, value);
 	new_env[i + 1] = NULL;
 	free(*envp);
 	*envp = new_env;
-}
-
-void remove_env_variable(char ***envp, const char *var)
-{
-    int len = ft_strlen(var);
-    int i = 0;
-    while ((*envp)[i])
-    {
-        if (ft_strncmp((*envp)[i], var, len) == 0 && (*envp)[i][len] == '=')
-        {
-            free((*envp)[i]);
-            int j = i;
-            while ((*envp)[j])
-            {
-                (*envp)[j] = (*envp)[j+1];
-                j++;
-            }
-            continue;
-        }
-        i++;
-    }
-}
-
-int	is_valid_identifier(const char *key)
-{
-	int	i;
-
-	if (!key || !key[0])
-		return (0);
-	if (!ft_isalpha(key[0]) && key[0] != '_')
-		return (0);
-	i = 1;
-	while (key[i])
-	{
-		if (!ft_isalnum(key[i]) && key[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
 }
