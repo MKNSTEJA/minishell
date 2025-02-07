@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:50:12 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:57:56 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/08 00:08:01 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ char	*my_getenv(const char *name, char **env)
 void	add_env_variable(const char *key, const char *value, char ***envp)
 {
 	int		i;
+	int		j;
 	char	**new_env;
 
 	i = 0;

@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
+/*   Updated: 2025/02/08 00:07:41 by ykhattab         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
+# include <fcntl.h>
 
 # include "../libft/libft.h"
-# include <fcntl.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -26,14 +38,14 @@ typedef struct s_char_node
 	struct s_char_node	*next;
 }						t_char_node;
 
-typedef struct s_pipe_state {
-    pid_t   *pids;
-    int     index;
-    int     prev_fd;
-    pid_t   last_pid;
-    int     pipeline_length;
-} t_pipe_state;
-
+typedef struct s_pipe_state
+{
+	pid_t				*pids;
+	int					index;
+	int					prev_fd;
+	pid_t				last_pid;
+	int					pipeline_length;
+}						t_pipe_state;
 
 typedef enum e_type
 {
@@ -107,11 +119,14 @@ typedef struct s_expand
 }						t_expand;
 
 void					write_to_pipe(int pipe_fd, char *line);
-char					*expand_if_needed(char *line, t_redir *redir, char **envp);
-void					process_heredoc_input(int write_fd, t_redir *redir, char **envp);
+char					*expand_if_needed(char *line, t_redir *redir,
+							char **envp);
+void					process_heredoc_input(int write_fd, t_redir *redir,
+							char **envp);
 int						handle_heredoc_redirection(t_redir *redir, char **envp);
 void					wait_for_children(t_pipe_state *state);
-void					setup_child_io(t_op *current, int prev_fd, int pipe_fds[2]);
+void					setup_child_io(t_op *current, int prev_fd,
+							int pipe_fds[2]);
 int						is_valid_identifier(const char *key);
 int						is_n_flag(char *arg);
 int						init_data(t_data *data, char **envp);
@@ -129,18 +144,23 @@ void					signal_reset_prompt(int signo);
 t_segment				*create_segment(const char *text, t_quote_state state);
 void					append_segment(t_segment **head, t_segment *new_seg);
 void					final_assign(t_parts **parts,
-							t_segment **current_segments, int *i);
+							t_segment **current_segments,
+							int *i);
 void					handle_segments(char *string, t_split **input);
 void					handle_space(t_split **input,
-							t_segment **current_segments, t_parts **parts,
+							t_segment **current_segments,
+							t_parts **parts,
 							int *i);
 void					handle_quotes(t_segment **current_segments,
-							t_parts **parts, int *i);
+							t_parts **parts,
+							int *i);
 void					handle_others(t_split **input,
-							t_segment **current_segments, t_parts **parts,
+							t_segment **current_segments,
+							t_parts **parts,
 							int *i);
 void					handle_dollar(t_segment **current_segments,
-							t_parts **parts, int *i);
+							t_parts **parts,
+							int *i);
 void					handle_exit(char **argv);
 void					handle_cd(char **argv, char ***envp);
 char					*my_getenv(const char *name, char **env);
@@ -162,7 +182,8 @@ void					expand_tokens(t_split **head, char **envp);
 char					*expand_one_token(char *token, char **envp,
 							t_quote_state quote_state);
 void					handle_field_splitting(t_split **head,
-							t_split **curr_ptr, char *expanded_str);
+							t_split **curr_ptr,
+							char *expanded_str);
 char					*expand_escape(const char *str);
 void					append_list(t_split **head, t_segment *segments,
 							t_type type);
