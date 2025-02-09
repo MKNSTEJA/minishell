@@ -3,22 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   segregate_info.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/09 11:14:35 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/02/09 16:10:59 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 void	append_cmd(t_op *cmd, char *string);
-void	split_cmds(t_split *input, t_op *cmd);
+t_op	*initialise_cmd(t_split *input);
+void	append_str(t_op *cmd, char *string);
+void	check_redir_quotes(t_type type, t_redir **new_redir, t_op **cmd,
+			char *filename);
 
 void	add_redirection(t_op *cmd, t_type type, char *filename)
 {
 	t_redir	*new_redir;
-	t_redir	*temp;
 
 	new_redir = malloc(sizeof(t_redir));
 	if (!new_redir)
@@ -26,24 +28,32 @@ void	add_redirection(t_op *cmd, t_type type, char *filename)
 	new_redir->type = type;
 	new_redir->filename = ft_strdup(filename);
 	new_redir->next = NULL;
+	check_redir_quotes(type, &new_redir, &cmd, filename);
+}
+
+void	check_redir_quotes(t_type type, t_redir **new_redir, t_op **cmd,
+		char *filename)
+{
+	t_redir	*temp;
+
 	temp = NULL;
 	if (type == HEREDOC)
 	{
 		if (ft_strchr(filename, '\'') != NULL)
-			new_redir->quoted = 1;
+			(*new_redir)->quoted = 1;
 		else
-			new_redir->quoted = 0;
+			(*new_redir)->quoted = 0;
 	}
 	else
-		new_redir->quoted = 0;
-	if (!cmd->redirections)
-		cmd->redirections = new_redir;
+		(*new_redir)->quoted = 0;
+	if (!(*cmd)->redirections)
+		(*cmd)->redirections = (*new_redir);
 	else
 	{
-		temp = cmd->redirections;
+		temp = (*cmd)->redirections;
 		while (temp->next)
 			temp = temp->next;
-		temp->next = new_redir;
+		temp->next = (*new_redir);
 	}
 }
 
@@ -85,50 +95,6 @@ void	append_str(t_op *cmd, char *string)
 	if (cmd->str)
 		free(cmd->str);
 	cmd->str = new;
-}
-
-void	split_cmds(t_split *input, t_op *cmd)
-{
-	t_split	*ptr;
-	t_op	*c_ptr;
-	t_split	*filename_token;
-
-	ptr = input;
-	c_ptr = cmd;
-	while (ptr)
-	{
-		if (ptr->type == PIPES)
-		{
-			ptr = ptr->next;
-			if (ptr && ptr->str)
-				append_cmd(c_ptr, ptr->str);
-			else
-				append_cmd(c_ptr, NULL);
-			c_ptr = c_ptr->next;
-		}
-		else if (ptr->type == IN || ptr->type == OUT || ptr->type == APPEND
-			|| ptr->type == HEREDOC)
-		{
-			filename_token = ptr->next;
-			if (!filename_token || filename_token->type != WORD)
-			{
-				ft_putstr_fd("minishell: syntax error near token ",
-					STDERR_FILENO);
-				ft_putstr_fd(ptr->str, STDERR_FILENO);
-				ft_putstr_fd("\n", STDERR_FILENO);
-				return ;
-			}
-			else
-			{
-				add_redirection(c_ptr, ptr->type, filename_token->str);
-				ptr = filename_token;
-			}
-		}
-		else
-			append_str(c_ptr, ptr->str);
-		if (ptr)
-			ptr = ptr->next;
-	}
 }
 
 void	append_cmd(t_op *cmd, char *string)

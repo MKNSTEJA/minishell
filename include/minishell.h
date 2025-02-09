@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/09 11:00:15 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/02/09 16:09:52 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 # include "../libft/libft.h"
 # include <errno.h>
 # include <fcntl.h>
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 
 extern int				g_exit_code;
 
@@ -208,5 +208,9 @@ int						is_token_unquoted(t_split *token);
 t_split					*remove_token(t_split **head, t_split *token);
 char					*expand_var(const char *str, char **envp, size_t *i);
 char					*get_env_value(const char *var_name, char **envp);
+void					add_redirection(t_op *cmd, t_type type, char *filename);
+void					append_str(t_op *cmd, char *string);
+void					append_cmd(t_op *cmd, char *string);
+void					split_cmds(t_split *input, t_op *cmd);
 
 #endif
