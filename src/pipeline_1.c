@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:11:37 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:46:05 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/09 00:17:44 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	execute_child(t_op *current, t_data *data, int prev_fd,
 	exec_path = find_executable(current->str, data->env);
 	if (!exec_path)
 	{
-		fprintf(stderr, "%s: command not found\n", current->str[0]);
+		print_error_msg(current->str[0], NULL, "command not found");
 		_exit(127);
 	}
 	execve(exec_path, current->str, data->env);

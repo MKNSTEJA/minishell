@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:38:44 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:41:13 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/09 00:21:55 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	is_numeric(const char *s)
 
 void	print_error_msg(const char *cmd, const char *arg, const char *err_msg)
 {
-	write(2, "minishell: ", 11);
+	write(2, "Minishell: ", 11);
 	write(2, cmd, ft_strlen(cmd));
 	write(2, ": ", 2);
 	if (arg)

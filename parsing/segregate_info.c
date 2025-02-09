@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segregate_info.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/05 21:28:49 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/09 00:16:19 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,9 @@ void	split_cmds(t_split *input, t_op *cmd)
 				t_split *filename_token = ptr->next;
 				if (!filename_token || filename_token->type != WORD)
 					{
-						fprintf(stderr, "syntax error near token %s\n", ptr->str);
-						// handle error gracefully: possibly exit or skip to next pipe
+						ft_putstr_fd("minishell: syntax error near token ", STDERR_FILENO);
+						ft_putstr_fd(ptr->str, STDERR_FILENO);
+						ft_putstr_fd("\n", STDERR_FILENO);
 						return;
 					}
 				else

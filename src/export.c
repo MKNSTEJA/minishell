@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:52:53 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:33:42 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/09 00:07:27 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ static void	export_with_value(const char *arg, t_data *data)
 	equal_sign = ft_strchr(arg, '=');
 	key_len = equal_sign - arg;
 	key = ft_substr(arg, 0, key_len);
-	if (!is_valid_identifier(key))
+	if (key_len == 0 || !is_valid_identifier(key))
 	{
 		g_exit_code = 1;
-		print_error_msg("export", key, "not a valid identifier");
+		print_error_msg("export", arg, "not a valid identifier");
 		free(key);
 		return ;
 	}
@@ -64,48 +64,4 @@ void	handle_export(char **argv, t_data *data)
 			export_without_value(argv[i], data);
 		i++;
 	}
-}
-
-void	handle_unset(char **argv, char **envp)
-{
-	const char	*error_msg;
-
-	if (!argv[1])
-	{
-		error_msg = "unset: Missing argument\n";
-		write(STDERR_FILENO, error_msg, strlen(error_msg));
-		g_exit_code = 1;
-		return ;
-	}
-	if (!is_valid_identifier(argv[1]))
-	{
-		g_exit_code = 1;
-		print_error_msg("unset", argv[1], "not a valid identifier");
-		return ;
-	}
-	remove_env_variable(&envp, argv[1]);
-	g_exit_code = 0;
-}
-
-void	handle_env(char **argv, t_data *data)
-{
-	char	**env;
-
-	if (argv && argv[1])
-	{
-		print_error_msg("env", NULL, "too many arguments");
-		g_exit_code = 1;
-		return ;
-	}
-	env = data->env;
-	if (!env)
-	{
-		return ;
-	}
-	while (*env)
-	{
-		printf("%s\n", *env);
-		env++;
-	}
-	g_exit_code = 0;
 }

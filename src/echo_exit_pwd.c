@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:47:58 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:59:13 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/08 23:52:41 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,6 @@ void	handle_pwd(char **argv, char **envp)
 	else
 	{
 		error_msg = "pwd: Unable to retrieve current directory\n";
-		write(STDERR_FILENO, error_msg, strlen(error_msg));
+		write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
 	}
 }

@@ -6,14 +6,14 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/08 00:07:41 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/08 23:58:32 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# include <fcntl.h>
 
+# include <fcntl.h>
 # include "../libft/libft.h"
 # include <signal.h>
 # include <stdio.h>
@@ -23,6 +23,7 @@
 # include <unistd.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <errno.h>
 
 extern int				g_exit_code;
 

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 19:55:28 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:52:54 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/09 00:32:12 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	handle_home_directory(char ***envp, char *old_pwd)
 	}
 	else
 	{
-		fprintf(stderr, "cd: HOME environment variable is not set\n");
+		print_error_msg("cd", "HOME", "environment variable is not set");
 	}
 }
 
@@ -49,7 +49,7 @@ static void	handle_oldpwd_directory(char ***envp, char *old_pwd)
 	oldpwd_env = my_getenv("OLDPWD", *envp);
 	if (!oldpwd_env)
 	{
-		fprintf(stderr, "cd: OLDPWD not set\n");
+		ft_putstr_fd("Minishell: cd: OLDPWD not set\n", STDERR_FILENO);
 		return ;
 	}
 	if (chdir(oldpwd_env) == 0)
@@ -89,7 +89,7 @@ void	handle_cd(char **argv, char ***envp)
 		if (chdir(argv[1]) == 0)
 			update_pwd_and_oldpwd(old_pwd, envp);
 		else
-			fprintf(stderr, "cd: no such file or directory: %s\n", argv[1]);
+			print_error_msg("cd", argv[1], "No such file or directory");
 		free(old_pwd);
 	}
 	g_exit_code = 0;
