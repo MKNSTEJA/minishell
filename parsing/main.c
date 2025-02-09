@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/09 10:58:27 by mknsteja         ###   ########.fr       */
+/*   Updated: 2025/02/09 19:02:05 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 int		g_exit_code = 0;
 
-void	print_cmd(t_op *cmd);
-void	print_split(t_split *input);
+void	increment_shlvl(char ***envp);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -95,54 +94,71 @@ int	init_data(t_data *data, char **envp)
 		j++;
 	}
 	data->env[i] = NULL;
+	increment_shlvl(&data->env);
 	return (1);
 }
 
-void	print_split(t_split *input)
+void	increment_shlvl(char ***envp)
 {
-	t_split		*ptr;
-	t_segment	*ptrs;
-	int			i;
+	char	*shlvl_str;
+	int		shlvl;
+	char	*new_shlvl;
 
-	ptr = input;
-	ptrs = NULL;
-	i = 0;
-	while (ptr)
-	{
-		ptrs = ptr->segments;
-		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
-		i = 0;
-		while (ptrs)
-		{
-			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
-			i++;
-			ptrs = ptrs->next;
-		}
-		ptr = ptr->next;
-	}
+	shlvl_str = my_getenv("SHLVL", *envp);
+	shlvl = ft_atoi(shlvl_str);
+	shlvl++;
+	new_shlvl = ft_itoa(shlvl);
+	if (!new_shlvl)
+		return ;
+	set_env_variable("SHLVL", new_shlvl, envp);
+	free(new_shlvl);
 }
 
-void	print_cmd(t_op *cmd)
-{
-	t_op	*ptr;
-	int		i;
-	int		counter;
+// void	print_split(t_split *input)
+// {
+// 	t_split		*ptr;
+// 	t_segment	*ptrs;
+// 	int			i;
 
-	ptr = cmd;
-	i = 0;
-	counter = 0;
-	while (ptr)
-	{
-		i = 0;
-		printf("String inside %d: \n", counter);
-		while (ptr->str && ptr->str[i])
-		{
-			printf("%s ", ptr->str[i]);
-			i++;
-		}
-		printf("\n");
-		ptr = ptr->next;
-		counter++;
-	}
-	printf("\n");
-}
+// 	ptr = input;
+// 	ptrs = NULL;
+// 	i = 0;
+// 	while (ptr)
+// 	{
+// 		ptrs = ptr->segments;
+// 		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
+// 		i = 0;
+// 		while (ptrs)
+// 		{
+// 			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
+// 			i++;
+// 			ptrs = ptrs->next;
+// 		}
+// 		ptr = ptr->next;
+// 	}
+// }
+
+// void	print_cmd(t_op *cmd)
+// {
+// 	t_op	*ptr;
+// 	int		i;
+// 	int		counter;
+
+// 	ptr = cmd;
+// 	i = 0;
+// 	counter = 0;
+// 	while (ptr)
+// 	{
+// 		i = 0;
+// 		printf("String inside %d: \n", counter);
+// 		while (ptr->str && ptr->str[i])
+// 		{
+// 			printf("%s ", ptr->str[i]);
+// 			i++;
+// 		}
+// 		printf("\n");
+// 		ptr = ptr->next;
+// 		counter++;
+// 	}
+// 	printf("\n");
+// }
