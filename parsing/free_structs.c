@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   free_structs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mknsteja <mknsteja@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:22:03 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/05 18:06:20 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/09 10:54:59 by mknsteja         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	free_redirections(t_redir *redir, t_op *ptr);
 
 void	free_data(t_data *data)
 {
@@ -77,11 +79,10 @@ void	free_op(t_op *cmd)
 	t_op	*ptr;
 	t_op	*next_ptr;
 	int		i;
-	t_redir	*redir;
-	t_redir	*temp;
 
 	ptr = cmd;
 	i = 0;
+	next_ptr = NULL;
 	while (ptr)
 	{
 		next_ptr = ptr->next;
@@ -97,17 +98,24 @@ void	free_op(t_op *cmd)
 			free(ptr->str);
 			ptr->str = NULL;
 		}
-		redir = ptr->redirections;
-		while (redir)
-		{
-			temp = redir->next;
-			free(redir->filename);
-			redir->filename = NULL;
-			free(redir);
-			redir = temp;
-		}
-		free(ptr);
-		ptr = NULL;
+		free_redirections(ptr->redirections, ptr);
 		ptr = next_ptr;
 	}
+}
+
+void	free_redirections(t_redir *redir, t_op *ptr)
+{
+	t_redir	*temp;
+
+	temp = NULL;
+	while (redir)
+	{
+		temp = redir->next;
+		free(redir->filename);
+		redir->filename = NULL;
+		free(redir);
+		redir = temp;
+	}
+	free(ptr);
+	ptr = NULL;
 }
