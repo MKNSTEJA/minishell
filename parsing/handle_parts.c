@@ -3,14 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   handle_parts.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/07 23:31:18 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/09 20:54:40 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static int	is_segment_empty(t_segment *seg)
+{
+	return (seg && seg->text && seg->text[0] == '\0');
+}
+
+static void	remove_last_segment(t_segment **head)
+{
+	t_segment	*current;
+	t_segment	*prev;
+
+	if (!head || !*head)
+		return;
+	current = *head;
+	prev = NULL;
+	while (current->next)
+	{
+		prev = current;
+		current = current->next;
+	}
+	if (prev)
+		prev->next = NULL;
+	else
+		*head = NULL;
+	if (current->text)
+		free(current->text);
+	free(current);
+}
 
 void	handle_redirections(t_split **input, t_parts **parts, int *i)
 {
@@ -67,6 +95,8 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 	else if ((*parts)->quote == new_state)
 	{
 		(*parts)->quote = QUOTE_NONE;
+		if (is_segment_empty((*parts)->current_segment))
+			remove_last_segment(current_segments);
 		(*parts)->current_segment = NULL;
 	}
 	else
