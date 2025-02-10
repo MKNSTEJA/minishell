@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 16:06:27 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:29:18 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,13 @@ void	handle_others(t_split **input, t_segment **current_segments,
 void	handle_dollar(t_segment **current_segments, t_parts **parts, int *i)
 {
 	(*parts)->quote = DQ;
-	// // if((*parts)->string[*i + 1] == '\'')
-	// // 	(*parts)->quote = SQ;
-	// // else if((*parts)->string[*i + 1] == '\"')
-	// // 	(*parts)->quote = DQ;
 	(*parts)->current_segment = create_segment("$\"", (*parts)->quote);
-	// final_assign(parts, current_segments, i);
-	append_segment(current_segments, (*parts)->current_segment);
 	(*i) += 2;
+	while (((*parts)->string[*i] && (*parts)->string[*i] != '"'))
+	{
+		final_assign(parts, current_segments, i);
+	}
+	if ((*parts)->string[*i] == '"')
+		final_assign(parts, current_segments, i);
+	append_segment(current_segments, (*parts)->current_segment);
 }
