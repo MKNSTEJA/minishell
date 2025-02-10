@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   segments_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 14:51:49 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 15:02:05 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 23:34:10 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	is_segment_empty(t_segment *seg)
 {
