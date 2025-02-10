@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/09 19:02:05 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 16:37:54 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		add_history(str);
 		input = split_inputs(str);
-		expand_tokens(&input, data.env);
+		print_split(input);
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
@@ -57,6 +57,7 @@ int	main(int argc, char **argv, char **envp)
 			free(str);
 			continue ;
 		}
+		expand_tokens(&input, data.env);
 		cmd = initialise_cmd(input);
 		execute_commands(cmd, &data);
 		free_split(input);
@@ -114,29 +115,29 @@ void	increment_shlvl(char ***envp)
 	free(new_shlvl);
 }
 
-// void	print_split(t_split *input)
-// {
-// 	t_split		*ptr;
-// 	t_segment	*ptrs;
-// 	int			i;
+void	print_split(t_split *input)
+{
+	t_split		*ptr;
+	t_segment	*ptrs;
+	int			i;
 
-// 	ptr = input;
-// 	ptrs = NULL;
-// 	i = 0;
-// 	while (ptr)
-// 	{
-// 		ptrs = ptr->segments;
-// 		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
-// 		i = 0;
-// 		while (ptrs)
-// 		{
-// 			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
-// 			i++;
-// 			ptrs = ptrs->next;
-// 		}
-// 		ptr = ptr->next;
-// 	}
-// }
+	ptr = input;
+	ptrs = NULL;
+	i = 0;
+	while (ptr)
+	{
+		ptrs = ptr->segments;
+		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
+		i = 0;
+		while (ptrs)
+		{
+			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
+			i++;
+			ptrs = ptrs->next;
+		}
+		ptr = ptr->next;
+	}
+}
 
 // void	print_cmd(t_op *cmd)
 // {

@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/09 16:09:52 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 15:02:25 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,8 @@ char					*get_env_value(const char *var_name, char **envp);
 void					add_redirection(t_op *cmd, t_type type, char *filename);
 void					append_str(t_op *cmd, char *string);
 void					append_cmd(t_op *cmd, char *string);
+int						is_segment_empty(t_segment *seg);
+void					remove_last_segment(t_segment **head);
 void					split_cmds(t_split *input, t_op *cmd);
 
 #endif

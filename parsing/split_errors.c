@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_errors.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 16:52:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/05 22:02:24 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/10 13:19:11 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	check_redirection(t_split *input)
 	if (!input->next || input->next->type != WORD)
 	{
 		g_exit_code = 258;
-		ft_putstr_fd("Error! Invalid input or token: `", 2);
+		ft_putstr_fd("Error! Invalid input or token: ", 2);
 		ft_putstr_fd(input->str, 2);
 		ft_putstr_fd("'\n", 2);
 		return (1);

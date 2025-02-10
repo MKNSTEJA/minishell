@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/07 23:33:29 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/10 16:53:05 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ void	fill_inputs(t_split **input)
 	seg = ptr->segments;
 	while (ptr)
 	{
+		seg = ptr->segments;
 		total_length = seg_len(seg);
 		ptr->str = malloc(total_length + 1);
 		if (!ptr->str)
 			exit(1);
 		ptr->str[0] = '\0';
-		seg = ptr->segments;
 		while (seg)
 		{
 			ft_strlcat(ptr->str, seg->text, total_length + 1);
@@ -82,10 +82,14 @@ void	fill_inputs(t_split **input)
 	}
 }
 
-size_t	seg_len(t_segment *seg)
+size_t	seg_len(t_segment *segment)
 {
-	size_t	total_length;
+	t_segment	*seg;
+	size_t		total_length;
 
+	seg = segment;
+	if (!seg)
+		return (0);
 	total_length = 0;
 	while (seg)
 	{
