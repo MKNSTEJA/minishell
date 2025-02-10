@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:09:37 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 16:53:47 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 17:47:51 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ int	split_cmd_redirections(t_split **ptr, t_split **filename_token,
 		t_op **c_ptr)
 {
 	(*filename_token) = (*ptr)->next;
-	if (*filename_token)
-		printf("file name token type: %d", (*filename_token)->type);
-	else
-		printf("NULL!\n");
+	// if (*filename_token)
+	// 	printf("file name token type: %d", (*filename_token)->type);
+	// else
+	// 	printf("NULL!\n");
 	if (!(*filename_token) || (*filename_token)->type != WORD)
 	{
 		ft_putstr_fd("minishell: syntax error near token ", STDERR_FILENO);

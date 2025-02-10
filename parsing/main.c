@@ -6,7 +6,7 @@
 /*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 16:37:54 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 17:43:43 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		add_history(str);
 		input = split_inputs(str);
-		print_split(input);
+		// print_split(input);
 		if (split_errors(input) == 1)
 		{
 			free_split(input);
