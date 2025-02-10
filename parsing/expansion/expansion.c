@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 17:55:34 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:35:22 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 char	*expand_one_token(char *token, char **envp, t_quote_state quote_state);
 char	*expand_var(const char *str, char **envp, size_t *i);
@@ -62,6 +62,11 @@ void	expand_tokens(t_split **head, char **envp)
 		exp.expanded_head = NULL;
 		exp.expanded_tail = NULL;
 		exp.seg = exp.split->segments;
+		if (exp.split->prev && exp.split->prev->type == HEREDOC)
+        {
+            exp.split = exp.split->next;
+            continue;
+        }
 		while (exp.seg)
 		{
 			loop_string(exp.seg->text, &exp, envp, exp.seg);

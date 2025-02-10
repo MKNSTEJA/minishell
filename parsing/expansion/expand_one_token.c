@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand_one_token.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 20:41:13 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/05 21:14:38 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:35:08 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 char	*expand_dollar_token(char *token, char **envp, size_t *i,
 			char *expanded);

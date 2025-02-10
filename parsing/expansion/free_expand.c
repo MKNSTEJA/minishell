@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   free_expand.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 17:58:57 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/05 21:16:17 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:35:27 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	free_expanded_str(t_expand *exp, t_split **head)
 {

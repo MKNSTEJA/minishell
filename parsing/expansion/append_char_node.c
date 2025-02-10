@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   append_char_node.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 17:35:17 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:35:01 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 // int		check_escape(char *str, size_t *i, int *escaped, t_expand *exp);
 void	skip_dollar(char *str, size_t *i, t_expand *exp);

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 15:58:26 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/05 18:26:08 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:35:15 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp,
 			char **envp);
