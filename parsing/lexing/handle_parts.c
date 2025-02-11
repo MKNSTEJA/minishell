@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 23:34:00 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/11 21:13:42 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,22 @@ void	handle_redirections(t_split **input, t_parts **parts, int *i)
 {
 	if ((*parts)->string[*i] == '<' && (*parts)->string[*i + 1] == '<')
 	{
-		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC);
+		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC, 0);
 		(*i) += 2;
 	}
 	else if ((*parts)->string[*i] == '<')
 	{
-		append_list(input, create_segment("<", QUOTE_NONE), IN);
+		append_list(input, create_segment("<", QUOTE_NONE), IN, 0);
 		(*i) += 1;
 	}
 	else if ((*parts)->string[*i] == '>' && (*parts)->string[*i + 1] == '>')
 	{
-		append_list(input, create_segment(">>", QUOTE_NONE), APPEND);
+		append_list(input, create_segment(">>", QUOTE_NONE), APPEND, 0);
 		(*i) += 2;
 	}
 	else if ((*parts)->string[*i] == '>')
 	{
-		append_list(input, create_segment(">", QUOTE_NONE), OUT);
+		append_list(input, create_segment(">", QUOTE_NONE), OUT, 0);
 		(*i) += 1;
 	}
 }
@@ -41,7 +41,7 @@ void	handle_space(t_split **input, t_segment **current_segments,
 {
 	if (*current_segments)
 	{
-		append_list(input, *current_segments, (*parts)->token);
+		append_list(input, *current_segments, (*parts)->token, 0);
 		*current_segments = NULL;
 		(*parts)->token = WORD;
 	}
@@ -58,6 +58,7 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 		new_state = DQ;
 	else if ((*parts)->string[*i] == '\'')
 		new_state = SQ;
+	(*parts)->hd_detected = 1;
 	if ((*parts)->quote == QUOTE_NONE)
 	{
 		(*parts)->quote = new_state;
@@ -81,13 +82,13 @@ void	handle_others(t_split **input, t_segment **current_segments,
 {
 	if (*current_segments)
 	{
-		append_list(input, *current_segments, (*parts)->token);
+		append_list(input, *current_segments, (*parts)->token, 0);
 		*current_segments = NULL;
 		(*parts)->token = WORD;
 	}
 	if ((*parts)->string[*i] == '|')
 	{
-		append_list(input, create_segment("|", QUOTE_NONE), PIPES);
+		append_list(input, create_segment("|", QUOTE_NONE), PIPES, 0);
 		(*i)++;
 	}
 	else

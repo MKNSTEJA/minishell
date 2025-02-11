@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 23:34:15 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/11 21:11:49 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	assign_segments(t_split **input, t_segment **current_segments,
 			final_assign(&parts, current_segments, &i);
 	}
 	if (*current_segments)
-		append_list(input, *current_segments, parts->token);
+		append_list(input, *current_segments, parts->token, parts->hd_detected);
 }
 
 void	append_segment(t_segment **head, t_segment *new_seg)

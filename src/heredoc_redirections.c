@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:24:20 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:54:29 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/11 22:39:50 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ void	write_to_pipe(int pipe_fd, char *line)
 char	*expand_if_needed(char *line, t_redir *redir, char **envp)
 {
 	char	*expanded_line;
-
-	if (!redir->quoted)
+	if (redir->quoted <= 0)
 	{
 		expanded_line = expand_one_token(line, envp, DQ);
 		free(line);

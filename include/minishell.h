@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/10 15:02:25 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/11 21:12:05 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct s_parts
 	t_quote_state		quote;
 	t_type				token;
 	t_segment			*current_segment;
+	int					hd_detected;
 }						t_parts;
 
 typedef struct s_split
@@ -90,7 +91,7 @@ typedef struct s_split
 	t_segment			*segments;
 	struct s_split		*prev;
 	struct s_split		*next;
-
+	int					heredoc_quoted;
 }						t_split;
 
 typedef struct s_redir
@@ -184,7 +185,7 @@ void					handle_field_splitting(t_split **head,
 							t_split **curr_ptr, char *expanded_str);
 char					*expand_escape(const char *str);
 void					append_list(t_split **head, t_segment *segments,
-							t_type type);
+							t_type type, int hd_detected);
 int						is_builtin(t_op *cmd);
 void					execute_commands(t_op *cmd, t_data *data);
 void					execute_pipeline(t_op *cmd, t_data *data);
@@ -208,7 +209,7 @@ int						is_token_unquoted(t_split *token);
 t_split					*remove_token(t_split **head, t_split *token);
 char					*expand_var(const char *str, char **envp, size_t *i);
 char					*get_env_value(const char *var_name, char **envp);
-void					add_redirection(t_op *cmd, t_type type, char *filename);
+void					add_redirection(t_op *cmd, t_type type, char *filename, int heredoc_quoted);
 void					append_str(t_op *cmd, char *string);
 void					append_cmd(t_op *cmd, char *string);
 int						is_segment_empty(t_segment *seg);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segregate_info.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/09 16:10:59 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/11 22:39:03 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	append_str(t_op *cmd, char *string);
 void	check_redir_quotes(t_type type, t_redir **new_redir, t_op **cmd,
 			char *filename);
 
-void	add_redirection(t_op *cmd, t_type type, char *filename)
+void	add_redirection(t_op *cmd, t_type type, char *filename, int heredoc_quoted)
 {
 	t_redir	*new_redir;
 
@@ -28,6 +28,7 @@ void	add_redirection(t_op *cmd, t_type type, char *filename)
 	new_redir->type = type;
 	new_redir->filename = ft_strdup(filename);
 	new_redir->next = NULL;
+	new_redir->quoted = heredoc_quoted;
 	check_redir_quotes(type, &new_redir, &cmd, filename);
 }
 
@@ -35,17 +36,8 @@ void	check_redir_quotes(t_type type, t_redir **new_redir, t_op **cmd,
 		char *filename)
 {
 	t_redir	*temp;
-
-	temp = NULL;
-	if (type == HEREDOC)
-	{
-		if (ft_strchr(filename, '\'') != NULL)
-			(*new_redir)->quoted = 1;
-		else
-			(*new_redir)->quoted = 0;
-	}
-	else
-		(*new_redir)->quoted = 0;
+	(void)type;
+	(void)filename;
 	if (!(*cmd)->redirections)
 		(*cmd)->redirections = (*new_redir);
 	else
