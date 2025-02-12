@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/11 21:11:49 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 21:00:34 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	handle_segments(char *string, t_split **input)
 	parts.current_segment = NULL;
 	parts.quote = QUOTE_NONE;
 	parts.token = WORD;
+	parts.token_quoted = 0;
 	current_segments = NULL;
 	assign_segments(input, &current_segments, &parts);
 }
@@ -71,7 +72,7 @@ void	assign_segments(t_split **input, t_segment **current_segments,
 			final_assign(&parts, current_segments, &i);
 	}
 	if (*current_segments)
-		append_list(input, *current_segments, parts->token, parts->hd_detected);
+		append_list(input, *current_segments, parts->token, &parts->token_quoted);
 }
 
 void	append_segment(t_segment **head, t_segment *new_seg)

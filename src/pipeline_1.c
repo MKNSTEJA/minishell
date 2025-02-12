@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:11:37 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/09 00:17:44 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 23:13:33 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ static void	execute_child(t_op *current, t_data *data, int prev_fd,
 {
 	char	*exec_path;
 
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
 	if (apply_redirections(current, data->env) < 0)
 		_exit(1);
 	setup_child_io(current, prev_fd, pipe_fds);

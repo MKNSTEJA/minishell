@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/11 21:13:42 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 21:09:03 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,22 @@ void	handle_redirections(t_split **input, t_parts **parts, int *i)
 {
 	if ((*parts)->string[*i] == '<' && (*parts)->string[*i + 1] == '<')
 	{
-		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC, 0);
+		append_list(input, create_segment("<<", QUOTE_NONE), HEREDOC, &((*parts)->token_quoted));
 		(*i) += 2;
 	}
 	else if ((*parts)->string[*i] == '<')
 	{
-		append_list(input, create_segment("<", QUOTE_NONE), IN, 0);
+		append_list(input, create_segment("<", QUOTE_NONE), IN, &((*parts)->token_quoted));
 		(*i) += 1;
 	}
 	else if ((*parts)->string[*i] == '>' && (*parts)->string[*i + 1] == '>')
 	{
-		append_list(input, create_segment(">>", QUOTE_NONE), APPEND, 0);
+		append_list(input, create_segment(">>", QUOTE_NONE), APPEND, &((*parts)->token_quoted));
 		(*i) += 2;
 	}
 	else if ((*parts)->string[*i] == '>')
 	{
-		append_list(input, create_segment(">", QUOTE_NONE), OUT, 0);
+		append_list(input, create_segment(">", QUOTE_NONE), OUT, &((*parts)->token_quoted));
 		(*i) += 1;
 	}
 }
@@ -41,7 +41,7 @@ void	handle_space(t_split **input, t_segment **current_segments,
 {
 	if (*current_segments)
 	{
-		append_list(input, *current_segments, (*parts)->token, 0);
+		append_list(input, *current_segments, (*parts)->token, &((*parts)->token_quoted));
 		*current_segments = NULL;
 		(*parts)->token = WORD;
 	}
@@ -58,7 +58,7 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 		new_state = DQ;
 	else if ((*parts)->string[*i] == '\'')
 		new_state = SQ;
-	(*parts)->hd_detected = 1;
+	(*parts)->token_quoted = 1;
 	if ((*parts)->quote == QUOTE_NONE)
 	{
 		(*parts)->quote = new_state;
@@ -82,13 +82,13 @@ void	handle_others(t_split **input, t_segment **current_segments,
 {
 	if (*current_segments)
 	{
-		append_list(input, *current_segments, (*parts)->token, 0);
+		append_list(input, *current_segments, (*parts)->token, &((*parts)->token_quoted));
 		*current_segments = NULL;
 		(*parts)->token = WORD;
 	}
 	if ((*parts)->string[*i] == '|')
 	{
-		append_list(input, create_segment("|", QUOTE_NONE), PIPES, 0);
+		append_list(input, create_segment("|", QUOTE_NONE), PIPES, &((*parts)->token_quoted));
 		(*i)++;
 	}
 	else

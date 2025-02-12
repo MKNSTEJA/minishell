@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 18:30:47 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/12 22:37:18 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	main(int argc, char **argv, char **envp)
 	if (!init_data(&data, envp))
 		return (EXIT_FAILURE);
 	remove_env_variable(&data.env, "OLDPWD");
+	set_signals_interactive();
 	while (1)
 	{
 		if (isatty(fileno(stdin)))

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/11 21:12:05 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 23:14:20 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ typedef struct s_parts
 	t_quote_state		quote;
 	t_type				token;
 	t_segment			*current_segment;
-	int					hd_detected;
+	int					token_quoted;
 }						t_parts;
 
 typedef struct s_split
@@ -91,7 +91,7 @@ typedef struct s_split
 	t_segment			*segments;
 	struct s_split		*prev;
 	struct s_split		*next;
-	int					heredoc_quoted;
+	int					token_has_quotes;
 }						t_split;
 
 typedef struct s_redir
@@ -120,6 +120,10 @@ typedef struct s_expand
 	int					token_unquoted;
 }						t_expand;
 
+
+void					set_signals_interactive(void);
+void					signal_reset_prompt(int signo);
+void					ignore_sigquit(void);
 t_split					*split_inputs(char *string);
 int						split_errors(t_split *input);
 t_op					*initialise_cmd(t_split *input);
@@ -185,7 +189,7 @@ void					handle_field_splitting(t_split **head,
 							t_split **curr_ptr, char *expanded_str);
 char					*expand_escape(const char *str);
 void					append_list(t_split **head, t_segment *segments,
-							t_type type, int hd_detected);
+							t_type type, int *token_quoted);
 int						is_builtin(t_op *cmd);
 void					execute_commands(t_op *cmd, t_data *data);
 void					execute_pipeline(t_op *cmd, t_data *data);
@@ -209,7 +213,7 @@ int						is_token_unquoted(t_split *token);
 t_split					*remove_token(t_split **head, t_split *token);
 char					*expand_var(const char *str, char **envp, size_t *i);
 char					*get_env_value(const char *var_name, char **envp);
-void					add_redirection(t_op *cmd, t_type type, char *filename, int heredoc_quoted);
+void					add_redirection(t_op *cmd, t_type type, char *filename, int token_has_quotes);
 void					append_str(t_op *cmd, char *string);
 void					append_cmd(t_op *cmd, char *string);
 int						is_segment_empty(t_segment *seg);

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:09:37 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/11 22:38:49 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 21:10:16 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int	split_cmd_redirections(t_split **ptr, t_split **filename_token,
 	}
 	if ((*ptr)->type == HEREDOC)
     {
-        add_redirection(*c_ptr, (*ptr)->type, (*filename_token)->str, (*filename_token)->heredoc_quoted);
-		(*ptr) = (*filename_token)->next;
+        add_redirection(*c_ptr, (*ptr)->type, (*filename_token)->str, (*filename_token)->token_has_quotes);
+		(*ptr) = (*filename_token);
     }
 	else
 	{

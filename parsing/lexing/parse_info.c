@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/11 22:39:24 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 21:13:03 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,22 +99,11 @@ size_t	seg_len(t_segment *segment)
 	return (total_length);
 }
 
-void append_list(t_split **head, t_segment *segments, t_type type, int hd_detected)
+void append_list(t_split **head, t_segment *segments, t_type type, int *token_quoted)
 {
 	t_split	*new_node;
 	t_split	*current;
-	int		quoted = 0;
-	t_segment *seg = segments;
 	
-	while (seg)
-	{
-		if (seg->quote != QUOTE_NONE)
-			{
-				quoted = 1;
-				break;
-			}
-		seg = seg->next;
-	}
 	new_node = malloc(sizeof(t_split));
 	current = *head;
 	if (!new_node)
@@ -127,7 +116,9 @@ void append_list(t_split **head, t_segment *segments, t_type type, int hd_detect
 	new_node->type = type;
 	new_node->prev = NULL;
 	new_node->next = NULL;
-	new_node->heredoc_quoted = hd_detected;
+	// printf("debug: append_list: token_quoted: %d\n", *token_quoted);
+	new_node->token_has_quotes = *token_quoted;
+	*token_quoted = 0;
 	if (!*head)
 		*head = new_node;
 	else
