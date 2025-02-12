@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:47:58 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/08 23:52:41 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:02:40 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	is_n_flag(char *arg)
 	return (arg[i] == '\0');
 }
 
-void	handle_echo(char **argv)
+void	handle_echo(char **argv, t_data *data)
 {
 	int	first_arg;
 	int	i;
@@ -90,22 +90,22 @@ void	handle_echo(char **argv)
 		printf("%s", argv[i]);
 		i++;
 	}
-	g_exit_code = 0;
+	data->last_exit = 0;
 	if (newline)
 		printf("\n");
 }
 
-void	handle_pwd(char **argv, char **envp)
+void	handle_pwd(char **argv, t_data *data)
 {
 	char		*pwd;
 	const char	*error_msg;
 
 	(void)argv;
-	pwd = my_getenv("PWD", envp);
+	pwd = my_getenv("PWD", data->env);
 	if (pwd)
 	{
 		printf("%s\n", pwd);
-		g_exit_code = 0;
+		data->last_exit = 0;
 	}
 	else
 	{

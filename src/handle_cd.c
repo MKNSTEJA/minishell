@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 19:55:28 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/09 00:32:12 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:25:04 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void	handle_oldpwd_directory(char ***envp, char *old_pwd)
 	return ;
 }
 
-void	handle_cd(char **argv, char ***envp)
+void	handle_cd(char **argv, t_data *data)
 {
 	char	*old_pwd;
 
@@ -77,20 +77,20 @@ void	handle_cd(char **argv, char ***envp)
 	if (!old_pwd)
 	{
 		perror("getcwd");
-		g_exit_code = 1;
+		data->last_exit = 1;
 		return ;
 	}
 	if (!argv[1] || (argv[1][0] == '~' && argv[1][1] == '\0'))
-		handle_home_directory(envp, old_pwd);
+		handle_home_directory(&data->env, old_pwd);
 	else if (argv[1][0] == '-' && argv[1][1] == '\0')
-		handle_oldpwd_directory(envp, old_pwd);
+		handle_oldpwd_directory(&data->env, old_pwd);
 	else
 	{
 		if (chdir(argv[1]) == 0)
-			update_pwd_and_oldpwd(old_pwd, envp);
+			update_pwd_and_oldpwd(old_pwd, &data->env);
 		else
 			print_error_msg("cd", argv[1], "No such file or directory");
 		free(old_pwd);
 	}
-	g_exit_code = 0;
+	data->last_exit = 0;
 }

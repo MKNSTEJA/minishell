@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:11:37 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/12 23:13:33 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:25:36 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	execute_child(t_op *current, t_data *data, int prev_fd,
 
 	signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
-	if (apply_redirections(current, data->env) < 0)
+	if (apply_redirections(current, data) < 0)
 		_exit(1);
 	setup_child_io(current, prev_fd, pipe_fds);
 	if (is_builtin(current))
@@ -105,6 +105,6 @@ void	execute_pipeline(t_op *cmd, t_data *data)
 		process_command(current, data, &state);
 		current = current->next;
 	}
-	wait_for_children(&state);
+	wait_for_children(&state, data);
 	free(state.pids);
 }

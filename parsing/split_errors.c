@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   split_errors.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 16:52:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 13:19:11 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/12 23:49:53 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 int		check_pipe(t_split *input);
-int		check_redirection(t_split *input);
 void	back_track(t_split *input);
 
-int	split_errors(t_split *input)
+int	split_errors(t_split *input, t_data *data)
 {
 	t_split	*ptr;
 
@@ -27,7 +26,7 @@ int	split_errors(t_split *input)
 		if (ptr->type == PIPES && check_pipe(ptr))
 			return (1);
 		else if ((ptr->type != PIPES && ptr->type != WORD)
-			&& check_redirection(ptr))
+			&& check_redirection(ptr, data))
 		{
 			return (1);
 		}
@@ -46,11 +45,11 @@ int	check_pipe(t_split *input)
 	return (0);
 }
 
-int	check_redirection(t_split *input)
+int	check_redirection(t_split *input, t_data *data)
 {
 	if (!input->next || input->next->type != WORD)
 	{
-		g_exit_code = 258;
+		data->last_exit = 258;
 		ft_putstr_fd("Error! Invalid input or token: ", 2);
 		ft_putstr_fd(input->str, 2);
 		ft_putstr_fd("'\n", 2);

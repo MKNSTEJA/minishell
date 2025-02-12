@@ -6,14 +6,12 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/10 21:35:22 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:23:00 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*expand_one_token(char *token, char **envp, t_quote_state quote_state);
-char	*expand_var(const char *str, char **envp, size_t *i);
 char	*get_env_value(const char *var_name, char **envp);
 void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 			char *expanded_str);
@@ -49,7 +47,7 @@ char	*convert_char_list_to_string(t_char_node *head)
 	return (str);
 }
 
-void	expand_tokens(t_split **head, char **envp)
+void	expand_tokens(t_split **head, t_data *data)
 {
 	t_expand	exp;
 
@@ -69,7 +67,7 @@ void	expand_tokens(t_split **head, char **envp)
         }
 		while (exp.seg)
 		{
-			loop_string(exp.seg->text, &exp, envp, exp.seg);
+			loop_string(exp.seg->text, &exp, data, exp.seg);
 			exp.seg = exp.seg->next;
 		}
 		exp.expanded_str = convert_char_list_to_string(exp.expanded_head);

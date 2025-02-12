@@ -6,18 +6,18 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 20:41:13 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 21:35:08 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:23:15 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*expand_dollar_token(char *token, char **envp, size_t *i,
+char	*expand_dollar_token(char *token, t_data *data, size_t *i,
 			char *expanded);
 char	*expand_home_env(char **envp, size_t *i, char *expanded);
 char	*strjoin_expanded(char *token, size_t *i, char *expanded);
 
-char	*expand_one_token(char *token, char **envp, t_quote_state quote_state)
+char	*expand_one_token(char *token, t_data *data, t_quote_state quote_state)
 {
 	size_t	i;
 	char	*expanded;
@@ -29,9 +29,9 @@ char	*expand_one_token(char *token, char **envp, t_quote_state quote_state)
 	while (token && token[i])
 	{
 		if (token[i] == '$' && quote_state != SQ)
-			expanded = expand_dollar_token(token, envp, &i, expanded);
+			expanded = expand_dollar_token(token, data, &i, expanded);
 		else if (!i && token[i] == '~' && (token[i + 1] == 47 || !token[i + 1]))
-			expanded = expand_home_env(envp, &i, expanded);
+			expanded = expand_home_env(data->env, &i, expanded);
 		else
 			expanded = strjoin_expanded(token, &i, expanded);
 		if (!expanded)
@@ -40,13 +40,13 @@ char	*expand_one_token(char *token, char **envp, t_quote_state quote_state)
 	return (expanded);
 }
 
-char	*expand_dollar_token(char *token, char **envp, size_t *i,
+char	*expand_dollar_token(char *token, t_data *data, size_t *i,
 		char *expanded)
 {
 	char	*var_value;
 	char	*tmp;
 
-	var_value = expand_var(&token[*i], envp, i);
+	var_value = expand_var(&token[*i], data, i);
 	if (!var_value)
 		var_value = ft_strdup("");
 	tmp = ft_strjoin(expanded, var_value);

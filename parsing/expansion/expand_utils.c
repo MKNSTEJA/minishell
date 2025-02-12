@@ -6,29 +6,29 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 15:58:26 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 21:35:15 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:20:25 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp,
-			char **envp);
+		t_data *data);
 
-void	expand_double_quote(const char *str, char **envp, size_t *i,
+void	expand_double_quote(const char *str, t_data *data, size_t *i,
 		t_expand *exp)
 {
 	(*i)++;
 	while (str[*i] && str[*i] != '"')
 	{
-		handle_dquote_expansion(str, i, exp, envp);
+		handle_dquote_expansion(str, i, exp, data);
 	}
 	if (str[*i] == '"')
 		(*i)++;
 }
 
 void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp,
-		char **envp)
+		t_data *data)
 {
 	char	*var;
 	size_t	j;
@@ -37,7 +37,7 @@ void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp,
 	j = 0;
 	if (str[*i] == '$')
 	{
-		var = expand_var(&str[*i], envp, i);
+		var = expand_var(&str[*i], data, i);
 		while (var[j++])
 			append_char_node(exp, var[j]);
 		free(var);

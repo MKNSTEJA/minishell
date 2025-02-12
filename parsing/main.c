@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/12 22:37:18 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:17:23 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ int	main(int argc, char **argv, char **envp)
 		add_history(str);
 		input = split_inputs(str);
 		// print_split(input);
-		if (split_errors(input) == 1)
+		if (split_errors(input, &data) == 1)
 		{
 			free_split(input);
 			input = NULL;
 			free(str);
 			continue ;
 		}
-		expand_tokens(&input, data.env);
+		expand_tokens(&input, &data);
 		cmd = initialise_cmd(input);
 		execute_commands(cmd, &data);
 		free_split(input);
@@ -68,7 +68,7 @@ int	main(int argc, char **argv, char **envp)
 	rl_clear_history();
 	free_data(&data);
 	// system("leaks minishell");
-	return (g_exit_code);
+	return (data.last_exit);
 }
 
 int	init_data(t_data *data, char **envp)

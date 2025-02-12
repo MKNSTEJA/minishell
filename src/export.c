@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:52:53 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/09 00:07:27 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:03:22 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	export_with_value(const char *arg, t_data *data)
 	key = ft_substr(arg, 0, key_len);
 	if (key_len == 0 || !is_valid_identifier(key))
 	{
-		g_exit_code = 1;
+		data->last_exit = 1;
 		print_error_msg("export", arg, "not a valid identifier");
 		free(key);
 		return ;
@@ -39,7 +39,7 @@ static void	export_without_value(const char *arg, t_data *data)
 {
 	if (!is_valid_identifier(arg))
 	{
-		g_exit_code = 1;
+		data->last_exit = 1;
 		print_error_msg("export", arg, "not a valid identifier");
 		return ;
 	}

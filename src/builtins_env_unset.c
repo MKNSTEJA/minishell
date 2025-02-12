@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:20:25 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/08 23:58:22 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:26:45 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,19 @@ void	execute_builtin(t_op *cmd, t_data *data)
 	if (strcmp(argv[0], "exit") == 0)
 		handle_exit(argv);
 	else if (strcmp(argv[0], "cd") == 0)
-		handle_cd(argv, &(data->env));
+		handle_cd(argv, data);
 	else if (strcmp(argv[0], "unset") == 0)
-		handle_unset(argv, data->env);
+		handle_unset(argv, data);
 	else if (strcmp(argv[0], "env") == 0)
 		handle_env(argv, data);
 	else if (strcmp(argv[0], "pwd") == 0)
-		handle_pwd(argv, data->env);
+		handle_pwd(argv, data);
 	else if (strcmp(argv[0], "echo") == 0)
-		handle_echo(argv);
+		handle_echo(argv, data);
 	else if (strcmp(argv[0], "export") == 0)
 		handle_export(argv, data);
 }
-void	handle_unset(char **argv, char **envp)
+void	handle_unset(char **argv, t_data *data)
 {
 	const char	*error_msg;
 
@@ -42,17 +42,17 @@ void	handle_unset(char **argv, char **envp)
 	{
 		error_msg = "unset: Missing argument\n";
 		write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
-		g_exit_code = 1;
+		data->last_exit = 1;
 		return ;
 	}
 	if (!is_valid_identifier(argv[1]))
 	{
-		g_exit_code = 1;
+		data->last_exit = 1;
 		print_error_msg("unset", argv[1], "not a valid identifier");
 		return ;
 	}
-	remove_env_variable(&envp, argv[1]);
-	g_exit_code = 0;
+	remove_env_variable(&data->env, argv[1]); //TODO recheck if correct
+	data->last_exit = 0;
 }
 
 void	handle_env(char **argv, t_data *data)
@@ -62,7 +62,7 @@ void	handle_env(char **argv, t_data *data)
 	if (argv && argv[1])
 	{
 		print_error_msg("env", NULL, "too many arguments");
-		g_exit_code = 1;
+		data->last_exit = 1;
 		return ;
 	}
 	env = data->env;
@@ -75,5 +75,5 @@ void	handle_env(char **argv, t_data *data)
 		printf("%s\n", *env);
 		env++;
 	}
-	g_exit_code = 0;
+	data->last_exit = 0;
 }

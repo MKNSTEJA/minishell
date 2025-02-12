@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 21:35:01 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:19:55 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 // int		check_escape(char *str, size_t *i, int *escaped, t_expand *exp);
 void	skip_dollar(char *str, size_t *i, t_expand *exp);
-void	expand_dollar(t_expand *exp, char **envp, size_t *i, char *str);
+void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str);
 void	expand_home(char **envp, size_t *i, t_expand *exp);
 
-void	loop_string(char *str, t_expand *exp, char **envp,
+void	loop_string(char *str, t_expand *exp, t_data *data,
 		t_segment *curr_segment)
 {
 	size_t	i;
@@ -28,13 +28,13 @@ void	loop_string(char *str, t_expand *exp, char **envp,
 		if (str[i] == '$' && str[i + 1] == '"')
 			skip_dollar(str, &i, exp);
 		else if (str[i] == '"' && curr_segment->quote == DQ)
-			expand_double_quote(str, envp, &i, exp);
+			expand_double_quote(str, data, &i, exp);
 		else if (str[i] == '\'' && curr_segment->quote == SQ)
 			expand_single_quote(str, &i, exp);
 		else if (str[i] == '$' && curr_segment->quote != SQ)
-			expand_dollar(exp, envp, &i, str);
+			expand_dollar(exp, data, &i, str);
 		else if (str[i] == '~' && (!i) && (str[i + 1] == '/' || !str[i + 1]))
-			expand_home(envp, &i, exp);
+			expand_home(data->env, &i, exp);
 		else
 		{
 			append_char_node(exp, str[i]);
@@ -55,12 +55,12 @@ void	skip_dollar(char *str, size_t *i, t_expand *exp)
 		(*i)++;
 }
 
-void	expand_dollar(t_expand *exp, char **envp, size_t *i, char *str)
+void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str)
 {
 	char	*var;
 	size_t	j;
 
-	var = expand_var(&str[*i], envp, i);
+	var = expand_var(&str[*i], data, i);
 	j = 0;
 	if (var)
 	{

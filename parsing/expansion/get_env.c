@@ -6,13 +6,13 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 20:19:28 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 23:34:41 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/12 23:51:56 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*expand_var(const char *str, char **envp, size_t *i)
+char	*expand_var(const char *str, t_data *data, size_t *i)
 {
 	size_t	start;
 	size_t	var_len;
@@ -22,7 +22,7 @@ char	*expand_var(const char *str, char **envp, size_t *i)
 	start = 1;
 	var_len = 0;
 	if (str[1] == '?')
-		return ((*i) += 2, ft_itoa(g_exit_code));
+		return ((*i) += 2, ft_itoa(data->last_exit));
 	while (ft_isalnum(str[start + var_len]) || str[start + var_len] == '_')
 		var_len++;
 	if (var_len == 0)
@@ -31,7 +31,7 @@ char	*expand_var(const char *str, char **envp, size_t *i)
 	if (!var_name)
 		return (ft_strdup(""));
 	(*i) += var_len + 1;
-	value = my_getenv(var_name, envp);
+	value = my_getenv(var_name, data->env);
 	free(var_name);
 	if (value)
 		return (ft_strdup(value));

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:07 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/12 23:28:38 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:25:53 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,16 @@ static void	handle_fork_and_wait(t_op *cmd, t_data *data)
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			g_exit_code = WEXITSTATUS(status);
+			data->last_exit = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 		{
 			int sig = WTERMSIG(status);
 			if (sig == SIGQUIT)
 				fprintf(stderr, "Quit: %d\n", sig);
-			g_exit_code = 128 + sig;
+			data->last_exit = 128 + sig;
 		}
 		else
-			g_exit_code = 1;
+			data->last_exit = 1;
 	}
 }
 
@@ -82,7 +82,7 @@ void	execute_simple_command(t_op *cmd, t_data *data)
 		perror("dup");
 		return ;
 	}
-	if (apply_redirections(cmd, data->env) < 0)
+	if (apply_redirections(cmd, data) < 0)
 	{
 		cleanup(saved_stdin, saved_stdout);
 		return ;

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:14:08 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/12 23:28:56 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 00:05:05 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	setup_child_io(t_op *current, int prev_fd, int pipe_fds[2])
 	}
 }
 
-void	wait_for_children(t_pipe_state *state)
+void	wait_for_children(t_pipe_state *state, t_data *data)
 {
 	int	status;
 	int	i;
@@ -43,14 +43,14 @@ void	wait_for_children(t_pipe_state *state)
 		i++;
 	}
 	if (WIFEXITED(status))
-		g_exit_code = WEXITSTATUS(status);
+		data->last_exit = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
 		int sig = WTERMSIG(status);
 		if (sig == SIGQUIT)
 		fprintf(stderr, "Quit: %d\n", sig);
-		g_exit_code = 128 + sig;
+		data->last_exit = 128 + sig;
 	}
 	else
-		g_exit_code = 1;
+		data->last_exit = 1;
 }
