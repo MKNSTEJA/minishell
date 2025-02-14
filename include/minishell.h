@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:30:04 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/14 03:12:14 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,18 +143,18 @@ void					free_data(t_data *data);
 void					free_split(t_split *list);
 void					free_segment(t_split *list);
 void					free_op(t_op *cmd);
-int						free_expanded_str(t_expand *exp, t_split **head);
+int						handle_empty_expanded_string(t_expand *exp, t_split **head);
 void					free_char_list(t_char_node *head);
 void					print_error_msg(const char *cmd, const char *arg,
 							const char *err_msg);
 int						is_numeric(const char *s);
 void					ignore_sigquit(void);
 void					signal_reset_prompt(int signo);
-t_segment				*create_segment(const char *text, t_quote_state state);
-void					append_segment(t_segment **head, t_segment *new_seg);
-void					final_assign(t_parts **parts,
-							t_segment **current_segments, int *i);
-void					handle_segments(char *string, t_split **input);
+t_segment					*new_segment(const char *text, t_quote_state state);
+void					add_segment(t_segment **head, t_segment *new_seg);
+void					append_char_to_segment(t_parts **parts, t_segment **current_segments, int *i);
+void					parse_segments(t_split **input, t_segment **current_segments, t_parts *parts);
+void					process_input_segments(char *input_string, t_split **input);
 void					handle_space(t_split **input,
 							t_segment **current_segments, t_parts **parts,
 							int *i);

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:24:20 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:30:11 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:57:46 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	process_heredoc_input(int write_fd, t_redir *redir, t_data *data)
 	line = NULL;
 	while (1)
 	{
-		ft_putstr_fd("> ", 1);
+		ft_putstr_fd("> ", STDERR_FILENO);
+		// line = readline("> ");
 		line = get_next_line(0);
 		if (!line)
 			break ;

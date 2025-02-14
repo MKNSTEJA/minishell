@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:20:25 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:26:45 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 17:02:04 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	execute_builtin(t_op *cmd, t_data *data)
 {
 	char	**argv;
-
+	
 	argv = cmd->str;
 	if (!argv || !argv[0])
 		return ;
@@ -34,25 +34,40 @@ void	execute_builtin(t_op *cmd, t_data *data)
 	else if (strcmp(argv[0], "export") == 0)
 		handle_export(argv, data);
 }
+
 void	handle_unset(char **argv, t_data *data)
 {
-	const char	*error_msg;
-
-	if (!argv[1])
+	// const char	*error_msg;
+	int i = 1;
+	
+	if (!argv[1] || (argv[1][0] == '?' && !argv[1][1]))
 	{
-		error_msg = "unset: Missing argument\n";
-		write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
-		data->last_exit = 1;
+		// error_msg = "unset: Missing argument\n";
+		// write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
 		return ;
 	}
-	if (!is_valid_identifier(argv[1]))
+	// if (!is_valid_identifier(argv[1]))
+	// {
+	// 	data->last_exit = 1;
+	// 	print_error_msg("unset", argv[1], "not a valid identifier");
+	// 	return ;
+	// }
+	// remove_env_variable(&data->env, argv[1]); //TODO recheck if correct
+	while (argv[i])
 	{
-		data->last_exit = 1;
-		print_error_msg("unset", argv[1], "not a valid identifier");
-		return ;
+		if (!is_valid_identifier(argv[i]))
+		{
+			data->last_exit = 1;
+			print_error_msg("unset", argv[i], "not a valid identifier");
+		}
+		else
+		{
+			remove_env_variable(&data->env, argv[i]); // Remove the variable
+		}
+		i++;
 	}
-	remove_env_variable(&data->env, argv[1]); //TODO recheck if correct
-	data->last_exit = 0;
+	if (data->last_exit != 1)
+		data->last_exit = 0;
 }
 
 void	handle_env(char **argv, t_data *data)

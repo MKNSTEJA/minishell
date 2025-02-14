@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/13 00:19:55 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/14 02:40:29 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,19 @@ void	skip_dollar(char *str, size_t *i, t_expand *exp);
 void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str);
 void	expand_home(char **envp, size_t *i, t_expand *exp);
 
+/**
+ * @brief Processes a string for expansion by iterating over each character.
+ *
+ * Iterates through the segments' text and performs the appropriate
+ * expansion operations based on the current character and its context (e.g.,
+ * variable expansion, tilde expansion, or handling quotes). The resulting
+ * characters are appended to the expansion's character list.
+ *
+ * @param str The input string (segments' text) to process.
+ * @param exp Pointer to the t_expand structure holding the expansion state.
+ * @param data Shell data containing environment variables and other info.
+ * @param curr_segment The current segment being processed, containing quote info.
+ */
 void	loop_string(char *str, t_expand *exp, t_data *data,
 		t_segment *curr_segment)
 {

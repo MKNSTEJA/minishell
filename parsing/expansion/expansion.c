@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/13 00:23:00 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/14 03:12:24 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,17 @@ char	*convert_char_list_to_string(t_char_node *head)
 	return (str);
 }
 
+/**
+ * @brief Expands all tokens by processing each token's segments for variable
+ * and tilde expansion.
+ *
+ * For each token in the linked list, this function processes its segments by
+ * iterating over the string and performing the appropriate expansion based on
+ * the context (e.g., within quotes or unquoted).
+ *
+ * @param head Pointer to the head of the token linked list.
+ * @param data Shell data containing environment variables and other info.
+ */
 void	expand_tokens(t_split **head, t_data *data)
 {
 	t_expand	exp;
@@ -72,7 +83,7 @@ void	expand_tokens(t_split **head, t_data *data)
 		}
 		exp.expanded_str = convert_char_list_to_string(exp.expanded_head);
 		free_char_list(exp.expanded_head);
-		if (free_expanded_str(&exp, head) != 0)
+		if (handle_empty_expanded_string(&exp, head) != 0)
 			continue ;
 		exp.token_unquoted = is_token_unquoted(exp.split);
 		splitting_spaces(&exp, head);

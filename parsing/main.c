@@ -6,13 +6,13 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/13 00:17:23 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 19:01:55 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int		g_exit_code = 0;
+// int		g_exit_code = 0;
 
 void	increment_shlvl(char ***envp);
 
@@ -116,51 +116,51 @@ void	increment_shlvl(char ***envp)
 	free(new_shlvl);
 }
 
-void	print_split(t_split *input)
-{
-	t_split		*ptr;
-	t_segment	*ptrs;
-	int			i;
-
-	ptr = input;
-	ptrs = NULL;
-	i = 0;
-	while (ptr)
-	{
-		ptrs = ptr->segments;
-		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
-		i = 0;
-		while (ptrs)
-		{
-			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
-			i++;
-			ptrs = ptrs->next;
-		}
-		ptr = ptr->next;
-	}
-}
-
-// void	print_cmd(t_op *cmd)
+// void	print_split(t_split *input)
 // {
-// 	t_op	*ptr;
-// 	int		i;
-// 	int		counter;
+// 	t_split		*ptr;
+// 	t_segment	*ptrs;
+// 	int			i;
 
-// 	ptr = cmd;
+// 	ptr = input;
+// 	ptrs = NULL;
 // 	i = 0;
-// 	counter = 0;
 // 	while (ptr)
 // 	{
+// 		ptrs = ptr->segments;
+// 		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
 // 		i = 0;
-// 		printf("String inside %d: \n", counter);
-// 		while (ptr->str && ptr->str[i])
+// 		while (ptrs)
 // 		{
-// 			printf("%s ", ptr->str[i]);
+// 			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
 // 			i++;
+// 			ptrs = ptrs->next;
 // 		}
-// 		printf("\n");
 // 		ptr = ptr->next;
-// 		counter++;
 // 	}
-// 	printf("\n");
 // }
+
+void	print_cmd(t_op *cmd)
+{
+	t_op	*ptr;
+	int		i;
+	int		counter;
+
+	ptr = cmd;
+	i = 0;
+	counter = 0;
+	while (ptr)
+	{
+		i = 0;
+		printf("String inside %d: \n", counter);
+		while (ptr->str && ptr->str[i])
+		{
+			printf("%s ", ptr->str[i]);
+			i++;
+		}
+		printf("\n");
+		ptr = ptr->next;
+		counter++;
+	}
+	printf("\n");
+}

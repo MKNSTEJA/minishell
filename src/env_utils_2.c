@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:15:43 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/07 23:55:00 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:21:40 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ int	is_valid_identifier(const char *key)
 	i = 1;
 	while (key[i])
 	{
+		if (key[i] == '+' && key[i + 1] == '\0')
+			return (1);
 		if (!ft_isalnum(key[i]) && key[i] != '_')
 			return (0);
 		i++;
