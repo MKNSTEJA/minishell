@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:11:37 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 17:49:34 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/16 21:18:12 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	execute_child(t_op *current, t_data *data, int prev_fd,
 	exec_path = find_executable(current->str, data->env);
 	if (!exec_path)
 	{
-		print_error_msg(current->str[0], NULL, "command not found");
+		// print_error_msg(current->str[0], NULL, "command not found");
 		_exit(127);
 	}
 	execve(exec_path, current->str, data->env);

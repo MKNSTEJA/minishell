@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simple_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:07 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 17:50:10 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/16 21:18:02 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	execute_in_child(t_op *cmd, t_data *data)
 	exec_path = find_executable(cmd->str, data->env);
 	if (!exec_path)
 	{
-		fprintf(stderr, "%s: command not found\n", cmd->str[0]);
+		// fprintf(stderr, "%s: command not found\n", cmd->str[0]);
 		_exit(127);
 	}
 	execve(exec_path, cmd->str, data->env);
