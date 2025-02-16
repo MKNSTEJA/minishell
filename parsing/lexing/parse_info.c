@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_info.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:11:31 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/14 02:15:42 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:13:31 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ t_split	*split_inputs(char *string)
  * the total length of their segment texts, allocates memory accordingly, and
  * concatenates the segment texts into a single string.
  *
- * @param input A pointer to the head of the linked list containing the input segments.
+
+	* @param input A pointer to the head of the linked
+	 list containing the input segments.
  */
 void	assemble_token_string(t_split **input)
 {
@@ -88,18 +90,16 @@ size_t	calculate_segments_length(t_segment *segment)
 	return (total_length);
 }
 
-void append_list(t_split **head, t_segment *segments, t_type type, int *token_quoted)
+void	append_list(t_split **head, t_segment *segments, t_type type,
+		int *token_quoted)
 {
 	t_split	*new_node;
 	t_split	*current;
-	
+
 	new_node = malloc(sizeof(t_split));
 	current = *head;
 	if (!new_node)
-	{
-		perror("malloc");
 		exit(1);
-	}
 	new_node->str = NULL;
 	new_node->segments = segments;
 	new_node->type = type;

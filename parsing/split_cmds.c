@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_cmds.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:09:37 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/12 21:10:16 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:10:35 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,11 @@ int	split_cmd_redirections(t_split **ptr, t_split **filename_token,
 		return (0);
 	}
 	if ((*ptr)->type == HEREDOC)
-    {
-        add_redirection(*c_ptr, (*ptr)->type, (*filename_token)->str, (*filename_token)->token_has_quotes);
+	{
+		add_redirection(*c_ptr, (*ptr)->type, (*filename_token)->str,
+			(*filename_token)->token_has_quotes);
 		(*ptr) = (*filename_token);
-    }
+	}
 	else
 	{
 		add_redirection(*c_ptr, (*ptr)->type, (*filename_token)->str, 0);

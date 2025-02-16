@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_parts.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/14 00:51:33 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:12:59 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,35 @@
 /**
  * handle_redirections
  * Checks the current characters for redirection symbols like <, <<, >, >>,
- * creates a segment for the redirection operator and appends it to the token list.
+
+	* creates a segment for the redirection operator
+	and appends it to the token list.
  */
+
 void	handle_redirections(t_split **input, t_parts **parts, int *i)
 {
 	if ((*parts)->string[*i] == '<' && (*parts)->string[*i + 1] == '<')
 	{
-		append_list(input, new_segment("<<", QUOTE_NONE), HEREDOC, &((*parts)->token_quoted));
+		append_list(input, new_segment("<<", QUOTE_NONE), HEREDOC,
+			&((*parts)->token_quoted));
 		(*i) += 2;
 	}
 	else if ((*parts)->string[*i] == '<')
 	{
-		append_list(input, new_segment("<", QUOTE_NONE), IN, &((*parts)->token_quoted));
+		append_list(input, new_segment("<", QUOTE_NONE), IN,
+			&((*parts)->token_quoted));
 		(*i) += 1;
 	}
 	else if ((*parts)->string[*i] == '>' && (*parts)->string[*i + 1] == '>')
 	{
-		append_list(input, new_segment(">>", QUOTE_NONE), APPEND, &((*parts)->token_quoted));
+		append_list(input, new_segment(">>", QUOTE_NONE), APPEND,
+			&((*parts)->token_quoted));
 		(*i) += 2;
 	}
 	else if ((*parts)->string[*i] == '>')
 	{
-		append_list(input, new_segment(">", QUOTE_NONE), OUT, &((*parts)->token_quoted));
+		append_list(input, new_segment(">", QUOTE_NONE), OUT,
+			&((*parts)->token_quoted));
 		(*i) += 1;
 	}
 }
@@ -46,12 +53,14 @@ void	handle_redirections(t_split **input, t_parts **parts, int *i)
  * Called when a whitespace character is encountered.
  * It finalizes the current segment and resets tokens before moving on.
  */
+
 void	handle_space(t_split **input, t_segment **current_segments,
 		t_parts **parts, int *i)
 {
 	if (*current_segments)
 	{
-		append_list(input, *current_segments, (*parts)->token, &((*parts)->token_quoted));
+		append_list(input, *current_segments, (*parts)->token,
+			&((*parts)->token_quoted));
 		*current_segments = NULL;
 		(*parts)->token = WORD;
 	}
@@ -61,9 +70,13 @@ void	handle_space(t_split **input, t_segment **current_segments,
 
 /**
  * handle_quotes
- * Handles quoted strings. It toggles the quote state and updates the current segment.
- * If the quote is ending, it finalizes the segment; otherwise, it starts a new quoted segment.
+
+	* Handles quoted strings. It toggles the quote state
+		and updates the current segment.
+ * If the quote is ending, it finalizes the segment; otherwise,
+	it starts a new quoted segment.
  */
+
 void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 {
 	t_quote_state	new_state;
@@ -97,18 +110,21 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
  * Handles tokens which are not spaces or quotes.
  * This includes pipe symbols and redirection operators.
  */
+
 void	handle_others(t_split **input, t_segment **current_segments,
 		t_parts **parts, int *i)
 {
 	if (*current_segments)
 	{
-		append_list(input, *current_segments, (*parts)->token, &((*parts)->token_quoted));
+		append_list(input, *current_segments, (*parts)->token,
+			&((*parts)->token_quoted));
 		*current_segments = NULL;
 		(*parts)->token = WORD;
 	}
 	if ((*parts)->string[*i] == '|')
 	{
-		append_list(input, new_segment("|", QUOTE_NONE), PIPES, &((*parts)->token_quoted));
+		append_list(input, new_segment("|", QUOTE_NONE), PIPES,
+			&((*parts)->token_quoted));
 		(*i)++;
 	}
 	else
@@ -119,8 +135,11 @@ void	handle_others(t_split **input, t_segment **current_segments,
  * handle_dollar
  * Deals with a dollar sign followed by a double quote,
  * indicating the start of a variable expansion.
- * It creates a quoted segment starting with $" and appends characters until the closing quote.
+
+	* It creates a quoted segment starting with $"
+	and appends characters until the closing quote.
  */
+
 void	handle_dollar(t_segment **current_segments, t_parts **parts, int *i)
 {
 	(*parts)->quote = DQ;

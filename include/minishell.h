@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/14 03:12:14 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:24:33 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,6 @@ typedef struct s_expand
 	int					token_unquoted;
 }						t_expand;
 
-
 void					set_signals_interactive(void);
 void					signal_reset_prompt(int signo);
 void					ignore_sigquit(void);
@@ -132,7 +131,8 @@ char					*expand_if_needed(char *line, t_redir *redir,
 							t_data *data);
 void					process_heredoc_input(int write_fd, t_redir *redir,
 							t_data *data);
-int						handle_heredoc_redirection(t_redir *redir, t_data *data);
+int						handle_heredoc_redirection(t_redir *redir,
+							t_data *data);
 void					wait_for_children(t_pipe_state *state, t_data *data);
 void					setup_child_io(t_op *current, int prev_fd,
 							int pipe_fds[2]);
@@ -143,18 +143,22 @@ void					free_data(t_data *data);
 void					free_split(t_split *list);
 void					free_segment(t_split *list);
 void					free_op(t_op *cmd);
-int						handle_empty_expanded_string(t_expand *exp, t_split **head);
+int						handle_empty_expanded_string(t_expand *exp,
+							t_split **head);
 void					free_char_list(t_char_node *head);
 void					print_error_msg(const char *cmd, const char *arg,
 							const char *err_msg);
 int						is_numeric(const char *s);
 void					ignore_sigquit(void);
 void					signal_reset_prompt(int signo);
-t_segment					*new_segment(const char *text, t_quote_state state);
+t_segment				*new_segment(const char *text, t_quote_state state);
 void					add_segment(t_segment **head, t_segment *new_seg);
-void					append_char_to_segment(t_parts **parts, t_segment **current_segments, int *i);
-void					parse_segments(t_split **input, t_segment **current_segments, t_parts *parts);
-void					process_input_segments(char *input_string, t_split **input);
+void					append_char_to_segment(t_parts **parts,
+							t_segment **current_segments, int *i);
+void					parse_segments(t_split **input,
+							t_segment **current_segments, t_parts *parts);
+void					process_input_segments(char *input_string,
+							t_split **input);
 void					handle_space(t_split **input,
 							t_segment **current_segments, t_parts **parts,
 							int *i);
@@ -213,11 +217,15 @@ int						is_token_unquoted(t_split *token);
 t_split					*remove_token(t_split **head, t_split *token);
 char					*expand_var(const char *str, t_data *data, size_t *i);
 char					*get_env_value(const char *var_name, char **envp);
-void					add_redirection(t_op *cmd, t_type type, char *filename, int token_has_quotes);
+void					add_redirection(t_op *cmd, t_type type, char *filename,
+							int token_has_quotes);
 void					append_str(t_op *cmd, char *string);
 void					append_cmd(t_op *cmd, char *string);
 int						is_segment_empty(t_segment *seg);
 void					remove_last_segment(t_segment **head);
+int						initialise_exp(t_expand *exp, t_split **head);
 void					split_cmds(t_split *input, t_op *cmd);
+void					initialise_inside_loop(t_expand *exp,
+							t_segment *segments);
 
 #endif

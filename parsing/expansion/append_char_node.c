@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append_char_node.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/14 02:40:29 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:06:13 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	expand_home(char **envp, size_t *i, t_expand *exp);
  * @param str The input string (segments' text) to process.
  * @param exp Pointer to the t_expand structure holding the expansion state.
  * @param data Shell data containing environment variables and other info.
- * @param curr_segment The current segment being processed, containing quote info.
+ * @param curr_segment The current segment being processed,
+	containing quote info.
  */
 void	loop_string(char *str, t_expand *exp, t_data *data,
 		t_segment *curr_segment)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segments.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/14 00:21:05 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:10:01 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 void		process_input_segments(char *input_string, t_split **input);
 t_segment	*new_segment(const char *text, t_quote_state state);
 void		add_segment(t_segment **head, t_segment *new_seg);
-void		parse_segments(t_split **input, t_segment **current_segments, t_parts *parts);
-void		append_char_to_segment(t_parts **parts, t_segment **current_segments, int *i);
+void		parse_segments(t_split **input, t_segment **current_segments,
+				t_parts *parts);
+void		append_char_to_segment(t_parts **parts,
+				t_segment **current_segments, int *i);
 
 /**
  * process_input_segments
@@ -64,7 +66,8 @@ t_segment	*new_segment(const char *text, t_quote_state state)
  * Walks through the input string character by character,
  * and creates or appends segments based on the character encountered.
  */
-void	parse_segments(t_split **input, t_segment **current_segments, t_parts *parts)
+void	parse_segments(t_split **input, t_segment **current_segments,
+		t_parts *parts)
 {
 	int	i;
 
@@ -85,9 +88,9 @@ void	parse_segments(t_split **input, t_segment **current_segments, t_parts *part
 		else
 			append_char_to_segment(&parts, current_segments, &i);
 	}
-	
 	if (*current_segments)
-		append_list(input, *current_segments, parts->token, &parts->token_quoted);
+		append_list(input, *current_segments, parts->token,
+			&parts->token_quoted);
 }
 
 /**
@@ -116,7 +119,8 @@ void	add_segment(t_segment **head, t_segment *new_seg)
  * Appends a single character from the input's string to the current segment.
  * If there's no current segment, it creates one.
  */
-void	append_char_to_segment(t_parts **parts, t_segment **current_segments, int *i)
+void	append_char_to_segment(t_parts **parts, t_segment **current_segments,
+		int *i)
 {
 	char	temp_char[2];
 	char	*updated_text;

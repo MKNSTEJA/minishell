@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segregate_info.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 13:12:30 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/12 20:50:58 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:10:27 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ void	append_str(t_op *cmd, char *string);
 void	check_redir_quotes(t_type type, t_redir **new_redir, t_op **cmd,
 			char *filename);
 
-void	add_redirection(t_op *cmd, t_type type, char *filename, int token_has_quotes)
+void	add_redirection(t_op *cmd, t_type type, char *filename,
+		int token_has_quotes)
 {
 	t_redir	*new_redir;
 
@@ -36,6 +37,7 @@ void	check_redir_quotes(t_type type, t_redir **new_redir, t_op **cmd,
 		char *filename)
 {
 	t_redir	*temp;
+
 	(void)type;
 	(void)filename;
 	if (!(*cmd)->redirections)
