@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:44:02 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/12 23:17:48 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:49:54 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	ignore_sigquit(void)
 	sigaction(SIGQUIT, &act, NULL);
 }
 /*
-sigaction redirects the default behavior of sigint (ctrl+c) to signal_reset_prompt
+sigaction redirects the default behavior of 
+sigint (ctrl+c) to signal_reset_prompt
 instead of termination*/
 void	set_signals_interactive(void)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   apply_redirections.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 22:13:57 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:29:46 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:46:41 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,7 @@ static int	handle_append_redirection(t_redir *redir, t_data *data)
 {
 	int	fd_out;
 
-	fd_out = open(redir->filename,
-					O_WRONLY | O_CREAT | O_APPEND,
-					0644);
+	fd_out = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd_out < 0)
 	{
 		print_error_msg("Minishell", redir->filename, strerror(errno));
@@ -71,11 +69,14 @@ int	apply_redirections(t_op *cmd, t_data *data)
 	{
 		if (redir->type == IN && handle_input_redirection(redir, data) < 0)
 			return (-1);
-		else if (redir->type == OUT && handle_output_redirection(redir, data) < 0)
+		else if (redir->type == OUT && handle_output_redirection(redir,
+				data) < 0)
 			return (-1);
-		else if (redir->type == APPEND && handle_append_redirection(redir, data) < 0)
+		else if (redir->type == APPEND && handle_append_redirection(redir,
+				data) < 0)
 			return (-1);
-		else if (redir->type == HEREDOC && handle_heredoc_redirection(redir, data) < 0)
+		else if (redir->type == HEREDOC && handle_heredoc_redirection(redir,
+				data) < 0)
 			return (-1);
 		redir = redir->next;
 	}

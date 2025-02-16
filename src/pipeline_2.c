@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:14:08 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:05:05 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:49:41 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	wait_for_children(t_pipe_state *state, t_data *data)
 	int	status;
 	int	i;
 	int	child_status;
+	int	sig;
 
 	status = 0;
 	i = 0;
@@ -46,9 +47,9 @@ void	wait_for_children(t_pipe_state *state, t_data *data)
 		data->last_exit = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-		int sig = WTERMSIG(status);
+		sig = WTERMSIG(status);
 		if (sig == SIGQUIT)
-		fprintf(stderr, "Quit: %d\n", sig);
+			fprintf(stderr, "Quit: %d\n", sig);
 		data->last_exit = 128 + sig;
 	}
 	else

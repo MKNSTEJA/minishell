@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simple_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:07 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:25:53 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:50:10 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	execute_in_child(t_op *cmd, t_data *data)
 	char	*exec_path;
 
 	signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	exec_path = find_executable(cmd->str, data->env);
 	if (!exec_path)
 	{
@@ -30,11 +30,11 @@ static void	execute_in_child(t_op *cmd, t_data *data)
 	_exit(1);
 }
 
-
 static void	handle_fork_and_wait(t_op *cmd, t_data *data)
 {
 	pid_t	pid;
 	int		status;
+	int		sig;
 
 	pid = fork();
 	if (pid < 0)
@@ -48,7 +48,7 @@ static void	handle_fork_and_wait(t_op *cmd, t_data *data)
 			data->last_exit = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 		{
-			int sig = WTERMSIG(status);
+			sig = WTERMSIG(status);
 			if (sig == SIGQUIT)
 				fprintf(stderr, "Quit: %d\n", sig);
 			data->last_exit = 128 + sig;

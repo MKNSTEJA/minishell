@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_redirections.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:24:20 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 15:57:46 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:49:27 by kmummadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	write_to_pipe(int pipe_fd, char *line)
 char	*expand_if_needed(char *line, t_redir *redir, t_data *data)
 {
 	char	*expanded_line;
+
 	if (redir->quoted <= 0)
 	{
 		expanded_line = expand_one_token(line, data, DQ);
@@ -41,7 +42,6 @@ void	process_heredoc_input(int write_fd, t_redir *redir, t_data *data)
 	while (1)
 	{
 		ft_putstr_fd("> ", STDERR_FILENO);
-		// line = readline("> ");
 		line = get_next_line(0);
 		if (!line)
 			break ;
@@ -61,7 +61,7 @@ void	process_heredoc_input(int write_fd, t_redir *redir, t_data *data)
 
 int	handle_heredoc_redirection(t_redir *redir, t_data *data)
 {
-	int		heredoc_pipe[2];
+	int	heredoc_pipe[2];
 
 	if (pipe(heredoc_pipe) < 0)
 		return (-1);
