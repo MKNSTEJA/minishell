@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:50:12 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/08 00:08:01 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 19:01:57 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,20 @@ char	*create_env_string(const char *key, const char *value)
 	char	*env_string;
 
 	key_len = ft_strlen(key);
-	val_len = ft_strlen(value);
+	if (value)
+		val_len = ft_strlen(value);
+	else
+		val_len = 0;
 	env_string = (char *)malloc(key_len + val_len + 2);
 	if (!env_string)
 		return (NULL);
 	ft_strlcpy(env_string, key, key_len + 1);
 	env_string[key_len] = '=';
-	ft_strlcpy(env_string + key_len + 1, value, val_len + 1);
+
+	if (value && val_len > 0)
+		ft_strlcpy(env_string + key_len + 1, value, val_len + 1);
+	else
+		env_string[key_len + 1] = '\0';
 	return (env_string);
 }
 

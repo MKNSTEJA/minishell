@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:52:53 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:03:22 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/16 18:48:08 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,16 @@ void	handle_export(char **argv, t_data *data)
 		print_exported_environ(data->env);
 		return ;
 	}
-	while (argv[i])
-	{
-		if (ft_strchr(argv[i], '='))
-			export_with_value(argv[i], data);
-		else
-			export_without_value(argv[i], data);
-		i++;
-	}
+	// while (argv[1])
+	// {
+	// 	if (ft_strchr(argv[i], '='))
+	// 		export_with_value(argv[i], data);
+	// 	else
+	// 		export_without_value(argv[i], data);
+	// 	i++;
+	// }
+	if (ft_strchr(argv[i], '='))
+		export_with_value(argv[i], data);
+	else
+		export_without_value(argv[i], data);
 }

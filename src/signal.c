@@ -3,22 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:44:02 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 17:49:54 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/16 18:02:03 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+static int g_waiting_for_input = 1;
+
+// void	signal_reset_prompt(int signo)
+// {
+// 	(void)signo;
+// 	write(1, "\n", 1);
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	rl_redisplay();
+// }
+
 void	signal_reset_prompt(int signo)
 {
 	(void)signo;
 	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	// rl_redisplay();
+	if (g_waiting_for_input) {
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay(); // Ensure the prompt is redrawn
+	}
 }
 /*
 SIGQUIT is ctrl + \. So we are ignoring if the user pressed it.

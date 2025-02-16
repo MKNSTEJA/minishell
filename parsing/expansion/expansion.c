@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/16 17:28:19 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/14 03:12:24 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,21 +58,24 @@ char	*convert_char_list_to_string(t_char_node *head)
  * @param head Pointer to the head of the token linked list.
  * @param data Shell data containing environment variables and other info.
  */
-
 void	expand_tokens(t_split **head, t_data *data)
 {
 	t_expand	exp;
 
-	if (initialise_exp(&exp, head) == -1)
+	if (!head || !*head)
 		return ;
+	exp.split = *head;
+	exp.seg = NULL;
 	while (exp.split)
 	{
-		initialise_inside_loop(&exp, exp.split->segments);
+		exp.expanded_head = NULL;
+		exp.expanded_tail = NULL;
+		exp.seg = exp.split->segments;
 		if (exp.split->prev && exp.split->prev->type == HEREDOC)
-		{
-			exp.split = exp.split->next;
-			continue ;
-		}
+        {
+            exp.split = exp.split->next;
+            continue;
+        }
 		while (exp.seg)
 		{
 			loop_string(exp.seg->text, &exp, data, exp.seg);
