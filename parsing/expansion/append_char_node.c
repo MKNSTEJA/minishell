@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append_char_node.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/16 17:06:13 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/17 00:54:48 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,12 @@ void	expand_home(char **envp, size_t *i, t_expand *exp);
  * @param curr_segment The current segment being processed,
 	containing quote info.
  */
-void	loop_string(char *str, t_expand *exp, t_data *data,
-		t_segment *curr_segment)
+void	loop_string(char *str, t_expand *exp, t_data *data, t_segment *curr_segment)
 {
-	size_t	i;
-
-	i = 0;
+	size_t	i = 0;
 	while (str[i])
 	{
+		// fprintf(stderr, "[loop_string] i=%zu, char='%c'\n", i, str[i]);
 		if (str[i] == '$' && str[i + 1] == '"')
 			skip_dollar(str, &i, exp);
 		else if (str[i] == '"' && curr_segment->quote == DQ)
@@ -57,6 +55,7 @@ void	loop_string(char *str, t_expand *exp, t_data *data,
 	}
 }
 
+
 void	skip_dollar(char *str, size_t *i, t_expand *exp)
 {
 	(*i) += 2;
@@ -71,21 +70,28 @@ void	skip_dollar(char *str, size_t *i, t_expand *exp)
 
 void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str)
 {
-	char	*var;
-	size_t	j;
+    char	*var;
+    size_t	j;
 
-	var = expand_var(&str[*i], data, i);
-	j = 0;
-	if (var)
-	{
-		while (var[j])
-		{
-			append_char_node(exp, var[j]);
-			j++;
-		}
-		free(var);
-	}
+    // fprintf(stderr, "[expand_dollar] Before expand_var: i=%zu, substring=\"%s\"\n", *i, &str[*i]);
+    var = expand_var(&str[*i], data, i);
+    // fprintf(stderr, "[expand_dollar] After expand_var: i=%zu, var=%s\n", *i, var ? var : "NULL");
+
+    j = 0;
+    if (var)
+    {
+        while (var[j])
+        {
+            append_char_node(exp, var[j]);
+            j++;
+        }
+        free(var);
+    }
+    // else {
+        // fprintf(stderr, "[expand_dollar] Warning: expand_var returned NULL\n");
+    // }
 }
+
 
 void	expand_home(char **envp, size_t *i, t_expand *exp)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 17:24:33 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/17 00:04:57 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ typedef struct s_expand
 	int					token_unquoted;
 }						t_expand;
 
+
+void print_token_list(t_split *head);
 void					set_signals_interactive(void);
 void					signal_reset_prompt(int signo);
 void					ignore_sigquit(void);

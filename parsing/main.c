@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/16 18:03:26 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/17 00:21:49 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 // int		g_exit_code = 0;
 
 void	increment_shlvl(char ***envp);
+
+void print_token_list(t_split *head)
+{
+    printf("Token list: ");
+    while (head)
+    {
+        printf("[%s] -> ", head->str);
+        head = head->next;
+    }
+    printf("NULL\n");
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -58,7 +69,9 @@ int	main(int argc, char **argv, char **envp)
 			free(str);
 			continue ;
 		}
+		// print_token_list(input);
 		expand_tokens(&input, &data);
+		// print_token_list(input);
 		cmd = initialise_cmd(input);
 		execute_commands(cmd, &data);
 		free_split(input);

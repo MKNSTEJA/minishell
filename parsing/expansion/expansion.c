@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/14 03:12:24 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/17 00:57:35 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 			char *expanded_str);
 void	splitting_spaces(t_expand *exp, t_split **head);
 void	execute_field_splitting(char **fields, t_split *curr);
+// void debug_print_token_chain(t_split *head, const char *location);
 
 char	*convert_char_list_to_string(t_char_node *head)
 {
@@ -46,6 +47,17 @@ char	*convert_char_list_to_string(t_char_node *head)
 	str[len] = '\0';
 	return (str);
 }
+
+// void debug_print_token_chain(t_split *head, const char *location) {
+//     fprintf(stderr, "\n[DEBUG] Token chain at %s:\n", location);
+//     t_split *curr = head;
+//     while (curr) {
+//         fprintf(stderr, "Token: '%s', segments: %p, next: %p, prev: %p\n",
+//                 curr->str, curr->segments, curr->next, curr->prev);
+//         curr = curr->next;
+//     }
+//     fprintf(stderr, "\n");
+// }
 
 /**
  * @brief Expands all tokens by processing each token's segments for variable
@@ -82,6 +94,7 @@ void	expand_tokens(t_split **head, t_data *data)
 			exp.seg = exp.seg->next;
 		}
 		exp.expanded_str = convert_char_list_to_string(exp.expanded_head);
+		// fprintf(stderr, "[expand_tokens] Expanded string: \"%s\"\n", exp.expanded_str);
 		free_char_list(exp.expanded_head);
 		if (handle_empty_expanded_string(&exp, head) != 0)
 			continue ;
@@ -92,21 +105,37 @@ void	expand_tokens(t_split **head, t_data *data)
 
 void	splitting_spaces(t_expand *exp, t_split **head)
 {
-	if (exp->token_unquoted)
-	{
-		handle_field_splitting(head, &exp->split, exp->expanded_str);
-		if (exp->expanded_str)
-			free(exp->expanded_str);
-		if (exp->split)
-			exp->split = exp->split->next;
-	}
-	else
-	{
-		free(exp->split->str);
-		exp->split->str = exp->expanded_str;
-		exp->split = exp->split->next;
-	}
+    // fprintf(stderr, "[splitting_spaces] Before splitting, token: \"%s\"\n",
+            // exp->split ? exp->split->str : "NULL");
+
+    if (exp->split) {
+        // fprintf(stderr, "[splitting_spaces] Current token: \"%s\", next token: \"%s\"\n",
+        //         exp->split->str,
+        //         exp->split->next ? exp->split->next->str : "NULL");
+    }
+
+    if (exp->token_unquoted)
+    {
+		// debug_print_token_chain(*head, "before field splitting");
+        handle_field_splitting(head, &exp->split, exp->expanded_str);
+		// debug_print_token_chain(*head, "after field splitting");
+        if (exp->expanded_str)
+            free(exp->expanded_str);
+        if (exp->split)
+            exp->split = exp->split->next;
+    }
+    else
+    {
+        free(exp->split->str);
+        exp->split->str = exp->expanded_str;
+        exp->split = exp->split->next;
+    }
+
+    // fprintf(stderr, "[splitting_spaces] After splitting, next token: \"%s\"\n",
+    //         exp->split ? exp->split->str : "NULL");
 }
+
+
 
 void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 		char *expanded_str)
@@ -117,6 +146,8 @@ void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 
 	i = 0;
 	curr = *curr_ptr;
+	// fprintf(stderr, "[handle_field_splitting] Starting with segments: %p\n", 
+    //         (*curr_ptr)->segments);
 	fields = ft_split(expanded_str, ' ');
 	if (!fields)
 	{
@@ -129,7 +160,22 @@ void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 	}
 	free(curr->str);
 	curr->str = ft_strdup(fields[0]);
+	// fprintf(stderr, "[handle_field_splitting] First field: %s\n", fields[0]);
 	execute_field_splitting(fields, curr);
+	t_split *temp = curr;
+    while (temp) {
+        if (!temp->segments) {
+            // fprintf(stderr, "[handle_field_splitting] Initializing segments for token: %s\n", 
+                    // temp->str);
+            temp->segments = NULL;  // or initialize with proper segment data
+            temp->token_has_quotes = 0;  // initialize other fields as needed
+        }
+        temp = temp->next;
+    }
+	// fprintf(stderr, "[handle_field_splitting] After splitting - curr str: %s\n", 
+    //         curr->str);
+	// if (curr->next)
+	// 	fprintf(stderr, "[handle_field_splitting] Next token: %s\n", curr->next->str);
 	*curr_ptr = curr;
 	while (fields[i])
 		free(fields[i++]);
@@ -141,11 +187,13 @@ void	execute_field_splitting(char **fields, t_split *curr)
 	t_split	*new_node;
 	int		i;
 
-	new_node = NULL;
 	i = 1;
 	while (fields[i])
 	{
 		new_node = create_new_token(fields[i], WORD);
+		new_node->segments = NULL;
+		new_node->token_has_quotes = 0;
+		
 		new_node->next = curr->next;
 		if (curr->next)
 			curr->next->prev = new_node;
