@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append_char_node.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/17 00:54:48 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/17 06:52:22 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	loop_string(char *str, t_expand *exp, t_data *data, t_segment *curr_segment
 	size_t	i = 0;
 	while (str[i])
 	{
-		// fprintf(stderr, "[loop_string] i=%zu, char='%c'\n", i, str[i]);
 		if (str[i] == '$' && str[i + 1] == '"')
 			skip_dollar(str, &i, exp);
 		else if (str[i] == '"' && curr_segment->quote == DQ)
@@ -73,9 +72,7 @@ void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str)
     char	*var;
     size_t	j;
 
-    // fprintf(stderr, "[expand_dollar] Before expand_var: i=%zu, substring=\"%s\"\n", *i, &str[*i]);
     var = expand_var(&str[*i], data, i);
-    // fprintf(stderr, "[expand_dollar] After expand_var: i=%zu, var=%s\n", *i, var ? var : "NULL");
 
     j = 0;
     if (var)
@@ -87,9 +84,6 @@ void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str)
         }
         free(var);
     }
-    // else {
-        // fprintf(stderr, "[expand_dollar] Warning: expand_var returned NULL\n");
-    // }
 }
 
 

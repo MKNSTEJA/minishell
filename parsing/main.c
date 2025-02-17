@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/17 00:21:49 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/17 06:51:39 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,6 @@
 
 void	increment_shlvl(char ***envp);
 
-void print_token_list(t_split *head)
-{
-    printf("Token list: ");
-    while (head)
-    {
-        printf("[%s] -> ", head->str);
-        head = head->next;
-    }
-    printf("NULL\n");
-}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -69,9 +59,7 @@ int	main(int argc, char **argv, char **envp)
 			free(str);
 			continue ;
 		}
-		// print_token_list(input);
 		expand_tokens(&input, &data);
-		// print_token_list(input);
 		cmd = initialise_cmd(input);
 		execute_commands(cmd, &data);
 		free_split(input);
@@ -109,6 +97,7 @@ int	init_data(t_data *data, char **envp)
 		j++;
 	}
 	data->env[i] = NULL;
+	data->last_exit = 0;
 	increment_shlvl(&data->env);
 	return (1);
 }
