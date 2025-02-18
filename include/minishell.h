@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/17 00:04:57 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/18 00:22:46 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@
 # include <unistd.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <stdbool.h>
 
-extern int				g_exit_code;
+int g_waiting_for_input;
 
 typedef struct s_data
 {

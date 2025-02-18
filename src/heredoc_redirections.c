@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_redirections.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:24:20 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 17:49:27 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/17 20:42:17 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,15 @@ void	process_heredoc_input(int write_fd, t_redir *redir, t_data *data)
 	size_t	len;
 
 	line = NULL;
+	rl_outstream = stderr; 
 	while (1)
 	{
-		ft_putstr_fd("> ", STDERR_FILENO);
-		line = get_next_line(0);
+		// ft_putstr_fd("> ", STDERR_FILENO);
+		// line = get_next_line(0);
+		g_waiting_for_input = 1;
+        line = readline("> ");
+		// printf("write_fd is: %d\n", write_fd);
+        g_waiting_for_input = 0; 
 		if (!line)
 			break ;
 		len = ft_strlen(line);

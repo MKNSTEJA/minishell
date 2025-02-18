@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   apply_redirections.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 22:13:57 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 17:46:41 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/17 21:41:47 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	handle_output_redirection(t_redir *redir, t_data *data)
 	fd_out = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_out < 0)
 	{
-		print_error_msg("Minishell", redir->filename, strerror(errno));
+		print_error_msg(redir->filename, NULL, strerror(errno));
 		data->last_exit = 1;
 		return (-1);
 	}

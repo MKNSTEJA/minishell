@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/17 06:51:39 by yousef           ###   ########.fr       */
+/*   Updated: 2025/02/17 15:52:31 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// int		g_exit_code = 0;
+
 
 void	increment_shlvl(char ***envp);
-
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -36,8 +35,13 @@ int	main(int argc, char **argv, char **envp)
 	set_signals_interactive();
 	while (1)
 	{
+
 		if (isatty(fileno(stdin)))
+		{
+			g_waiting_for_input = 1;
 			str = readline("Minishell: ");
+			g_waiting_for_input = 0;
+		}
 		else
 		{
 			line = get_next_line(fileno(stdin));

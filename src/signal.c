@@ -6,22 +6,12 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:44:02 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 18:02:03 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/17 17:18:06 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int g_waiting_for_input = 1;
-
-// void	signal_reset_prompt(int signo)
-// {
-// 	(void)signo;
-// 	write(1, "\n", 1);
-// 	rl_on_new_line();
-// 	rl_replace_line("", 0);
-// 	rl_redisplay();
-// }
 
 void	signal_reset_prompt(int signo)
 {
@@ -30,7 +20,7 @@ void	signal_reset_prompt(int signo)
 	if (g_waiting_for_input) {
 		rl_on_new_line();
 		rl_replace_line("", 0);
-		rl_redisplay(); // Ensure the prompt is redrawn
+		rl_redisplay();
 	}
 }
 /*

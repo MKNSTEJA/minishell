@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Clang Debug Active File",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "miDebuggerPath": "/usr/bin/lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for lldb",
+                    "text": "settings set target.inline-breakpoint-strategy always",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "C/C++: Clang build active file",
+            "logging": {
+                "engineLogging": true
+            }
+        }
+    ]
+}
