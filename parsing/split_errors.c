@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 16:52:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/12 23:49:53 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/19 02:54:17 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 int		check_pipe(t_split *input);
 void	back_track(t_split *input);
 
-int	split_errors(t_split *input, t_data *data)
+int	split_errors(t_split *token_list, t_data *data)
 {
 	t_split	*ptr;
 
-	back_track(input);
-	ptr = input;
+	back_track(token_list);
+	ptr = token_list;
 	while (ptr)
 	{
 		if (ptr->type == PIPES && check_pipe(ptr))

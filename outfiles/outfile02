@@ -17,6 +17,7 @@ echo
 env
 expandnot
 fdsfs
+fg 
 file
 file_delete
 fuck
@@ -62,6 +63,7 @@ echo
 env
 expandnot
 fdsfs
+fg 
 file
 file_delete
 fuck
@@ -107,6 +109,7 @@ echo
 env
 expandnot
 fdsfs
+fg 
 file
 file_delete
 fuck

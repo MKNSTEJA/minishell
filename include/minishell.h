@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/18 00:22:46 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/19 17:43:11 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ typedef struct s_expand
 
 void print_token_list(t_split *head);
 void					set_signals_interactive(void);
-void					signal_reset_prompt(int signo);
+void					signal_reset_prompt();
 void					ignore_sigquit(void);
 t_split					*split_inputs(char *string);
 int						split_errors(t_split *input, t_data *data);
@@ -153,7 +153,6 @@ void					print_error_msg(const char *cmd, const char *arg,
 							const char *err_msg);
 int						is_numeric(const char *s);
 void					ignore_sigquit(void);
-void					signal_reset_prompt(int signo);
 t_segment				*new_segment(const char *text, t_quote_state state);
 void					add_segment(t_segment **head, t_segment *new_seg);
 void					append_char_to_segment(t_parts **parts,

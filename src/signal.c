@@ -6,16 +6,15 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:44:02 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/17 17:18:06 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/19 16:39:51 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 
-void	signal_reset_prompt(int signo)
+void	signal_reset_prompt()
 {
-	(void)signo;
 	write(1, "\n", 1);
 	if (g_waiting_for_input) {
 		rl_on_new_line();

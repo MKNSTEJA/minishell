@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 15:58:26 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/17 00:55:09 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/19 18:25:45 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp, t_data *
 
     if (str[*i] == '$')
     {
-        // fprintf(stderr, "[handle_dquote_expansion] Found $, i=%zu, substring=\"%s\"\n", *i, &str[*i]);
         var = expand_var(&str[*i], data, i);
         if (!var) {
-            // fprintf(stderr, "[handle_dquote_expansion] expand_var returned NULL at i=%zu\n", *i);
             return; // or decide how to handle a missing variable
         }
         j = 0;
