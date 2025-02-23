@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_parts.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/16 17:12:59 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/23 19:16:49 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,19 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 	else
 		return (append_char_to_segment(parts, current_segments, i));
 	(*i)++;
+	if ((*parts)->quote != QUOTE_NONE && (*parts)->string[*i] == '\0')
+    {
+        t_segment *seg = *current_segments;
+		while (seg)
+		{
+			t_segment *tmp = seg;
+			seg = seg->next;
+			free(tmp->text);
+			free(tmp);
+		}
+		*current_segments = NULL;
+		return;
+    }
 }
 
 /**
