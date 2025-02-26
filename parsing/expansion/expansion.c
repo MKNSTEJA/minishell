@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/19 19:08:38 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/26 23:34:05 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,6 @@ void	splitting_spaces(t_expand *exp, t_split **head)
         exp->split = exp->split->next;
     }
 }
-
-
 
 void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 		char *expanded_str)

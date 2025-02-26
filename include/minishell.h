@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/19 17:43:11 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/26 21:33:06 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,15 @@
 # include <stdbool.h>
 
 int g_waiting_for_input;
+
+typedef struct s_heredoc_state {
+    bool has_heredocs;
+    int *heredoc_pipes; 
+    int heredoc_count;
+	int *cmd_indices;
+} t_heredoc_state;
+
+
 
 typedef struct s_data
 {
@@ -108,6 +117,7 @@ typedef struct s_op
 	char				**str;
 	t_redir				*redirections;
 	struct s_op			*next;
+	bool				is_in_pipeline;
 }						t_op;
 
 typedef struct s_expand

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 16:52:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/19 02:54:17 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 00:05:38 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ int	split_errors(t_split *token_list, t_data *data)
 
 int	check_pipe(t_split *input)
 {
-	if (!input->next || !input->prev || input->next->type != WORD)
+	if (!input->next || !input->prev) //|| input->next->type != WORD)
 	{
+	// 	printf("Pipe check: prev=%p, next=%p, next_type=%d\n", 
+    //    input->prev, input->next, input->next ? input->next->type : -1);
 		ft_putstr_fd("Error! Invalid input for pipe: `|'\n", 2);
 		return (1);
 	}

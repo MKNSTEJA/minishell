@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/23 19:16:49 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 00:04:33 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ void	handle_others(t_split **input, t_segment **current_segments,
 		append_list(input, new_segment("|", QUOTE_NONE), PIPES,
 			&((*parts)->token_quoted));
 		(*i)++;
+		(*parts)->current_segment = NULL;
 	}
 	else
 		handle_redirections(input, parts, i);

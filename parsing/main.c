@@ -6,13 +6,11 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/19 16:43:18 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/26 23:35:52 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-
 
 void	increment_shlvl(char ***envp);
 
@@ -35,7 +33,6 @@ int	main(int argc, char **argv, char **envp)
 	set_signals_interactive();
 	while (1)
 	{
-
 		if (isatty(fileno(stdin)))
 		{
 			g_waiting_for_input = 1;

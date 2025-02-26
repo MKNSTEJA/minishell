@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_cmds.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:09:37 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/16 17:10:35 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/02/27 00:33:16 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	split_cmd_redirections(t_split **ptr, t_split **filename_token,
 	(*filename_token) = (*ptr)->next;
 	if (!(*filename_token) || (*filename_token)->type != WORD)
 	{
-		ft_putstr_fd("minishell: syntax error near token ", STDERR_FILENO);
+		ft_putstr_fd("Minishell: syntax error near token ", STDERR_FILENO);
 		ft_putstr_fd((*ptr)->str, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 		return (0);

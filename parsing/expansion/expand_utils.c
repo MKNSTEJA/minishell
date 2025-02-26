@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 15:58:26 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/19 18:25:45 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/26 23:33:36 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp, t_data *
     {
         var = expand_var(&str[*i], data, i);
         if (!var) {
-            return; // or decide how to handle a missing variable
+            return;
         }
         j = 0;
         while (var[j])
