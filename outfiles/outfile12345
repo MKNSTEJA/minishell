@@ -13,6 +13,7 @@ dele
 delete
 deleteme
 done
+echo
 expandnot
 fdsfs
 fg 
@@ -35,7 +36,6 @@ obj
 outfiles
 parsing
 src
-test.c
 test1.txt
 test2.txt
 test3.txt

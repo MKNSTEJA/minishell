@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:50:12 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/16 19:01:57 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:43:21 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ char	*create_env_string(const char *key, const char *value)
 		return (NULL);
 	ft_strlcpy(env_string, key, key_len + 1);
 	env_string[key_len] = '=';
-
 	if (value && val_len > 0)
 		ft_strlcpy(env_string + key_len + 1, value, val_len + 1);
 	else

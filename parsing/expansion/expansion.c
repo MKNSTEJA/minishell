@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/26 23:34:05 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:31:40 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,17 +84,11 @@ void	expand_tokens(t_split **head, t_data *data)
 		exp.expanded_tail = NULL;
 		exp.seg = exp.split->segments;
 		if (exp.split->prev && exp.split->prev->type == HEREDOC)
-        {
-            exp.split = exp.split->next;
-            continue;
-        }
-		while (exp.seg)
 		{
-			loop_string(exp.seg->text, &exp, data, exp.seg);
-			exp.seg = exp.seg->next;
+			exp.split = exp.split->next;
+			continue ;
 		}
-		exp.expanded_str = convert_char_list_to_string(exp.expanded_head);
-		free_char_list(exp.expanded_head);
+		expand_segments(&exp, data);
 		if (handle_empty_expanded_string(&exp, head) != 0)
 			continue ;
 		exp.token_unquoted = is_token_unquoted(exp.split);
@@ -104,26 +98,23 @@ void	expand_tokens(t_split **head, t_data *data)
 
 void	splitting_spaces(t_expand *exp, t_split **head)
 {
-
-    if (exp->split) {
-    }
-
-    if (exp->token_unquoted)
-    {
-		// debug_print_token_chain(*head, "before field splitting");
-        handle_field_splitting(head, &exp->split, exp->expanded_str);
-		// debug_print_token_chain(*head, "after field splitting");
-        if (exp->expanded_str)
-            free(exp->expanded_str);
-        if (exp->split)
-            exp->split = exp->split->next;
-    }
-    else
-    {
-        free(exp->split->str);
-        exp->split->str = exp->expanded_str;
-        exp->split = exp->split->next;
-    }
+	if (exp->split)
+	{
+	}
+	if (exp->token_unquoted)
+	{
+		handle_field_splitting(head, &exp->split, exp->expanded_str);
+		if (exp->expanded_str)
+			free(exp->expanded_str);
+		if (exp->split)
+			exp->split = exp->split->next;
+	}
+	else
+	{
+		free(exp->split->str);
+		exp->split->str = exp->expanded_str;
+		exp->split = exp->split->next;
+	}
 }
 
 void	handle_field_splitting(t_split **head, t_split **curr_ptr,
@@ -148,16 +139,7 @@ void	handle_field_splitting(t_split **head, t_split **curr_ptr,
 	free(curr->str);
 	curr->str = ft_strdup(fields[0]);
 	execute_field_splitting(fields, curr);
-	t_split *temp = curr;
-    while (temp) 
-	{
-        if (!temp->segments)
-		{
-            temp->segments = NULL;
-            temp->token_has_quotes = 0;
-        }
-        temp = temp->next;
-    }
+	clear_empty_segments(curr);
 	*curr_ptr = curr;
 	while (fields[i])
 		free(fields[i++]);
@@ -175,7 +157,6 @@ void	execute_field_splitting(char **fields, t_split *curr)
 		new_node = create_new_token(fields[i], WORD);
 		new_node->segments = NULL;
 		new_node->token_has_quotes = 0;
-		
 		new_node->next = curr->next;
 		if (curr->next)
 			curr->next->prev = new_node;

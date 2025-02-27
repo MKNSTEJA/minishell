@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 22:13:57 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/26 23:16:28 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:45:10 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ int	apply_redirections(t_op *cmd, t_data *data)
 		else if (redir->type == APPEND && handle_append_redirection(redir,
 				data) < 0)
 			return (-1);
-		else if (redir->type == HEREDOC && !cmd->is_in_pipeline && handle_heredoc_redirection(redir,
+		else if (redir->type == HEREDOC && !cmd->is_in_pipeline
+			&& handle_heredoc_redirection(redir,
 				data) < 0)
 			return (-1);
 		redir = redir->next;

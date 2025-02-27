@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:20:25 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/23 18:47:50 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:47:33 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	execute_builtin(t_op *cmd, t_data *data)
 {
 	char	**argv;
-	
+
 	argv = cmd->str;
 	if (!argv || !argv[0])
 		return ;
@@ -37,22 +37,11 @@ void	execute_builtin(t_op *cmd, t_data *data)
 
 void	handle_unset(char **argv, t_data *data)
 {
-	// const char	*error_msg;
-	int i = 1;
-	
+	int	i;
+
+	i = 1;
 	if (!argv[1] || (argv[1][0] == '?' && !argv[1][1]))
-	{
-		// error_msg = "unset: Missing argument\n";
-		// write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
 		return ;
-	}
-	// if (!is_valid_identifier(argv[1]))
-	// {
-	// 	data->last_exit = 1;
-	// 	print_error_msg("unset", argv[1], "not a valid identifier");
-	// 	return ;
-	// }
-	// remove_env_variable(&data->env, argv[1]); //TODO recheck if correct
 	while (argv[i])
 	{
 		if (!is_valid_identifier(argv[i]))
@@ -61,9 +50,7 @@ void	handle_unset(char **argv, t_data *data)
 			print_error_msg("unset", argv[i], "not a valid identifier");
 		}
 		else
-		{
-			remove_env_variable(&data->env, argv[i]); // Remove the variable
-		}
+			remove_env_variable(&data->env, argv[i]);
 		i++;
 	}
 	if (data->last_exit != 1)

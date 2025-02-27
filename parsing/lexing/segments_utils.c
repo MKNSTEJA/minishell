@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 14:51:49 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/10 23:34:10 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:34:01 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,33 @@ void	remove_last_segment(t_segment **head)
 	if (current->text)
 		free(current->text);
 	free(current);
+}
+
+void	free_segments(t_segment **current_segments)
+{
+	t_segment	*seg;
+	t_segment	*tmp;
+
+	seg = *current_segments;
+	while (seg)
+	{
+		tmp = seg;
+		seg = seg->next;
+		free(tmp->text);
+		free(tmp);
+	}
+	*current_segments = NULL;
+}
+
+void	clear_empty_segments(t_split *temp)
+{
+	while (temp)
+	{
+		if (!temp->segments)
+		{
+			temp->segments = NULL;
+			temp->token_has_quotes = 0;
+		}
+		temp = temp->next;
+	}
 }

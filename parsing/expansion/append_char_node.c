@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 12:05:24 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/23 18:48:04 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:32:41 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,12 @@ void	expand_home(char **envp, size_t *i, t_expand *exp);
  * @param curr_segment The current segment being processed,
 	containing quote info.
  */
-void	loop_string(char *str, t_expand *exp, t_data *data, t_segment *curr_segment)
+void	loop_string(char *str, t_expand *exp, t_data *data,
+		t_segment *curr_segment)
 {
-	size_t	i = 0;
+	size_t	i;
+
+	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '$' && str[i + 1] == '"')
@@ -53,7 +56,6 @@ void	loop_string(char *str, t_expand *exp, t_data *data, t_segment *curr_segment
 	}
 }
 
-
 void	skip_dollar(char *str, size_t *i, t_expand *exp)
 {
 	(*i) += 2;
@@ -68,23 +70,21 @@ void	skip_dollar(char *str, size_t *i, t_expand *exp)
 
 void	expand_dollar(t_expand *exp, t_data *data, size_t *i, char *str)
 {
-    char	*var;
-    size_t	j;
+	char	*var;
+	size_t	j;
 
-    var = expand_var(&str[*i], data, i);
-
-    j = 0;
-    if (var)
-    {
-        while (var[j])
-        {
-            append_char_node(exp, var[j]);
-            j++;
-        }
-        free(var);
-    }
+	var = expand_var(&str[*i], data, i);
+	j = 0;
+	if (var)
+	{
+		while (var[j])
+		{
+			append_char_node(exp, var[j]);
+			j++;
+		}
+		free(var);
+	}
 }
-
 
 void	expand_home(char **envp, size_t *i, t_expand *exp)
 {

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:52:55 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/27 00:04:33 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:17:50 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 {
 	t_quote_state	new_state;
 
-	new_state = QUOTE_NONE;
 	if ((*parts)->string[*i] == '"')
 		new_state = DQ;
 	else if ((*parts)->string[*i] == '\'')
@@ -104,18 +103,7 @@ void	handle_quotes(t_segment **current_segments, t_parts **parts, int *i)
 		return (append_char_to_segment(parts, current_segments, i));
 	(*i)++;
 	if ((*parts)->quote != QUOTE_NONE && (*parts)->string[*i] == '\0')
-    {
-        t_segment *seg = *current_segments;
-		while (seg)
-		{
-			t_segment *tmp = seg;
-			seg = seg->next;
-			free(tmp->text);
-			free(tmp);
-		}
-		*current_segments = NULL;
-		return;
-    }
+		free_segments(current_segments);
 }
 
 /**

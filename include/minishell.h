@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/26 21:33:06 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:58:35 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,15 @@
 # include <readline/readline.h>
 # include <stdbool.h>
 
-int g_waiting_for_input;
+int	g_waiting_for_input;
 
-typedef struct s_heredoc_state {
-    bool has_heredocs;
-    int *heredoc_pipes; 
-    int heredoc_count;
-	int *cmd_indices;
-} t_heredoc_state;
-
-
+typedef struct s_heredoc_state
+{
+	bool	has_heredocs;
+	int		*heredoc_pipes;
+	int		heredoc_count;
+	int		*cmd_indices;
+}	t_heredoc_state;
 
 typedef struct s_data
 {
@@ -131,10 +130,25 @@ typedef struct s_expand
 	int					token_unquoted;
 }						t_expand;
 
-
-void print_token_list(t_split *head);
+// void print_token_list(t_split *head);
+char					*convert_char_list_to_string(t_char_node *head);
+void					free_segments(t_segment **current_segments);
+void					expand_segments(t_expand *exp, t_data *data);
+void					clear_empty_segments(t_split *temp);
+int						count_heredocs(t_op *cmd);
+void					assign_heredoc_indices(t_heredoc_state *state,
+							t_op *cmd);
+void					handle_heredoc_pipe(t_heredoc_state *state,
+							int heredoc_index, t_redir *redir, t_data *data);
+void					process_pipeline_heredocs(t_op *cmd, t_data *data,
+							t_heredoc_state *state);
+void					init_heredoc_state(t_heredoc_state *state,
+							t_op *cmd, int len);
+void					apply_heredoc_pipes(t_op *cmd, t_heredoc_state *state,
+							int cmd_index);
+void					cleanup_heredoc_state(t_heredoc_state *state);
 void					set_signals_interactive(void);
-void					signal_reset_prompt();
+void					signal_reset_prompt(int signo);
 void					ignore_sigquit(void);
 t_split					*split_inputs(char *string);
 int						split_errors(t_split *input, t_data *data);

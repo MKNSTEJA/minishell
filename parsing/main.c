@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/26 23:35:52 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:57:07 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,10 @@ int	main(int argc, char **argv, char **envp)
 			str = ft_strtrim(line, "\n");
 			free(line);
 		}
-		// str = readline("\nMinishell: ");
 		if (!str)
 			break ;
 		add_history(str);
 		input = split_inputs(str);
-		// print_split(input);
 		if (split_errors(input, &data) == 1)
 		{
 			free_split(input);
@@ -69,7 +67,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	rl_clear_history();
 	free_data(&data);
-	// system("leaks minishell");
 	return (data.last_exit);
 }
 
@@ -119,30 +116,6 @@ void	increment_shlvl(char ***envp)
 	free(new_shlvl);
 }
 
-// void	print_split(t_split *input)
-// {
-// 	t_split		*ptr;
-// 	t_segment	*ptrs;
-// 	int			i;
-
-// 	ptr = input;
-// 	ptrs = NULL;
-// 	i = 0;
-// 	while (ptr)
-// 	{
-// 		ptrs = ptr->segments;
-// 		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
-// 		i = 0;
-// 		while (ptrs)
-// 		{
-// 			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
-// 			i++;
-// 			ptrs = ptrs->next;
-// 		}
-// 		ptr = ptr->next;
-// 	}
-// }
-
 void	print_cmd(t_op *cmd)
 {
 	t_op	*ptr;
@@ -167,3 +140,27 @@ void	print_cmd(t_op *cmd)
 	}
 	printf("\n");
 }
+
+// void	print_split(t_split *input)
+// {
+// 	t_split		*ptr;
+// 	t_segment	*ptrs;
+// 	int			i;
+
+// 	ptr = input;
+// 	ptrs = NULL;
+// 	i = 0;
+// 	while (ptr)
+// 	{
+// 		ptrs = ptr->segments;
+// 		printf("string = %s |-> token = %d\n", ptr->str, ptr->type);
+// 		i = 0;
+// 		while (ptrs)
+// 		{
+// 			printf("Seg%d = %s, quote = %d\n", i, ptrs->text, ptrs->quote);
+// 			i++;
+// 			ptrs = ptrs->next;
+// 		}
+// 		ptr = ptr->next;
+// 	}
+// }

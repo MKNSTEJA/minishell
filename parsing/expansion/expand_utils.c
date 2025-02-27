@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 15:58:26 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/26 23:33:36 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:31:52 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,34 +27,35 @@ void	expand_double_quote(const char *str, t_data *data, size_t *i,
 		(*i)++;
 }
 
-void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp, t_data *data)
+void	handle_dquote_expansion(const char *str, size_t *i, t_expand *exp,
+		t_data *data)
 {
-    char	*var;
-    size_t	j;
+	char	*var;
+	size_t	j;
 
-    if (str[*i] == '$')
-    {
-        var = expand_var(&str[*i], data, i);
-        if (!var) {
-            return;
-        }
-        j = 0;
-        while (var[j])
-            append_char_node(exp, var[j++]);
-        free(var);
-    }
-    else if (str[*i] == '\\' && str[*i + 1] != '\0')
-    {
-        append_char_node(exp, str[*i + 1]);
-        (*i) += 2;
-    }
-    else
-    {
-        append_char_node(exp, str[*i]);
-        (*i)++;
-    }
+	if (str[*i] == '$')
+	{
+		var = expand_var(&str[*i], data, i);
+		if (!var)
+		{
+			return ;
+		}
+		j = 0;
+		while (var[j])
+			append_char_node(exp, var[j++]);
+		free(var);
+	}
+	else if (str[*i] == '\\' && str[*i + 1] != '\0')
+	{
+		append_char_node(exp, str[*i + 1]);
+		(*i) += 2;
+	}
+	else
+	{
+		append_char_node(exp, str[*i]);
+		(*i)++;
+	}
 }
-
 
 void	expand_single_quote(const char *str, size_t *i, t_expand *exp)
 {

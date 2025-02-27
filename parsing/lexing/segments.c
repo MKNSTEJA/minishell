@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 06:38:32 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/23 19:12:50 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:18:10 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,6 @@ void	append_char_to_segment(t_parts **parts, t_segment **current_segments,
 	updated_text = ft_strjoin(((*parts)->current_segment)->text, temp_char);
 	if ((*parts)->current_segment->text)
 		free((*parts)->current_segment->text);
-	// free((*parts)->current_segment->text);
 	((*parts)->current_segment)->text = updated_text;
 	(*i)++;
 }

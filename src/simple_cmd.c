@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:07 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/26 23:28:42 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:44:10 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,7 @@ void	execute_simple_command(t_op *cmd, t_data *data)
 	int	saved_stdin;
 	int	saved_stdout;
 
-	if (!cmd)
-		return ;
-	if ((!cmd->str || !cmd->str[0]) && !cmd->redirections)
+	if (!cmd || ((!cmd->str || !cmd->str[0]) && !cmd->redirections))
 		return ;
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);

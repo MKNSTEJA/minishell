@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:35:39 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/27 00:15:44 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:42:39 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	execute_commands(t_op *cmd, t_data *data)
 
 static char	*check_relative_path(char *cmd)
 {
+	char	*cwd_cmd;
+
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
 		if (access(cmd, X_OK) == 0)
@@ -29,13 +31,11 @@ static char	*check_relative_path(char *cmd)
 		else
 			return (NULL);
 	}
-	char *cwd_cmd = ft_strjoin("./", cmd);
+	cwd_cmd = ft_strjoin("./", cmd);
 	if (!cwd_cmd)
 		return (NULL);
-	
 	if (access(cwd_cmd, X_OK) == 0)
 		return (cwd_cmd);
-	
 	free(cwd_cmd);
 	return (NULL);
 }

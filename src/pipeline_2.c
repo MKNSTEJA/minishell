@@ -6,16 +6,17 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:14:08 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/18 01:02:38 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:35:42 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-
 static bool	has_output_redirection(t_op *cmd)
 {
-	t_redir	*redir = cmd->redirections;
+	t_redir	*redir;
+
+	redir = cmd->redirections;
 	while (redir)
 	{
 		if (redir->type == OUT || redir->type == APPEND)
@@ -27,7 +28,9 @@ static bool	has_output_redirection(t_op *cmd)
 
 static bool	has_input_redirection(t_op *cmd)
 {
-	t_redir	*redir = cmd->redirections;
+	t_redir	*redir;
+
+	redir = cmd->redirections;
 	while (redir)
 	{
 		if (redir->type == IN || redir->type == HEREDOC)
@@ -36,7 +39,6 @@ static bool	has_input_redirection(t_op *cmd)
 	}
 	return (false);
 }
-
 
 void	setup_child_io(t_op *current, int prev_fd, int pipe_fds[2])
 {

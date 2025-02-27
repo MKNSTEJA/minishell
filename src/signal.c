@@ -6,22 +6,24 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 23:44:02 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/19 16:39:51 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:38:15 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-
-void	signal_reset_prompt()
+void	signal_reset_prompt(int signo)
 {
+	(void)signo;
 	write(1, "\n", 1);
-	if (g_waiting_for_input) {
+	if (g_waiting_for_input)
+	{
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
+
 /*
 SIGQUIT is ctrl + \. So we are ignoring if the user pressed it.
 SIGQUIT is used to terminate the process AND dump core (unlike SIGINT). */
@@ -33,6 +35,7 @@ void	ignore_sigquit(void)
 	act.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &act, NULL);
 }
+
 /*
 sigaction redirects the default behavior of 
 sigint (ctrl+c) to signal_reset_prompt
