@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_expand.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmummadi <kmummadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 17:58:57 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/02/16 17:11:50 by kmummadi         ###   ########.fr       */
+/*   Updated: 2025/03/01 22:38:08 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,9 @@ int	handle_empty_expanded_string(t_expand *exp, t_split **head)
 			free(exp->split->str);
 			exp->split->str = ft_strdup("");
 			free(exp->expanded_str);
-			return (0);
+			exp->expanded_str = NULL;
+			exp->split = exp->split->next;
+			return (1);
 		}
 		free(exp->split->str);
 		exp->split->str = NULL;

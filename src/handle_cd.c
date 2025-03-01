@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 19:55:28 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/13 00:25:04 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 22:34:47 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static void	handle_home_directory(char ***envp, char *old_pwd)
 	{
 		print_error_msg("cd", "HOME", "environment variable is not set");
 	}
+	free(old_pwd);
 }
 
 static void	handle_oldpwd_directory(char ***envp, char *old_pwd)
@@ -50,6 +51,7 @@ static void	handle_oldpwd_directory(char ***envp, char *old_pwd)
 	if (!oldpwd_env)
 	{
 		ft_putstr_fd("Minishell: cd: OLDPWD not set\n", STDERR_FILENO);
+		free(old_pwd);
 		return ;
 	}
 	if (chdir(oldpwd_env) == 0)

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/27 23:58:35 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:39:32 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <readline/readline.h>
 # include <stdbool.h>
 
-int	g_waiting_for_input;
+extern	int	g_waiting_for_input;
 
 typedef struct s_heredoc_state
 {
@@ -143,7 +143,7 @@ void					handle_heredoc_pipe(t_heredoc_state *state,
 void					process_pipeline_heredocs(t_op *cmd, t_data *data,
 							t_heredoc_state *state);
 void					init_heredoc_state(t_heredoc_state *state,
-							t_op *cmd, int len);
+							t_op *cmd);
 void					apply_heredoc_pipes(t_op *cmd, t_heredoc_state *state,
 							int cmd_index);
 void					cleanup_heredoc_state(t_heredoc_state *state);

@@ -6,11 +6,13 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/27 23:57:07 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:10:22 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	g_waiting_for_input;
 
 void	increment_shlvl(char ***envp);
 

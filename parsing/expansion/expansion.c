@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 09:04:14 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/02/27 22:31:40 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 22:38:27 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,6 @@ char	*convert_char_list_to_string(t_char_node *head)
 	str[len] = '\0';
 	return (str);
 }
-
-// void debug_print_token_chain(t_split *head, const char *location) {
-//     fprintf(stderr, "\n[DEBUG] Token chain at %s:\n", location);
-//     t_split *curr = head;
-//     while (curr) {
-//         fprintf(stderr, "Token: '%s', segments: %p, next: %p, prev: %p\n",
-//                 curr->str, curr->segments, curr->next, curr->prev);
-//         curr = curr->next;
-//     }
-//     fprintf(stderr, "\n");
-// }
 
 /**
  * @brief Expands all tokens by processing each token's segments for variable

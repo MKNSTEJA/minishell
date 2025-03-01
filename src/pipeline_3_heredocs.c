@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:27:47 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/27 23:38:53 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:39:06 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,8 @@ void	process_pipeline_heredocs(t_op *cmd, t_data *data,
 	}
 }
 
-void	init_heredoc_state(t_heredoc_state *state, t_op *cmd, int len)
+void	init_heredoc_state(t_heredoc_state *state, t_op *cmd)
 {
-	len = count_commands(cmd);
 	state->heredoc_count = count_heredocs(cmd);
 	state->has_heredocs = (state->heredoc_count > 0);
 	state->heredoc_pipes = malloc(sizeof(int) * 2 * state->heredoc_count);

@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:11:37 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/27 23:34:25 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:40:04 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	execute_pipeline(t_op *cmd, t_data *data)
 		current->is_in_pipeline = true;
 		current = current->next;
 	}
-	init_heredoc_state(&heredoc_state, cmd, pipeline_length);
+	init_heredoc_state(&heredoc_state, cmd);
 	if (heredoc_state.has_heredocs)
 		process_pipeline_heredocs(cmd, data, &heredoc_state);
 	current = cmd;
