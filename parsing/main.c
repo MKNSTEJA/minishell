@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 02:42:19 by mknsteja          #+#    #+#             */
-/*   Updated: 2025/03/02 02:18:57 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:07:42 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,106 +16,106 @@ int	g_waiting_for_input;
 
 void	increment_shlvl(char ***envp);
 
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_split	*input;
-// 	t_op	*cmd;
-// 	char	*str;
-// 	t_data	data;
-// 	char	*line;
-
-// 	(void)argc;
-// 	(void)argv;
-// 	input = NULL;
-// 	cmd = NULL;
-// 	str = NULL;
-// 	if (!init_data(&data, envp))
-// 		return (EXIT_FAILURE);
-// 	remove_env_variable(&data.env, "OLDPWD");
-// 	set_signals_interactive();
-// 	while (1)
-// 	{
-// 		if (isatty(fileno(stdin)))
-// 		{
-// 			g_waiting_for_input = 1;
-// 			str = readline("Minishell: ");
-// 			g_waiting_for_input = 0;
-// 		}
-// 		else
-// 		{
-// 			line = get_next_line(fileno(stdin));
-// 			if (!line)
-// 				break ;
-// 			str = ft_strtrim(line, "\n");
-// 			free(line);
-// 		}
-// 		if (!str)
-// 			break ;
-// 		add_history(str);
-// 		input = split_inputs(str);
-// 		if (split_errors(input, &data) == 1)
-// 		{
-// 			free_split(input);
-// 			input = NULL;
-// 			free(str);
-// 			continue ;
-// 		}
-// 		expand_tokens(&input, &data);
-// 		cmd = initialise_cmd(input);
-// 		execute_commands(cmd, &data);
-// 		free_split(input);
-// 		free_op(cmd);
-// 		free(str);
-// 	}
-// 	rl_clear_history();
-// 	free_data(&data);
-// 	return (data.last_exit);
-// }
-
-static void	process_command(char *str, t_data *data)
+int	main(int argc, char **argv, char **envp)
 {
 	t_split	*input;
 	t_op	*cmd;
-
-	add_history(str);
-	input = split_inputs(str);
-	if (split_errors(input, data) == 1)
-	{
-		free_split(input);
-		return ;
-	}
-	expand_tokens(&input, data);
-	cmd = initialise_cmd(input);
-	execute_commands(cmd, data);
-	free_split(input);
-	free_op(cmd);
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	t_data	data;
 	char	*str;
+	t_data	data;
+	char	*line;
 
 	(void)argc;
 	(void)argv;
+	input = NULL;
+	cmd = NULL;
+	str = NULL;
 	if (!init_data(&data, envp))
 		return (EXIT_FAILURE);
 	remove_env_variable(&data.env, "OLDPWD");
 	set_signals_interactive();
 	while (1)
 	{
-		g_waiting_for_input = 1;
-		str = readline("Minishell: ");
-		g_waiting_for_input = 0;
+		if (isatty(fileno(stdin)))
+		{
+			g_waiting_for_input = 1;
+			str = readline("Minishell: ");
+			g_waiting_for_input = 0;
+		}
+		else
+		{
+			line = get_next_line(fileno(stdin));
+			if (!line)
+				break ;
+			str = ft_strtrim(line, "\n");
+			free(line);
+		}
 		if (!str)
 			break ;
-		process_command(str, &data);
+		add_history(str);
+		input = split_inputs(str);
+		if (split_errors(input, &data) == 1)
+		{
+			free_split(input);
+			input = NULL;
+			free(str);
+			continue ;
+		}
+		expand_tokens(&input, &data);
+		cmd = initialise_cmd(input);
+		execute_commands(cmd, &data);
+		free_split(input);
+		free_op(cmd);
 		free(str);
 	}
 	rl_clear_history();
 	free_data(&data);
 	return (data.last_exit);
 }
+
+// static void	process_command(char *str, t_data *data)
+// {
+// 	t_split	*input;
+// 	t_op	*cmd;
+
+// 	add_history(str);
+// 	input = split_inputs(str);
+// 	if (split_errors(input, data) == 1)
+// 	{
+// 		free_split(input);
+// 		return ;
+// 	}
+// 	expand_tokens(&input, data);
+// 	cmd = initialise_cmd(input);
+// 	execute_commands(cmd, data);
+// 	free_split(input);
+// 	free_op(cmd);
+// }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_data	data;
+// 	char	*str;
+
+// 	(void)argc;
+// 	(void)argv;
+// 	if (!init_data(&data, envp))
+// 		return (EXIT_FAILURE);
+// 	remove_env_variable(&data.env, "OLDPWD");
+// 	set_signals_interactive();
+// 	while (1)
+// 	{
+// 		g_waiting_for_input = 1;
+// 		str = readline("Minishell: ");
+// 		g_waiting_for_input = 0;
+// 		if (!str)
+// 			break ;
+// 		process_command(str, &data);
+// 		free(str);
+// 	}
+// 	rl_clear_history();
+// 	free_data(&data);
+// 	return (data.last_exit);
+// }
 
 int	init_data(t_data *data, char **envp)
 {

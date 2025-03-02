@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yousef <yousef@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:35:39 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/02/27 23:42:39 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/02 13:59:28 by yousef           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static char	*check_relative_path(char *cmd)
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
 		if (access(cmd, X_OK) == 0)
-			return (strdup(cmd));
+			return (ft_strdup(cmd));
 		else
 			return (NULL);
 	}
@@ -80,7 +80,7 @@ char	*find_executable(char **argv, char **envp)
 		executable_path = check_relative_path(argv[0]);
 		if (executable_path)
 			return (executable_path);
-		print_error_msg(NULL, NULL, "No such file or directory");
+		// print_error_msg(NULL, NULL, "No such file or directory");
 		return (NULL);
 	}
 	split_path = ft_split(path, ':');
