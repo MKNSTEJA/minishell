@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:03:26 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/03/01 20:39:32 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/02 01:17:44 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <readline/readline.h>
 # include <stdbool.h>
 
-extern	int	g_waiting_for_input;
+extern int	g_waiting_for_input;
 
 typedef struct s_heredoc_state
 {
@@ -35,6 +35,14 @@ typedef struct s_heredoc_state
 	int		heredoc_count;
 	int		*cmd_indices;
 }	t_heredoc_state;
+
+typedef struct s_child_context
+{
+	int				prev_fd;
+	int				pipe_fds[2];
+	t_heredoc_state	*heredoc_state;
+	int				cmd_index;
+}	t_child_context;
 
 typedef struct s_data
 {
@@ -131,6 +139,9 @@ typedef struct s_expand
 }						t_expand;
 
 // void print_token_list(t_split *head);
+void					init_child_context(t_child_context *ctx,
+							t_pipe_state *state,
+							t_heredoc_state *heredoc_state, int pipe_fds[2]);
 char					*convert_char_list_to_string(t_char_node *head);
 void					free_segments(t_segment **current_segments);
 void					expand_segments(t_expand *exp, t_data *data);

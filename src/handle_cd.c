@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 19:55:28 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/03/01 22:34:47 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/02 02:35:34 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,10 @@ void	handle_cd(char **argv, t_data *data)
 		if (chdir(argv[1]) == 0)
 			update_pwd_and_oldpwd(old_pwd, &data->env);
 		else
+		{
 			print_error_msg("cd", argv[1], "No such file or directory");
+			data->last_exit = 1;
+		}
 		free(old_pwd);
 	}
-	data->last_exit = 0;
 }

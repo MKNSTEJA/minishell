@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:09:04 by kmummadi          #+#    #+#             */
-/*   Updated: 2025/03/01 20:44:17 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/01 23:44:31 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ t_split	*remove_token(t_split **head, t_split *token)
 	if (token == *head)
 		*head = next;
 	if (token->segments)
-        free_segments(&token->segments);
+		free_segments(&token->segments);
 	free(token->str);
 	free(token);
 	return (next);

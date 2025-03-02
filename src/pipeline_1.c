@@ -6,7 +6,7 @@
 /*   By: ykhattab <ykhattab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:11:37 by ykhattab          #+#    #+#             */
-/*   Updated: 2025/03/01 20:40:04 by ykhattab         ###   ########.fr       */
+/*   Updated: 2025/03/02 01:16:36 by ykhattab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,16 @@ static void	init_pipe_state(t_pipe_state *state, int len)
 	}
 }
 
-static void	execute_child(t_op *current, t_data *data, int prev_fd,
-		int pipe_fds[2], t_heredoc_state *heredoc_state, int cmd_index)
+static void	execute_child(t_op *current, t_data *data, t_child_context *ctx)
 {
 	char	*exec_path;
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	setup_child_io(current, prev_fd, pipe_fds);
-	if (heredoc_state->has_heredocs)
+	setup_child_io(current, ctx->prev_fd, ctx->pipe_fds);
+	if (ctx->heredoc_state->has_heredocs)
 	{
-		apply_heredoc_pipes(current, heredoc_state, cmd_index);
+		apply_heredoc_pipes(current, ctx->heredoc_state, ctx->cmd_index);
 	}
 	if (apply_redirections(current, data) < 0)
 		_exit(1);
@@ -74,8 +73,9 @@ static void	execute_parent(t_pipe_state *state, t_op *current, int pipe_fds[2],
 static void	process_command(t_op *current, t_data *data, t_pipe_state *state,
 		t_heredoc_state *heredoc_state)
 {
-	int		pipe_fds[2];
-	pid_t	pid;
+	int				pipe_fds[2];
+	pid_t			pid;
+	t_child_context	ctx;
 
 	if (current->next && pipe(pipe_fds) == -1)
 	{
@@ -91,8 +91,10 @@ static void	process_command(t_op *current, t_data *data, t_pipe_state *state,
 		exit(1);
 	}
 	if (pid == 0)
-		execute_child(current, data, state->prev_fd, pipe_fds, heredoc_state,
-			state->index);
+	{
+		init_child_context(&ctx, state, heredoc_state, pipe_fds);
+		execute_child(current, data, &ctx);
+	}
 	else
 		execute_parent(state, current, pipe_fds, pid);
 }
