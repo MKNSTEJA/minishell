@@ -39,11 +39,6 @@ The codebase is split into **parsing** and **execution** layers to keep responsi
 
 ## Features
 
-### Interactive UX
-
-* **Readline-based prompt** (line editing + history navigation)
-* **Graceful signal behavior** for an interactive shell
-
 ### Execution
 
 * Execute binaries from:
