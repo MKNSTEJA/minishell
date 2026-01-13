@@ -1,69 +1,261 @@
-# MiniShell
+# minishell
 
-A robust, lightweight shell implementation written in C. This project replicates the core functionalities of `bash` (Bourne Again SHell), focusing on process management, file descriptor manipulation, and signal handling.
+A robust, lightweight shell implementation written in C. This project re-implements the **core interactive behavior of `bash`** (Bourne Again SHell) with a focus on **process management**, **file descriptor manipulation**, **signal handling**, and **environment management**.
 
-It features a custom-built parser, a modular execution engine, and a fully functional environment variable management system.
-
----
-
-## 🚀 Features
-
-### Core Functionality
-- **Command History:** Persistent history navigation using the readline library.
-- **System Executables:** Executes binaries found in the system `$PATH` or via absolute/relative paths.
-- **Process Isolation:** Robust `fork` and `execve` implementation to run commands in separate child processes.
-- **Quote Handling:** - Single quotes (`'`) prevent interpretation of meta-characters.
-  - Double quotes (`"`) allow variable expansion (`$VAR`) while preserving spacing.
-
-### I/O Redirections & Pipelines
-- **Pipes (`|`):** Connects the standard output of one command to the standard input of the next.
-- **Input (`<`):** Redirects input from a file.
-- **Output (`>`):** Redirects output to a file (overwrites).
-- **Append (`>>`):** Redirects output to a file (appends).
-- **Here-Doc (`<<`):** Reads input until a delimiter is found, supporting variable expansion within the input stream.
-
-### Signal Handling
-- **`Ctrl-C`:** Interrupts the current process and displays a new prompt.
-- **`Ctrl-D`:** Exits the shell (sends EOF).
-- **`Ctrl-\`:** Quits the current process (does nothing in the prompt).
-
-### Built-in Commands
-Minishell includes its own implementation of the following built-ins to manipulate the shell state directly:
-- `cd`: Change directory (supports relative/absolute paths and `~`).
-- `echo`: Print text to standard output (supports `-n` flag).
-- `pwd`: Print the current working directory.
-- `export`: Set environment variables.
-- `unset`: Remove environment variables.
-- `env`: Display current environment variables.
-- `exit`: Terminate the shell with a status code.
+> **Scope note (42 minishell):** This is an educational re-implementation of a subset of a POSIX-like shell. It is **not** intended to be a drop-in replacement for `bash`.
 
 ---
 
-## 🛠️ Architecture
+## Table of Contents
 
-The project is structured into two main components: **Parsing** and **Execution**.
-
-### 1. Lexer & Parser
-The input string is processed through a custom lexical analyzer:
-- **Tokenization:** The input is split into tokens (`t_split`), categorizing text as `WORD`, `PIPE`, `REDIR`, etc.
-- **Segmentation:** Quotes are handled by creating "segments" (`t_segment`), allowing mixed-quote strings like `echo "Hello" world`.
-- **Expansion:** Environment variables (`$VAR`) are expanded in-place before execution.
-
-### 2. Execution Engine
-The executor traverses the parsed command list (`t_op`):
-- **Pipeline Management:** Uses a loop to spawn child processes, linking them via standard UNIX pipes.
-- **File Descriptors:** Manages `dup2` calls to handle complex redirection chains (e.g., `cmd1 < infile | cmd2 >> outfile`).
-- **Wait Handling:** The parent process waits for the entire pipeline to finish, collecting exit codes (`$?`) appropriately.
+* [Overview](#overview)
+* [Features](#features)
+* [Supported Syntax](#supported-syntax)
+* [Built-ins](#built-ins)
+* [Architecture](#architecture)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Project Structure](#project-structure)
+* [Testing & Debugging](#testing--debugging)
+* [Limitations](#limitations)
+* [Contributing](#contributing)
+* [License](#license)
 
 ---
 
-## 📦 Installation
+## Overview
+
+`minishell` is a small interactive shell that:
+
+* reads and parses user input (including quotes and expansions),
+* builds an execution plan (commands, pipes, and redirections),
+* runs external programs via `fork()`/`execve()` with correct I/O wiring,
+* implements common shell built-ins that must run **inside** the shell process,
+* tracks exit status and exposes it via `$?`.
+
+The codebase is split into **parsing** and **execution** layers to keep responsibilities clear and to make complex behaviors (pipelines, redirections, heredocs) maintainable.
+
+---
+
+## Features
+
+### Interactive UX
+
+* **Readline-based prompt** (line editing + history navigation)
+* **Graceful signal behavior** for an interactive shell
+
+### Execution
+
+* Execute binaries from:
+
+  * `$PATH` resolution
+  * absolute paths (`/bin/ls`)
+  * relative paths (`./a.out`)
+* Correct process lifecycle using **`fork()` + `execve()`**
+* Proper exit-code propagation (including pipeline exit rules)
+
+### Quotes & Expansions
+
+* **Single quotes** (`'...'`) prevent interpretation/expansion
+* **Double quotes** (`"..."`) allow variable expansion while preserving spaces
+* Environment variable expansion: `$VAR`, `$?`
+
+### Redirections & Pipelines
+
+* Pipe: `|`
+* Input: `<`
+* Output truncate: `>`
+* Output append: `>>`
+* Heredoc: `<<` (reads until a delimiter)
+
+---
+
+## Supported Syntax
+
+This minishell supports a practical subset of common shell syntax:
+
+### Pipelines
+
+```bash
+ls -la | grep "\.c" | wc -l
+```
+
+### Redirections
+
+```bash
+cat < infile
+cat < infile > outfile
+cat < infile >> outfile
+```
+
+### Heredoc
+
+```bash
+cat << EOF
+hello $USER
+EOF
+```
+
+### Quotes
+
+```bash
+echo "Hello $USER"   # expands
+
+echo 'Hello $USER'   # no expansion
+```
+
+### Exit status
+
+```bash
+false
+echo $?
+```
+
+---
+
+## Built-ins
+
+Built-ins are implemented internally because they must affect the shell state (environment, current directory, exit code):
+
+* `cd` — change directory (supports relative/absolute paths and `~` when applicable)
+* `echo` — print text (supports `-n`)
+* `pwd` — print current working directory
+* `export` — set environment variables
+* `unset` — remove environment variables
+* `env` — display environment variables
+* `exit` — terminate the shell with an optional status code
+
+---
+
+## Architecture
+
+The project is organized into two main components: **Parsing** and **Execution**.
+
+### 1) Lexer & Parser
+
+A custom lexical analyzer converts the input line into structured tokens and command nodes:
+
+* **Tokenization**: categorizes input as `WORD`, `PIPE`, `REDIR`, etc.
+* **Segmentation**: quote-aware segmentation allows mixed strings (e.g., `echo "Hello"world`)
+* **Expansion**: expands `$VAR` and `$?` before execution (with quote rules)
+
+### 2) Execution Engine
+
+The execution layer traverses the parsed command list and performs:
+
+* **Pipeline creation** using UNIX pipes
+* **Redirection chaining** using `open()` + `dup2()`
+* **Process spawning** using `fork()` and `execve()`
+* **Wait / exit status collection** for correct `$?` behavior
+
+---
+
+## Installation
 
 ### Prerequisites
-- `gcc` or `clang`
-- `make`
-- `readline` library (usually installed by default on macOS, requires dev package on Linux).
 
-**For Linux (Debian/Ubuntu):**
+* A POSIX-like environment (Linux or macOS)
+* `make`
+* `gcc` or `clang`
+* `readline` development headers
+
+### Build
+
 ```bash
-sudo apt-get install libreadline-dev
+git clone https://github.com/Neko-Bytes/minishell
+cd minishell
+make
+```
+
+> If your system does not ship `readline` headers by default, install the development package (e.g., `libreadline-dev` on Debian/Ubuntu, `readline` on macOS via package manager).
+
+---
+
+## Usage
+
+Run the shell:
+
+```bash
+./minishell
+```
+
+Typical usage:
+
+```bash
+minishell$ echo "hello" | cat -e
+minishell$ export NAME=world
+minishell$ echo "$NAME"
+minishell$ cat << EOF
+> line 1
+> line 2
+> EOF
+```
+
+Exit:
+
+```bash
+minishell$ exit
+```
+
+---
+
+## Project Structure
+
+High-level layout (names may vary slightly by branch):
+
+```text
+.
+├── include/        # Public headers
+├── libft/          # 42 libft dependency (vendored)
+├── parsing/        # Lexer/parser/expansion logic
+├── src/            # Execution engine + built-ins + runtime
+├── testdir/        # Local testing assets/scripts (if present)
+├── outfiles/       # Output artifacts for tests (if present)
+├── Makefile
+└── README.md
+```
+
+---
+
+## Testing & Debugging
+
+### Manual comparison against bash
+
+A reliable way to validate behavior is to compare outputs and exit statuses side-by-side:
+
+```bash
+# bash
+bash$ echo "a  b" | wc -w
+bash$ echo $?
+
+# minishell
+minishell$ echo "a  b" | wc -w
+minishell$ echo $?
+```
+
+### Debugging tips
+
+* Use **Valgrind** to verify memory and FD hygiene:
+
+  ```bash
+  valgrind --leak-check=full --track-fds=yes ./minishell
+  ```
+* Validate signals interactively:
+
+  * `Ctrl-C` should interrupt and show a fresh prompt
+  * `Ctrl-D` should exit the shell (EOF)
+  * `Ctrl-\` should not kill the shell at the prompt
+
+---
+
+## Limitations
+
+This project intentionally focuses on the 42 minishell scope. Commonly out-of-scope features include:
+
+* Job control (`fg`, `bg`, `jobs`)
+* Shell scripting (`if`, `for`, `while`, functions)
+* Wildcard/globbing (`*`) and advanced pattern expansion
+* Subshells and command substitution (`$(...)`, backticks)
+
+---
+
